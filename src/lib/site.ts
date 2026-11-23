@@ -1,0 +1,51 @@
+import type { Metadata } from "next";
+
+export const brand = {
+  name: "Bharat Lums",
+  tagline: "Powering a Brighter Tomorrow",
+  email: "suhail@bharatlums.in",
+  phone: "+91 9961 839 602",
+  phoneHref: "tel:+919961839602",
+};
+
+export const siteUrl =
+  process.env.SITE_URL?.trim().replace(/\/$/, "") || undefined;
+const previewHost = process.env.VERCEL_URL;
+export const metadataOrigin =
+  siteUrl ?? (previewHost ? `https://${previewHost}` : undefined);
+
+export const description =
+  "Architectural lighting crafted to transform spaces. Explore Bharat Lums collections, linear LED concepts and an interactive Light Studio.";
+
+export function metadata(
+  title: string,
+  path: string,
+  summary = description,
+  image = "/images/hero.webp",
+): Metadata {
+  const url = siteUrl ? new URL(path, siteUrl) : undefined;
+  return {
+    title,
+    description: summary,
+    alternates: url ? { canonical: url } : undefined,
+    openGraph: {
+      title: `${title} | ${brand.name}`,
+      description: summary,
+      siteName: brand.name,
+      url: metadataOrigin ? new URL(path, metadataOrigin) : undefined,
+      type: "website",
+      images: metadataOrigin
+        ? [
+            {
+              url: new URL(image, metadataOrigin),
+              alt: "Bharat Lums architectural lighting concept",
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: metadataOrigin ? [new URL(image, metadataOrigin)] : undefined,
+    },
+  };
+}
