@@ -297,8 +297,8 @@ export default function Scene({
       gl={{ antialias: true, powerPreference: "low-power" }}
       fallback={<span role="status">Interactive 3D is unavailable.</span>}
     >
-      <color attach="background" args={["#141318"]} />
-      <fog attach="fog" args={["#141318", 14, 27]} />
+      <color attach="background" args={["#000000"]} />
+      <fog attach="fog" args={["#000000", 14, 27]} />
       <hemisphereLight args={["#c2cde1", "#3f2d28", 0.52]} />
       <directionalLight
         position={[2, 6, 4]}

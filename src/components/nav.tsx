@@ -44,7 +44,7 @@ export default function Header() {
     >
       <div className="shell header-inner">
         <Link href="/" className="brand-link" onClick={() => setOpenedAt(null)}>
-          <BrandMark variant={path === "/" ? "light" : "dark"} eager />
+          <BrandMark eager />
         </Link>
         <button
           className="menu-toggle icon-button"

@@ -20,8 +20,8 @@ import styles from "./presence.module.css";
 
 const start = { latitude: 14, longitude: 65 };
 const initialCamera = pointOnGlobe(start, 4.4).toArray();
-const gold = "#ffd095";
-const blue = "#7fc7ff";
+const highlighted = "#ffffff";
+const neutral = "#a8a8a8";
 
 function pointOnGlobe(
   point: Pick<Country, "latitude" | "longitude">,
@@ -63,12 +63,12 @@ const earthFragment = `
     float dots = 1. - smoothstep(.1, .34, length(fract(terrain) - .5));
     vec2 gridCell = abs(fract(vUv * vec2(24., 12.) + .5) - .5);
     float grid = 1. - smoothstep(.018, .045, min(gridCell.x, gridCell.y));
-    vec3 water = vec3(.024, .065, .129) + vec3(.04, .15, .24) * grid * .36;
-    vec3 land = vec3(.075, .205, .31) + vec3(.12, .33, .49) * dots * .62;
+    vec3 water = vec3(.055) + vec3(.14) * grid * .36;
+    vec3 land = vec3(.25) + vec3(.34) * dots * .62;
     vec3 base = mix(water, land, smoothstep(.13, .75, mask.r));
-    base += vec3(.065, .19, .31) * mask.g * .67;
+    base += vec3(.23) * mask.g * .67;
     base *= diffuse;
-    base += vec3(.09, .36, .64) * pow(1. - limb, 3.) * .69;
+    base += vec3(.42) * pow(1. - limb, 3.) * .69;
     gl_FragColor = vec4(base, 1.);
   }
 `;
@@ -112,7 +112,7 @@ function Stars() {
         <bufferAttribute attach="attributes-position" args={[coordinates, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        color="#9fc8f7"
+        color="#d4d4d4"
         size={0.012}
         transparent
         opacity={0.7}
@@ -165,7 +165,7 @@ function Route({
   const uniforms = useMemo(
     () => ({
       time: { value: 0 },
-      tint: { value: new Color(selected ? gold : blue) },
+      tint: { value: new Color(selected ? highlighted : neutral) },
       selectedRoute: { value: selected ? 1 : 0 },
       motion: { value: reduced ? 0 : 1 },
     }),
@@ -265,7 +265,7 @@ function CountryMarker({
     group.current.quaternion.copy(camera.quaternion);
   });
 
-  const color = selected ? gold : blue;
+  const color = selected ? highlighted : neutral;
   return (
     <group ref={group} position={position}>
       <group ref={ring}>
@@ -299,7 +299,7 @@ function CountryMarker({
       <mesh>
         <circleGeometry args={[selected ? 0.013 : 0.0085, 18]} />
         <meshBasicMaterial
-          color={selected ? "#fff1dc" : blue}
+          color={selected ? "#ffffff" : neutral}
           toneMapped={false}
         />
       </mesh>

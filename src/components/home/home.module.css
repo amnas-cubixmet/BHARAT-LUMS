@@ -1,29 +1,14 @@
 .hero {
-  --lavender: #a18bc5;
-  --ink: #080808;
   min-height: max(690px, calc(100svh - 80px));
   position: relative;
   isolation: isolate;
   overflow: clip;
   display: grid;
-  background:
-    radial-gradient(ellipse at 68% 28%, #c0a9de 0, transparent 54%),
-    var(--lavender);
-  color: var(--ink);
-  border-bottom: 1px solid #000;
+  background: var(--bg);
+  color: var(--text);
+  border-bottom: 1px solid var(--line);
 }
-.heroGrid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 48.5%,
-    #27103e15 48.5%,
-    #27103e15 calc(48.5% + 1px),
-    transparent calc(48.5% + 1px)
-  );
-}
+
 .heroInner {
   position: relative;
   display: grid;
@@ -51,14 +36,14 @@
   letter-spacing: -0.087em;
   word-spacing: 0.075em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--text);
 }
 .hero h1 > span {
   display: block;
   white-space: nowrap;
 }
 .heroDot {
-  color: #0d2d83;
+  color: var(--text);
   margin-left: 0.035em;
 }
 .heroSummary {
@@ -94,33 +79,31 @@
     background 0.25s,
     color 0.25s;
 }
-.heroPrimary {
-  background: #080808;
-  color: #fff;
-}
-.heroPrimary:hover {
-  background: #081d50;
+.heroPrimary,
+.heroLink,
+.quoteFloat {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--text);
 }
 .heroLink {
-  color: #080808;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  border-radius: 99px;
+  padding-inline: 8px;
+  transition:
+    background 0.25s,
+    color 0.25s;
 }
-.heroLink:hover {
-  color: #0b2c75;
+.heroPrimary:hover,
+.heroLink:hover,
+.quoteFloat:hover {
+  background: var(--text);
+  color: var(--bg);
 }
 .quoteFloat {
   position: absolute;
   z-index: 3;
   right: 2%;
   top: 17%;
-  color: #080808;
-  background: #e0d6ed;
-  border: 1px solid #080808;
-}
-.quoteFloat:hover {
-  background: #080808;
-  color: #fff;
 }
 .heroStage {
   position: absolute;
@@ -149,23 +132,18 @@
 }
 .heroFallback {
   object-fit: contain;
+  filter: grayscale(1);
 }
 .heroGlow {
   z-index: -1;
   background:
     radial-gradient(
-      ellipse 26% 22% at 43% 33%,
-      #edf7ffbd,
-      #d7edff67 34%,
-      transparent 90%
+      ellipse 24% 10% at 47% 36%,
+      #ffffff4a,
+      #ffffff24 42%,
+      transparent 100%
     ),
-    conic-gradient(
-      from 120deg at 41% 32%,
-      transparent 0deg,
-      #d4ecff6b 18deg,
-      #e5f4ff45 43deg,
-      transparent 87deg
-    );
+    radial-gradient(ellipse 23% 31% at 49% 60%, #ffffff20, transparent 94%);
   transition: opacity 0.35s ease;
 }
 .heroPanel {
@@ -175,13 +153,13 @@
   right: 0;
   padding: 12px 14px;
   border-radius: 9px;
-  border: 1px solid #100b23;
-  background: #d8cae8;
+  border: 1px solid var(--line);
+  background: var(--bg);
 }
 .modelCaption {
   display: block;
   font-size: 0.63rem;
-  color: #242033;
+  color: var(--muted);
 }
 .lightControls {
   display: flex;
@@ -194,7 +172,7 @@
   align-items: center;
   gap: 7px;
   min-height: 38px;
-  color: #080808;
+  color: var(--text);
   font-size: 0.8rem;
   font-weight: 800;
   white-space: nowrap;
@@ -203,29 +181,29 @@
   display: grid;
   align-items: center;
   gap: 2px;
-  color: #242033;
+  color: var(--muted);
   font-size: 0.68rem;
   font-weight: 800;
 }
 .lightControls input {
-  accent-color: #123d96;
+  accent-color: var(--text);
   width: 105px;
   margin: 0;
   cursor: pointer;
 }
 .hero :focus-visible,
 .faq :focus-visible {
-  outline: 2px solid #081e57;
+  outline: 2px solid var(--text);
   outline-offset: 4px;
 }
 
 .showcase {
   padding-block: clamp(66px, 10vw, 135px);
-  color: #fff;
-  background: #101114;
+  color: var(--text);
+  background: var(--bg);
 }
 .sectionKicker {
-  color: #bed1ff;
+  color: var(--text);
 }
 .showcase h2 {
   font-size: clamp(3rem, 7.8vw, 8rem);
@@ -241,18 +219,12 @@
   grid-template-columns: 0.87fr 1.13fr;
   align-items: center;
   overflow: hidden;
-  border: 1px solid #393645;
+  border: 1px solid var(--line);
   border-radius: 6px;
-  background: #1e1a28;
+  background: var(--bg);
 }
 .showcaseItem + .showcaseItem {
   margin-top: 18px;
-}
-.showcaseItem:nth-of-type(even) {
-  background: #19222c;
-}
-.showcaseItem:nth-of-type(3n) {
-  background: #282420;
 }
 .showcaseCopy {
   padding: clamp(24px, 5vw, 74px);
@@ -267,7 +239,7 @@
   max-width: 10ch;
 }
 .showcaseCopy p {
-  color: #d1cbdc;
+  color: var(--muted);
   margin: 19px 0 24px;
   max-width: 37ch;
 }
@@ -285,7 +257,7 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  box-shadow: inset 18px 0 50px #100c18ab;
+  box-shadow: inset 18px 0 50px #000000ab;
 }
 .showcaseArt img {
   object-fit: cover;
@@ -295,15 +267,15 @@
   position: absolute;
   right: 14px;
   bottom: 12px;
-  background: #101015;
-  color: #ded8ea;
+  background: var(--bg);
+  color: var(--text);
   padding: 0.35rem 0.55rem;
   font-size: 0.7rem;
   border-radius: 3px;
 }
 .about {
-  color: #f5effa;
-  background: #211b2d;
+  color: var(--text);
+  background: var(--bg);
   padding-block: clamp(66px, 10vw, 135px);
 }
 .aboutInner {
@@ -321,7 +293,7 @@
   margin-top: 14px;
 }
 .aboutCopy p {
-  color: #dcd2e8;
+  color: var(--muted);
   max-width: 48ch;
   margin: 22px 0;
 }
@@ -335,8 +307,8 @@
   object-fit: cover;
 }
 .faq {
-  background: #a18bc5;
-  color: #080808;
+  background: var(--bg);
+  color: var(--text);
   padding-block: clamp(68px, 11vw, 150px);
 }
 .faqInner {
@@ -351,10 +323,10 @@
   align-self: start;
 }
 .faqRow {
-  border-block-start: 1px solid #4b3b60;
+  border-block-start: 1px solid var(--line);
 }
 .faqRow:last-child {
-  border-block-end: 1px solid #4b3b60;
+  border-block-end: 1px solid var(--line);
 }
 .faqRow h3 {
   font-size: 1rem;
@@ -369,7 +341,7 @@
   width: 100%;
   min-height: 60px;
   padding: 13px 0;
-  color: #080808;
+  color: var(--text);
   text-align: left;
   font-weight: 760;
 }
@@ -397,7 +369,7 @@
 }
 .faqAnswer p {
   padding: 0 24px 18px 0;
-  color: #231735;
+  color: var(--muted);
 }
 .faqAnswer a {
   text-decoration: underline;
@@ -482,6 +454,11 @@
     height: clamp(265px, 75vw, 365px);
     right: 0;
   }
+  .heroGlow {
+    background:
+      radial-gradient(ellipse 23% 7% at 47% 25%, #ffffff4a, transparent 100%),
+      radial-gradient(ellipse 22% 25% at 47% 49%, #ffffff20, transparent 94%);
+  }
   .heroPanel {
     margin-top: clamp(230px, 65vw, 314px);
     padding: 8px 9px;
@@ -504,7 +481,7 @@
     aspect-ratio: 1.55;
   }
   .showcaseArt::before {
-    box-shadow: inset 0 10px 28px #100c18ab;
+    box-shadow: inset 0 10px 28px #000000ab;
   }
   .aboutInner,
   .faqInner {
@@ -515,6 +492,7 @@
   .heroGlow,
   .faqRow button svg,
   .faqAnswer,
+  .heroLink,
   .heroPrimary,
   .quoteFloat {
     transition: none;

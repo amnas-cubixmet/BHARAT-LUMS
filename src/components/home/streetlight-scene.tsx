@@ -69,8 +69,8 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
     const glow =
       power * (reduced ? 1 : MathUtils.smoothstep(clock.elapsedTime, 0.2, 1.4));
     lens.emissiveIntensity = reduced
-      ? glow
-      : MathUtils.damp(lens.emissiveIntensity, glow, 5, delta);
+      ? glow * 1.65
+      : MathUtils.damp(lens.emissiveIntensity, glow * 1.65, 5, delta);
     if (!ready.current) {
       ready.current = true;
       onReady();
@@ -85,7 +85,7 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
         position={[1.12, -1.35, 0.02]}
       >
         <meshStandardMaterial
-          color="#25293a"
+          color="#282828"
           roughness={0.49}
           metalness={0.42}
         />
@@ -93,7 +93,7 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
       <group position={[0.7, 0.57, 0]} rotation={[0, 0, -0.18]}>
         <RoundedBox args={[1.1, 0.22, 0.24]} radius={0.09} smoothness={3}>
           <meshStandardMaterial
-            color="#343849"
+            color="#383838"
             roughness={0.42}
             metalness={0.55}
           />
@@ -104,7 +104,7 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
           smoothness={3}
           position={[0.45, -0.045, 0]}
         >
-          <meshStandardMaterial color="#262933" roughness={0.52} />
+          <meshStandardMaterial color="#292929" roughness={0.52} />
         </RoundedBox>
       </group>
       <group position={[-0.53, 0.69, 0.02]} rotation={[-0.34, 0.01, -0.23]}>
@@ -115,7 +115,7 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
           position={[0, 0.034, 0]}
         >
           <meshStandardMaterial
-            color="#242635"
+            color="#262626"
             roughness={0.35}
             metalness={0.5}
           />
@@ -127,7 +127,7 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
           position={[0, -0.13, 0]}
         >
           <meshStandardMaterial
-            color="#55586e"
+            color="#555555"
             roughness={0.56}
             metalness={0.32}
           />
@@ -140,8 +140,8 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
         >
           <meshStandardMaterial
             ref={diffuser}
-            color="#c1cee4"
-            emissive="#badbff"
+            color="#bfbfbf"
+            emissive="#ffffff"
             emissiveIntensity={0}
             roughness={0.37}
             metalness={0.06}
@@ -154,7 +154,7 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
           position={[0, -0.225, 0]}
         >
           <meshStandardMaterial
-            color="#747c8a"
+            color="#767676"
             roughness={0.53}
             metalness={0.1}
           />
@@ -168,7 +168,7 @@ function Fixture({ power, reduced, pointer, onReady, onFailure }: SceneProps) {
             position={[x, 0.226, 0]}
           >
             <meshStandardMaterial
-              color="#4a4f65"
+              color="#4d4d4d"
               roughness={0.44}
               metalness={0.45}
             />
@@ -192,13 +192,13 @@ export default function StreetlightScene(props: SceneProps) {
         gl.setClearAlpha(0);
       }}
     >
-      <hemisphereLight intensity={1.55} color="#efedff" groundColor="#7360a0" />
-      <directionalLight position={[-3, 5, 3]} intensity={3.1} color="#f4f7ff" />
-      <directionalLight position={[3, 3, -4]} intensity={2} color="#aaa8e8" />
+      <hemisphereLight intensity={1.55} color="#ffffff" groundColor="#686868" />
+      <directionalLight position={[-3, 5, 3]} intensity={3.1} color="#ffffff" />
+      <directionalLight position={[3, 3, -4]} intensity={2} color="#d4d4d4" />
       <pointLight
         position={[-1.4, -0.8, 3.4]}
         intensity={4.5 * props.power}
-        color="#d5eaff"
+        color="#ffffff"
       />
       <Fixture {...props} />
     </Canvas>
