@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { usePathname } from "next/navigation";
 import type { gsap } from "gsap";
 
 export type MotionTools = { gsap: typeof gsap; media: gsap.MatchMedia };
 
 export function useMotion<T extends HTMLElement>(
   setup: (element: T, tools: MotionTools) => void,
-  path?: string,
 ) {
   const ref = useRef<T>(null);
   useEffect(() => {
@@ -33,23 +31,8 @@ export function useMotion<T extends HTMLElement>(
       cancelled = true;
       media?.revert();
     };
-  }, [setup, path]);
+  }, [setup]);
   return ref;
-}
-
-function animateProgress(element: HTMLElement, { gsap, media }: MotionTools) {
-  media.add("(prefers-reduced-motion: no-preference)", () => {
-    gsap.to(element, {
-      scaleX: 1,
-      ease: "none",
-      scrollTrigger: { start: 0, end: "max", scrub: 0.25 },
-    });
-  });
-}
-
-export function SiteMotion() {
-  const progress = useMotion<HTMLDivElement>(animateProgress, usePathname());
-  return <div className="scroll-progress" ref={progress} aria-hidden="true" />;
 }
 
 function animateReveal(element: HTMLElement, { gsap, media }: MotionTools) {
