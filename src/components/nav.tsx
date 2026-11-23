@@ -33,7 +33,9 @@ export default function Header() {
   const [openedAt, setOpenedAt] = useState<string | null>(null);
   const open = openedAt === path;
   return (
-    <header className="site-header">
+    <header
+      className={path === "/" ? "site-header home-header" : "site-header"}
+    >
       <div className="shell header-inner">
         <Link href="/" className="brand-link" onClick={() => setOpenedAt(null)}>
           <BrandMark />
