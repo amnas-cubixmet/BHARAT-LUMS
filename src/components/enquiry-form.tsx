@@ -19,7 +19,6 @@ const fields = [
     label: "Full name",
     type: "text",
     auto: "name",
-    placeholder: "Your full name",
     required: true,
   },
   {
@@ -27,14 +26,12 @@ const fields = [
     label: "Company name",
     type: "text",
     auto: "organization",
-    placeholder: "Your company",
   },
   {
     name: "email",
     label: "Email address",
     type: "email",
     auto: "email",
-    placeholder: "name@example.com",
     required: true,
   },
   {
@@ -42,26 +39,22 @@ const fields = [
     label: "Phone number",
     type: "tel",
     auto: "tel",
-    placeholder: "Include the country code",
   },
   {
     name: "interest",
     label: "Product interest",
     type: "text",
-    placeholder: "e.g. LED Street Lights",
   },
   {
     name: "location",
     label: "Project location",
     type: "text",
-    placeholder: "City or site location",
   },
   {
     name: "quantity",
     label: "Estimated quantity",
     type: "text",
     inputMode: "numeric",
-    placeholder: "e.g. 20",
   },
 ] as const;
 
@@ -148,20 +141,20 @@ export default function EnquiryForm({
       {fields.map((field) => {
         const id = `${formId}-${field.name}`;
         const error = errors[field.name];
+        const required = "required" in field;
         return (
           <div className="enquiry-field" key={field.name}>
-            <label htmlFor={id}>
+            <label className="sr-only" htmlFor={id}>
               {field.label}
-              {"required" in field && <span aria-hidden="true"> *</span>}
             </label>
             <input
               id={id}
               type={field.type}
               autoComplete={"auto" in field ? field.auto : undefined}
               inputMode={"inputMode" in field ? field.inputMode : undefined}
-              placeholder={field.placeholder}
+              placeholder={required ? `${field.label} *` : field.label}
               aria-invalid={Boolean(error)}
-              required={"required" in field}
+              required={required}
               aria-describedby={error ? `${id}-error` : undefined}
               {...register(field.name)}
             />
@@ -174,9 +167,11 @@ export default function EnquiryForm({
         );
       })}
       <div className="enquiry-field">
-        <label htmlFor={`${formId}-project-type`}>Project type</label>
+        <label className="sr-only" htmlFor={`${formId}-project-type`}>
+          Project type
+        </label>
         <select id={`${formId}-project-type`} {...register("projectType")}>
-          <option value="">Choose a project type</option>
+          <option value="">Project type</option>
           {[
             "Residential",
             "Commercial",
@@ -191,15 +186,16 @@ export default function EnquiryForm({
         </select>
       </div>
       <div className="enquiry-field full">
-        <label htmlFor={`${formId}-message`}>
-          Message<span aria-hidden="true"> *</span>
+        <label className="sr-only" htmlFor={`${formId}-message`}>
+          Message
         </label>
-        <p className="form-note" id={`${formId}-message-hint`}>
+        <p className="sr-only" id={`${formId}-message-hint`}>
           Include the lighting you need, the space, and your timeline.
         </p>
         <textarea
           id={`${formId}-message`}
           rows={5}
+          placeholder="Message *"
           required
           aria-invalid={Boolean(errors.message)}
           aria-describedby={
