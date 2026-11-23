@@ -15,7 +15,7 @@ export const metadataOrigin =
   siteUrl ?? (previewHost ? `https://${previewHost}` : undefined);
 
 export const description =
-  "Architectural lighting crafted to transform spaces. Explore the Bharat Lums LED catalogue, linear LED concepts and an interactive Light Studio.";
+  "Explore the Bharat Lums LED lighting catalogue for commercial, industrial and outdoor projects.";
 
 export function metadata(
   title: string,

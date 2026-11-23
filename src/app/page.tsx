@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Box } from "lucide-react";
 import { Action } from "@/components/ui";
 import { GlobalPresenceSection } from "@/components/global-presence/global-presence";
 import { HomeHero } from "@/components/home-hero";
@@ -8,7 +7,7 @@ import { HomeFaq } from "@/components/home/faq";
 import styles from "@/components/home/home.module.css";
 import { Reveal } from "@/components/motion";
 import conferenceRoom from "../../public/images/about-bharat-lums-conference.webp";
-import { artwork, catalogueCategories, catalogueDownload } from "@/lib/catalogue";
+import { catalogueCategories, catalogueDownload } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 export const metadata = {
@@ -50,31 +49,6 @@ export default function Home() {
       <CatalogueSlider categories={catalogueCategories} />
 
       <GlobalPresenceSection />
-
-      <Reveal as="section" className="shell studio-feature">
-        <div className="studio-feature-image">
-          <Image
-            src={artwork("office")}
-            alt="Linear fixtures illuminating a boardroom concept"
-            fill
-            loading="lazy"
-            sizes="(max-width: 760px) 100vw, 55vw"
-          />
-        </div>
-        <div className="studio-feature-copy">
-          <p className="eyebrow">
-            <Box size={16} /> Interactive 3D
-          </p>
-          <h2>Design with light.</h2>
-          <p>
-            Change the colour temperature, brightness and arrangement to see how
-            a fixture changes the feel of a room.
-          </p>
-          <Action href="/light-studio" diagonal>
-            Open the Light Studio
-          </Action>
-        </div>
-      </Reveal>
 
       <HomeFaq catalogue={catalogueDownload} />
     </>

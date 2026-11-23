@@ -12,7 +12,7 @@ export default function AboutPage() {
       <PageIntro
         eyebrow={brand.tagline}
         title="Engineering brighter possibilities."
-        description="We approach architectural lighting as part of the room itself. A line of light can reveal an edge, guide movement or bring attention to a surface."
+        description="Bharat Lums offers LED lighting solutions for commercial, industrial and outdoor environments."
       />
       <section className="shell detail-grid section-tight">
         <Reveal className="detail-image">
@@ -31,20 +31,8 @@ export default function AboutPage() {
             see. Then choose where to place the light, how warm it should feel
             and how it should meet the architecture.
           </p>
-          <h2>Why linear lighting?</h2>
-          <p>
-            A continuous profile works across worktables, circulation routes and
-            ceiling details. Suspended, recessed and surface-mounted
-            arrangements each bring a different relationship between fixture and
-            room.
-          </p>
-          <h2>Explore the possibilities</h2>
-          <p>
-            Use the Light Studio to compare arrangements, or share a drawing and
-            tell us what you want the space to feel like.
-          </p>
-          <Action href="/light-studio" secondary>
-            Open the Light Studio
+          <Action href="/products" secondary>
+            Explore LED lighting
           </Action>
         </Reveal>
       </section>

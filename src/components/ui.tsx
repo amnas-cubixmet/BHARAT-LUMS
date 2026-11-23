@@ -230,7 +230,6 @@ export function Footer() {
           <div>
             <h2>Explore</h2>
             <Link href="/products">Product Catalogue</Link>
-            <Link href="/light-studio">Light Studio</Link>
           </div>
           <div>
             <h2>Company</h2>

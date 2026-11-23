@@ -1,6 +1,6 @@
 # Bharat Lums
 
-A responsive architectural lighting website and interactive Light Studio. Next.js App Router, TypeScript and Tailwind CSS handle the application. GSAP drives the homepage entrance and scroll reveals. Three.js, React Three Fiber and Drei render the Studio. Motion handles portfolio filter transitions.
+A responsive LED lighting website and product catalogue. Next.js App Router, TypeScript and Tailwind CSS handle the application. GSAP drives the homepage entrance and scroll reveals. Three.js and React Three Fiber render the homepage streetlight and globe. Motion handles portfolio filter transitions.
 
 ## Run locally
 
@@ -11,14 +11,13 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. The catalogue, portfolio, Studio and email-draft fallback work without service credentials.
+Open http://localhost:3000. The catalogue, portfolio and email-draft fallback work without service credentials.
 
 ## Content and assets
 
 - The Illustrator logo was exported as an original-colour SVG and transparent PNG. The website uses a lighter blue treatment of the same artwork. The business card supplied the contact name, phone and email.
-- The proposed catalogue has 16 lighting families and five demonstration fixtures. Replace the fixtures and artwork in `src/lib/catalogue.ts` with verified product records and datasheets before listing them commercially.
+- The catalogue shows ten LED lighting categories. Source records and representative imagery are in `src/lib/catalogue.ts`. Add verified product records and datasheets before publishing individual models.
 - Portfolio artwork and hero imagery are AI-generated architectural concepts. Portfolio records are labeled **Concept / Inspiration**. Replace them with approved photography and verified project details when available.
-- The Studio supports seven arrangements, four room environments, three fixture finishes, three mounting modes, brightness and three colour temperatures. The 2D preview keeps the controls usable when WebGL is unavailable. Both previews are illustrative.
 
 ## Enquiries
 

@@ -61,21 +61,6 @@ const ledFamilies = [
   ],
 ] as const;
 
-const legacyFamilies = [
-  ["linear-led-lighting", "Linear LED Lighting"],
-  ["architectural-lighting", "Architectural Lighting"],
-  ["pendant-lighting", "Pendant Lighting"],
-  ["track-lighting", "Track Lighting"],
-  ["magnetic-track-lighting", "Magnetic Track Lighting"],
-  ["recessed-lighting", "Recessed Lighting"],
-  ["surface-mounted-lighting", "Surface-Mounted Lighting"],
-  ["downlights", "Downlights"],
-  ["spotlights", "Spotlights"],
-  ["decorative-lighting", "Decorative Lighting"],
-  ["smart-lighting", "Smart Lighting"],
-  ["modular-lighting-systems", "Modular Lighting Systems"],
-] as const;
-
 const collectionFrom = ([slug, name, description, image]: readonly [
   string,
   string,
@@ -89,17 +74,8 @@ const collectionFrom = ([slug, name, description, image]: readonly [
 });
 export const catalogueCategories = ledFamilies.map(collectionFrom);
 export const collections = catalogueCategories;
-const legacyCategories = legacyFamilies.map(([slug, name]) => ({
-  slug,
-  name,
-}));
-
 export function findCollection(slug: unknown) {
   return collections.find((item) => item.slug === slug);
-}
-
-export function findEnquiryCollection(slug: unknown) {
-  return findCollection(slug) ?? legacyCategories.find((item) => item.slug === slug);
 }
 
 export const artwork = (name: string) => `/images/${name}.webp`;
@@ -146,7 +122,7 @@ function representativeImage(file: string, alt: string) {
   };
 }
 
-const ledConcepts: Product[] = [
+export const products: Product[] = [
   {
     slug: "led-flood-light",
     name: "LED Flood Light",
@@ -287,121 +263,6 @@ const ledConcepts: Product[] = [
     applications: "Warehouse aisles, loading areas and distribution halls.",
   },
 ];
-
-const architecturalConcepts: Product[] = [
-  {
-    slug: "suspended-linear",
-    name: "Suspended Linear",
-    ...representativeImage(
-      "suspended-linear",
-      "Suspended black linear LED bar with two cables",
-    ),
-    categories: [
-      "linear-led-lighting",
-      "pendant-lighting",
-      "architectural-lighting",
-      "commercial-lighting",
-    ],
-    description:
-      "A slim, suspended bar that keeps the overhead silhouette clear.",
-    features: [
-      "Straight LED profile",
-      "Suspended mounting concept",
-      "Single or parallel arrangements",
-    ],
-    applications:
-      "Worktables, kitchen islands, reception desks and meeting rooms.",
-  },
-  {
-    slug: "recessed-linear",
-    name: "Recessed Continuous Line",
-    ...representativeImage(
-      "recessed-linear",
-      "Recessed aluminium lighting channel with a white diffuser",
-    ),
-    categories: [
-      "linear-led-lighting",
-      "recessed-lighting",
-      "architectural-lighting",
-      "modular-lighting-systems",
-    ],
-    description:
-      "A continuous line of light integrated into a ceiling or wall plane.",
-    features: [
-      "Recessed profile",
-      "Continuous architectural runs",
-      "Corner layouts",
-    ],
-    applications: "Corridors, gallery entrances and ceiling details.",
-  },
-  {
-    slug: "magnetic-spot-track",
-    name: "Magnetic Spot Track",
-    ...representativeImage(
-      "magnetic-spot-track",
-      "Black track rail with two adjustable spotheads",
-    ),
-    categories: [
-      "track-lighting",
-      "magnetic-track-lighting",
-      "spotlights",
-      "downlights",
-      "commercial-lighting",
-    ],
-    description:
-      "A directional track concept for accenting objects and surfaces.",
-    features: [
-      "Directional heads",
-      "Repositionable layout concept",
-      "Targeted accent lighting",
-    ],
-    applications: "Retail displays, hospitality interiors and galleries.",
-  },
-  {
-    slug: "surface-linear",
-    name: "Surface Linear Profile",
-    ...representativeImage(
-      "surface-linear",
-      "Surface-mounted silver LED bar with a continuous diffuser",
-    ),
-    categories: [
-      "linear-led-lighting",
-      "surface-mounted-lighting",
-      "modular-lighting-systems",
-    ],
-    description:
-      "A low-profile linear fixture for mounting against a ceiling or wall.",
-    features: [
-      "Direct mounting concept",
-      "Straight and joining runs",
-      "Clean diffuser line",
-    ],
-    applications: "Circulation areas, workspaces and exposed ceilings.",
-  },
-  {
-    slug: "modular-corner",
-    name: "Modular Corner System",
-    ...representativeImage(
-      "modular-corner",
-      "Black L-shaped linear LED profile with an illuminated strip",
-    ),
-    categories: [
-      "linear-led-lighting",
-      "modular-lighting-systems",
-      "architectural-lighting",
-    ],
-    description:
-      "Joined linear profiles that trace corners and geometric details.",
-    features: [
-      "Corner geometry",
-      "Linked segments",
-      "Suspended or recessed concepts",
-    ],
-    applications: "Lobbies, showrooms and architectural ceiling layouts.",
-  },
-];
-
-export const products: Product[] = [...ledConcepts, ...architecturalConcepts];
 
 export const publishedProducts = products.filter(
   (product) => product.status === "verified",

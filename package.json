@@ -1,7 +1,7 @@
 {
   "name": "bharat-lums",
   "version": "1.0.0",
-  "description": "Architectural lighting website and interactive Light Studio for Bharat Lums",
+  "description": "LED lighting website and product catalogue for Bharat Lums",
   "scripts": {
     "test": "playwright test",
     "dev": "next dev",

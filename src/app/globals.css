@@ -354,7 +354,6 @@ svg {
 }
 .image-link,
 .detail-image,
-.studio-feature-image,
 .project-hero {
   display: block;
   position: relative;
@@ -369,7 +368,6 @@ svg {
 }
 .image-link img,
 .detail-image img,
-.studio-feature-image img,
 .project-hero img,
 .gallery-controls img {
   object-fit: cover;
@@ -433,26 +431,10 @@ svg {
   gap: 8px 16px;
   margin-top: 18px;
 }
-.studio-feature {
-  min-height: 400px;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  background: var(--bg);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.studio-feature-copy {
-  align-self: center;
-  padding: clamp(24px, 5vw, 76px);
-}
-.studio-feature-copy > p:not(.eyebrow),
 .quote-inner p:not(.eyebrow) {
   margin-top: 15px;
   color: var(--muted);
   max-width: 48ch;
-}
-.studio-feature .button {
-  margin-top: 24px;
 }
 .quote-banner {
   background: var(--bg);
@@ -565,7 +547,6 @@ textarea::placeholder {
   margin-bottom: 26px;
 }
 .filter-pills button,
-.options button,
 .icon-button {
   border: 1px solid var(--text);
   border-radius: 4px;
@@ -574,18 +555,13 @@ textarea::placeholder {
   background: var(--bg);
 }
 .filter-pills button:hover,
-.options button:hover,
 .icon-button:hover {
   background: var(--text);
   color: var(--bg);
 }
-.filter-pills button[aria-pressed="true"],
-.options button[aria-pressed="true"] {
+.filter-pills button[aria-pressed="true"] {
   border-color: var(--text);
   box-shadow: inset 0 0 0 1px currentColor;
-}
-.options button:hover small {
-  color: inherit;
 }
 .empty-state {
   border: 1px solid var(--line);
@@ -825,12 +801,6 @@ textarea::placeholder {
   .card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .studio-feature {
-    grid-template-columns: 1fr;
-  }
-  .studio-feature-image {
-    min-height: 280px;
-  }
   .detail-grid {
     grid-template-columns: 1fr;
   }
@@ -925,9 +895,6 @@ textarea::placeholder {
   .card-grid.wide {
     grid-template-columns: minmax(0, 1fr);
   }
-  .studio-feature-image {
-    min-height: 215px;
-  }
   .footer-main {
     grid-template-columns: 1fr 1fr;
     gap: 23px 15px;
@@ -958,212 +925,6 @@ textarea::placeholder {
   }
 }
 
-.studio-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(290px, 1fr);
-  align-items: start;
-  gap: clamp(15px, 3vw, 32px);
-}
-.studio-stage,
-.studio-controls {
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  overflow: hidden;
-  min-width: 0;
-}
-.scene-toolbar,
-.scene-caption {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 13px;
-}
-.scene-toolbar p,
-.scene-toolbar > div {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.scene-toolbar p {
-  color: var(--text);
-  font-size: 0.84rem;
-  font-weight: 700;
-}
-.scene-toolbar .icon-button {
-  display: grid;
-  place-items: center;
-  min-width: 36px;
-  min-height: 36px;
-  padding: 5px;
-}
-.scene-caption {
-  color: var(--muted);
-  font-size: 0.76rem;
-}
-.scene-view {
-  position: relative;
-  height: clamp(330px, 42vw, 620px);
-  background: var(--bg);
-  border-block: 1px solid var(--line);
-}
-.scene-loading {
-  display: grid;
-  place-items: center;
-  min-height: 100%;
-  color: var(--muted);
-}
-.flat-preview,
-.flat-room,
-.flat-ambient {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-.flat-room {
-  transition:
-    filter 0.26s,
-    transform 0.26s;
-}
-.flat-room img {
-  object-fit: cover;
-  object-position: center 64%;
-}
-.flat-ambient {
-  transition: opacity 0.26s;
-}
-.flat-fixture {
-  position: absolute;
-  height: 8px;
-  border-bottom: 2px solid;
-  border-radius: 3px;
-  transition:
-    transform 0.25s,
-    box-shadow 0.25s,
-    background 0.25s;
-}
-.studio-controls {
-  padding: clamp(16px, 3vw, 27px);
-  display: grid;
-  gap: 16px;
-}
-.controls-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-.controls-top h2 {
-  font-size: clamp(1.34rem, 2.5vw, 2rem);
-}
-.power-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  min-width: 65px;
-  min-height: 37px;
-  padding: 6px 9px;
-  color: var(--text);
-}
-.power-button[aria-checked="true"] {
-  border-color: var(--text);
-}
-.power-button:hover {
-  background: var(--text);
-  color: var(--bg);
-}
-.studio-controls label,
-.studio-controls legend {
-  font-size: 0.84rem;
-  font-weight: 650;
-}
-.studio-controls select {
-  margin-top: 5px;
-}
-.studio-controls fieldset {
-  min-width: 0;
-  padding: 0;
-  border: 0;
-}
-.studio-controls legend {
-  margin-bottom: 7px;
-}
-.slider-label {
-  display: flex;
-  justify-content: space-between;
-}
-.slider-label output {
-  color: var(--text);
-}
-.studio-controls input[type="range"] {
-  width: 100%;
-  accent-color: var(--text);
-  margin: -5px 0 0;
-}
-.options {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-}
-.options button {
-  min-height: 43px;
-  padding: 5px 4px;
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-.options button span {
-  flex: 0 0 auto;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-}
-.options button small {
-  color: var(--muted);
-  font-size: 0.65rem;
-}
-.temperature-options button {
-  flex-direction: column;
-}
-@media (max-width: 805px) {
-  .studio-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .scene-view {
-    height: clamp(315px, 60vw, 490px);
-  }
-  .scene-toolbar .icon-button {
-    min-width: 42px;
-    min-height: 42px;
-  }
-}
-@media (max-width: 560px) {
-  .scene-view {
-    height: clamp(230px, 71vw, 340px);
-  }
-  .scene-toolbar,
-  .scene-caption {
-    flex-wrap: wrap;
-  }
-  .scene-toolbar .icon-button,
-  .power-button,
-  .options button {
-    min-height: 44px;
-  }
-  .scene-toolbar .icon-button {
-    min-width: 44px;
-  }
-  .finish-options button {
-    flex-direction: column;
-  }
-}
 .hero-installation {
   position: absolute;
   z-index: -1;
@@ -1386,9 +1147,6 @@ textarea::placeholder {
 }
 .footer-project .button {
   white-space: nowrap;
-}
-.studio-feature + section {
-  margin-top: clamp(55px, 7vw, 95px);
 }
 
 @media (max-width: 620px) {

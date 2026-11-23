@@ -1,9 +1,7 @@
 import { ContactSection } from "@/components/contact";
 import { PageIntro } from "@/components/ui";
-import { findEnquiryCollection, products } from "@/lib/catalogue";
-import { studioSchema } from "@/lib/enquiry";
+import { findCollection, products } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
-import { summarizeSetup } from "@/lib/studio";
 
 export const metadata = pageMetadata("Request a Quote", "/request-quote");
 
@@ -13,15 +11,10 @@ export default async function QuotePage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const query = await searchParams;
-  const configuration = studioSchema.safeParse(query);
   const product = products.find((item) => item.slug === query.product);
-  const collection = findEnquiryCollection(query.collection);
-  const defaults = configuration.success
-    ? {
-        interest: "Linear LED Lighting",
-        message: `Light Studio configuration\n${summarizeSetup(configuration.data)}\n\nProject details\n`,
-      }
-    : query.catalogue === "1"
+  const collection = findCollection(query.collection);
+  const defaults =
+    query.catalogue === "1"
       ? {
           interest: "LED product catalogue",
           message: "Please share the current Bharat Lums product catalogue.",
@@ -34,14 +27,6 @@ export default async function QuotePage({
         title="Request a quote."
         description="Share what you are planning and the lighting you need. Include quantities and project location where available."
       />
-      {configuration.success && (
-        <div className="shell" style={{ marginBottom: 22 }}>
-          <div className="empty-state">
-            <strong>Light Studio configuration</strong>
-            <p>{summarizeSetup(configuration.data)}</p>
-          </div>
-        </div>
-      )}
       <ContactSection defaults={defaults} />
     </>
   );
