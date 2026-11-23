@@ -1,6 +1,6 @@
 import { ContactSection } from "@/components/contact";
 import { PageIntro } from "@/components/ui";
-import { findCollection, products } from "@/lib/catalogue";
+import { findEnquiryCollection, products } from "@/lib/catalogue";
 import { studioSchema } from "@/lib/enquiry";
 import { metadata as pageMetadata } from "@/lib/site";
 import { summarizeSetup } from "@/lib/studio";
@@ -15,7 +15,7 @@ export default async function QuotePage({
   const query = await searchParams;
   const configuration = studioSchema.safeParse(query);
   const product = products.find((item) => item.slug === query.product);
-  const collection = findCollection(query.collection);
+  const collection = findEnquiryCollection(query.collection);
   const defaults = configuration.success
     ? {
         interest: "Linear LED Lighting",

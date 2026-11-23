@@ -8,7 +8,6 @@ import {
   catalogueCategories,
   catalogueLabel,
   findCollection,
-  legacyCategories,
   publishedProducts,
   projectCategories,
   projects,
@@ -16,9 +15,6 @@ import {
 } from "@/lib/catalogue";
 import { Action, CatalogueCategoryCard, ProductCard, ProjectCard } from "./ui";
 
-const architecturalCategories = legacyCategories.filter((category) =>
-  publishedProducts.some((product) => product.categories.includes(category.slug)),
-);
 const verifiedWattages = [
   ...new Set(
     publishedProducts.flatMap((product) =>
@@ -88,15 +84,6 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
                 </option>
               ))}
             </optgroup>
-            {architecturalCategories.length > 0 && (
-              <optgroup label="Architectural concepts">
-                {architecturalCategories.map((item) => (
-                  <option value={item.slug} key={item.slug}>
-                    {item.name}
-                  </option>
-                ))}
-              </optgroup>
-            )}
           </select>
         </label>
         {verifiedWattages.length > 0 && (

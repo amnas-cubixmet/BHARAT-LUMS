@@ -76,7 +76,7 @@ const legacyFamilies = [
   ["modular-lighting-systems", "Modular Lighting Systems"],
 ] as const;
 
-const categoryFrom = ([slug, name, description, image]: readonly [
+const collectionFrom = ([slug, name, description, image]: readonly [
   string,
   string,
   string,
@@ -87,17 +87,19 @@ const categoryFrom = ([slug, name, description, image]: readonly [
   description,
   image,
 });
-export const catalogueCategories = ledFamilies.map(categoryFrom);
-export const legacyCategories = legacyFamilies.map(([slug, name]) => ({
+export const catalogueCategories = ledFamilies.map(collectionFrom);
+export const collections = catalogueCategories;
+const legacyCategories = legacyFamilies.map(([slug, name]) => ({
   slug,
   name,
 }));
 
 export function findCollection(slug: unknown) {
-  return (
-    catalogueCategories.find((item) => item.slug === slug) ??
-    legacyCategories.find((item) => item.slug === slug)
-  );
+  return collections.find((item) => item.slug === slug);
+}
+
+export function findEnquiryCollection(slug: unknown) {
+  return findCollection(slug) ?? legacyCategories.find((item) => item.slug === slug);
 }
 
 export const artwork = (name: string) => `/images/${name}.webp`;
