@@ -440,73 +440,17 @@ export const projectCategories = [
   "Outdoor Spaces",
 ];
 
-export const projects = [
-  {
-    slug: "the-quiet-residence",
-    name: "The Quiet Residence",
-    category: "Residential",
-    image: "living",
-    gallery: "linear",
-    overview:
-      "A living room study that balances an illuminated gathering area with dark, quiet edges.",
-    approach:
-      "A suspended line draws attention to the seating area. Soft ambient light keeps the surrounding concrete and fabric readable.",
-    application: "Suspended Linear",
-    product: "suspended-linear",
-  },
-  {
-    slug: "after-hours",
-    name: "After Hours",
-    category: "Restaurants",
-    image: "dining",
-    gallery: "track",
-    overview:
-      "A restaurant lighting study that uses low ambient light and warm highlights around each table.",
-    approach:
-      "Concentrate light on the tables and wash the wall behind them. Keep the fixture profiles visually quiet.",
-    application: "Magnetic Spot Track",
-    product: "magnetic-spot-track",
-  },
-  {
-    slug: "a-line-through-the-room",
-    name: "A Line Through the Room",
-    category: "Corporate",
-    image: "office",
-    gallery: "recessed",
-    overview:
-      "A boardroom concept organized around long lines and a single shared table.",
-    approach:
-      "Parallel suspended profiles follow the table and give the room a clear axis without competing with its glazing.",
-    application: "Suspended Linear",
-    product: "suspended-linear",
-  },
-  {
-    slug: "the-retail-study",
-    name: "The Retail Study",
-    category: "Retail",
-    image: "track",
-    gallery: "recessed",
-    overview:
-      "A retail concept that uses directional accents to organize a changing display.",
-    approach:
-      "Aim individual fixtures at key surfaces and leave circulation space with softer general illumination.",
-    application: "Magnetic Spot Track",
-    product: "magnetic-spot-track",
-  },
-  {
-    slug: "the-arrival-gallery",
-    name: "The Arrival Gallery",
-    category: "Architecture",
-    image: "hero",
-    gallery: "office",
-    overview:
-      "Suspended lines define the height and depth of an arrival lobby.",
-    approach:
-      "Vary the suspension height to emphasize the ceiling volume and reveal the floor as people enter.",
-    application: "Modular Corner System",
-    product: "modular-corner",
-  },
-];
+export type Project = {
+  slug: string;
+  name: string;
+  category: (typeof projectCategories)[number];
+  image: string;
+  gallery: string;
+  overview: string;
+  approach: string;
+  application: string;
+  product: string;
+};
 
-export type Project = (typeof projects)[number];
+export const projects: Project[] = [];
 export type CatalogueCategory = (typeof catalogueCategories)[number];

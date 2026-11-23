@@ -1133,45 +1133,6 @@ textarea::placeholder {
     opacity: 1;
   }
 }
-.carousel-controls {
-  display: flex;
-  justify-content: end;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.carousel-controls .icon-button {
-  min-height: 44px;
-  min-width: 44px;
-  display: grid;
-  place-items: center;
-}
-.carousel-controls .icon-button:disabled {
-  cursor: default;
-  opacity: 0.42;
-}
-.carousel-track {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: calc((100% - 22px) / 2);
-  gap: 22px;
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scroll-snap-type: inline mandatory;
-  scroll-padding-inline: 4px;
-  padding: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--line) var(--bg);
-}
-.carousel-track > * {
-  scroll-snap-align: start;
-}
-@media (max-width: 560px) {
-  .carousel-track {
-    grid-auto-columns: 90%;
-    gap: 12px;
-  }
-}
-
 @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .button-primary > svg {
     transform: translate(var(--action-x, 0px), var(--action-y, 0px));

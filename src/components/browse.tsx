@@ -196,6 +196,14 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
 
 export function ProjectsBrowser() {
   const [category, setCategory] = useState("");
+  if (projects.length === 0) {
+    return (
+      <div className="empty-state">
+        <p>No projects are currently listed.</p>
+        <Action href="/products">Explore the product catalogue</Action>
+      </div>
+    );
+  }
   const visible = projects.filter(
     (item) => !category || item.category === category,
   );

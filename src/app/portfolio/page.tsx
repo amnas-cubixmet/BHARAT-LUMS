@@ -8,11 +8,11 @@ export default function PortfolioPage() {
   return (
     <>
       <PageIntro
-        eyebrow="Concept / inspiration"
-        title="Spaces transformed by light."
-        description="Explore how linear light, warm accents and directional beams can change the character of a room."
+        eyebrow="Bharat Lums"
+        title="Portfolio."
+        description="For lighting options for your project, browse the product catalogue or contact our team."
       />
-      <section className="shell section-tight" aria-label="Project concepts">
+      <section className="shell section-tight" aria-label="Portfolio projects">
         <ProjectsBrowser />
       </section>
       <QuoteBanner />

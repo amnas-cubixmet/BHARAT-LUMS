@@ -1,14 +1,13 @@
 import Image from "next/image";
 import { Box } from "lucide-react";
-import { Action, ProjectCard, SectionHead } from "@/components/ui";
+import { Action } from "@/components/ui";
 import { GlobalPresenceSection } from "@/components/global-presence/global-presence";
 import { HomeHero } from "@/components/home-hero";
 import { HomeFaq } from "@/components/home/faq";
 import styles from "@/components/home/home.module.css";
 import { Reveal } from "@/components/motion";
-import { ProjectCarousel } from "@/components/project-carousel";
 import conferenceRoom from "../../public/images/about-bharat-lums-conference.webp";
-import { artwork, catalogueDownload, projects } from "@/lib/catalogue";
+import { artwork, catalogueDownload } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 export const metadata = {
@@ -47,20 +46,6 @@ export default function Home() {
       </section>
 
       <GlobalPresenceSection />
-
-      <section className="section shell">
-        <SectionHead
-          eyebrow="Lighting concepts"
-          title="Spaces transformed by light."
-          href="/portfolio"
-          link="Explore projects"
-        />
-        <ProjectCarousel>
-          {projects.map((item) => (
-            <ProjectCard key={item.slug} item={item} />
-          ))}
-        </ProjectCarousel>
-      </section>
 
       <Reveal as="section" className="shell studio-feature">
         <div className="studio-feature-image">
