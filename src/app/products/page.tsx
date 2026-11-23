@@ -1,9 +1,13 @@
 import { ProductsBrowser } from "@/components/browse";
-import { PageIntro, QuoteBanner } from "@/components/ui";
+import { Action } from "@/components/ui";
 import { findCollection, publishedProducts } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
+import styles from "./products.module.css";
 
-export const metadata = pageMetadata("Lighting Products", "/products");
+const description =
+  "Explore LED lighting for commercial, industrial and outdoor spaces.";
+
+export const metadata = pageMetadata("Lighting Products", "/products", description);
 
 export default async function ProductsPage({
   searchParams,
@@ -12,21 +16,34 @@ export default async function ProductsPage({
 }) {
   const { category } = await searchParams;
   const initialCategory = findCollection(category)?.slug ?? "";
+
   return (
-    <>
-      <PageIntro
-        eyebrow="Product catalogue"
-        title="LED lighting catalogue."
-        description={
-          publishedProducts.length
+    <div className={`shell ${styles.page}`}>
+      <section className={styles.intro} aria-labelledby="products-title">
+        <div>
+          <p className="eyebrow">Product catalogue</p>
+          <h1 id="products-title">LED lighting catalogue.</h1>
+        </div>
+        <p>
+          {publishedProducts.length
             ? "Browse verified LED fixtures by lighting category."
-            : "Explore lighting categories for commercial, industrial and outdoor projects. For model availability and technical specifications, contact our team."
-        }
-      />
-      <section className="shell section-tight" aria-label="Browse fixtures">
+            : description}
+        </p>
+      </section>
+
+      <section className={styles.catalogue} aria-label="Browse LED lighting">
         <ProductsBrowser key={initialCategory} initialCategory={initialCategory} />
       </section>
-      <QuoteBanner />
-    </>
+
+      <section className={styles.quote} aria-labelledby="products-quote">
+        <div>
+          <h2 id="products-quote">Need help choosing?</h2>
+          <p>Ask our team about fixture availability and specifications.</p>
+        </div>
+        <Action href="/request-quote" diagonal>
+          Request a quote
+        </Action>
+      </section>
+    </div>
   );
 }

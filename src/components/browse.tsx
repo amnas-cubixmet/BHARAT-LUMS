@@ -32,6 +32,14 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
   const [selected, setSelected] = useState<Product | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const search = query.trim().toLowerCase();
+  const hasFilters = Boolean(query || category || wattage);
+
+  function clearFilters() {
+    setQuery("");
+    setCategory("");
+    setWattage("");
+  }
+
   const visible = publishedProducts.filter(
     (item) =>
       (!category || item.categories.includes(category)) &&
@@ -62,17 +70,20 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
             : "filters"
         }
       >
-        <label className="search-field">
-          <span className="sr-only">Search products</span>
-          <Search size={18} />
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search lighting products"
-          />
+        <label className="catalogue-search">
+          <span>Search products</span>
+          <span className="search-field">
+            <Search size={18} aria-hidden="true" />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="e.g. street lights"
+            />
+          </span>
         </label>
         <label>
-          <span className="sr-only">Category</span>
+          <span>Category</span>
           <select
             value={category}
             onChange={(event) => setCategory(event.target.value)}
@@ -89,7 +100,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
         </label>
         {verifiedWattages.length > 0 && (
           <label>
-            <span className="sr-only">Wattage</span>
+            <span>Wattage</span>
             <select
               value={wattage}
               onChange={(event) => setWattage(event.target.value)}
@@ -104,7 +115,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
           </label>
         )}
         <label>
-          <span className="sr-only">Sort</span>
+          <span>Sort</span>
           <select
             value={sort}
             onChange={(event) => setSort(event.target.value)}
@@ -114,11 +125,18 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
           </select>
         </label>
       </div>
-      <p className="results-count" role="status">
-        {publishedProducts.length
-          ? `${visible.length} ${visible.length === 1 ? "fixture" : "fixtures"}`
-          : `${categoryMatches.length} lighting ${categoryMatches.length === 1 ? "category" : "categories"}`}
-      </p>
+      <div className="catalogue-results">
+        <p className="results-count" role="status">
+          {publishedProducts.length
+            ? `${visible.length} ${visible.length === 1 ? "fixture" : "fixtures"}`
+            : `${categoryMatches.length} lighting ${categoryMatches.length === 1 ? "category" : "categories"}`}
+        </p>
+        {hasFilters && (
+          <button type="button" className="text-link" onClick={clearFilters}>
+            Clear filters
+          </button>
+        )}
+      </div>
       {visible.length ? (
         <div className="card-grid catalogue-grid-transition" key={category}>
           {visible.map((item) => (
@@ -137,17 +155,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
         </div>
       ) : (
         <div className="empty-state">
-          <p>No fixtures or categories match your search or filters.</p>
-          <button
-            className="button button-outline"
-            onClick={() => {
-              setQuery("");
-              setCategory("");
-              setWattage("");
-            }}
-          >
-            Clear filters
-          </button>
+          <p>No lighting results match. Try another search or clear the filters.</p>
         </div>
       )}
       <dialog

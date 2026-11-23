@@ -67,28 +67,24 @@ export function CatalogueCategoryCard({ item }: { item: CatalogueCategory }) {
   const enquiryHref = `/request-quote?collection=${item.slug}`;
   return (
     <Reveal as="article" className="media-card collection-card">
-      <Link
-        href={enquiryHref}
-        className="image-link"
-        aria-label={`Enquire about ${item.name}`}
-      >
-        <Image
-          src={artwork(item.image)}
-          alt=""
-          fill
-          loading="lazy"
-          sizes="(max-width: 560px) 92vw, (max-width: 805px) 45vw, (max-width: 1450px) 30vw, 420px"
-        />
-        <span className="card-icon">
-          <ArrowUpRight size={19} />
-        </span>
+      <Link className="collection-card-link" href={enquiryHref}>
+        <div className="image-link">
+          <Image
+            src={artwork(item.image)}
+            alt=""
+            fill
+            loading="lazy"
+            sizes="(max-width: 540px) 92vw, (max-width: 900px) 45vw, (max-width: 1450px) 30vw, 420px"
+          />
+        </div>
+        <div className="card-body">
+          <h3>{item.name}</h3>
+          <p>{item.description}</p>
+          <span className="collection-card-action">
+            Enquire now <ArrowUpRight size={17} aria-hidden="true" />
+          </span>
+        </div>
       </Link>
-      <div className="card-body">
-        <h3>
-          <Link href={enquiryHref}>{item.name}</Link>
-        </h3>
-        <p>{item.description}</p>
-      </div>
     </Reveal>
   );
 }
