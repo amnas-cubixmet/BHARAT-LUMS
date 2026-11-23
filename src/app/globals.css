@@ -1180,3 +1180,25 @@ textarea::placeholder {
     gap: 12px;
   }
 }
+
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .button-primary > svg {
+    transform: translate(var(--action-x, 0px), var(--action-y, 0px));
+    transition: transform 0.3s ease-out;
+  }
+}
+
+@media (min-width: 806px) and (prefers-reduced-motion: no-preference) {
+  .home-header .brand-logo {
+    animation: brand-enter 0.54s ease-out;
+  }
+}
+
+@keyframes brand-enter {
+  from {
+    opacity: 0.24;
+  }
+  to {
+    opacity: 1;
+  }
+}

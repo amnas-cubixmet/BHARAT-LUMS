@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight, ArrowRight } from "lucide-react";
 import {
   artwork,
   collections,
@@ -11,28 +11,10 @@ import {
 import { brand } from "@/lib/site";
 import { BrandMark } from "./nav";
 
-export function Action({
-  href,
-  children,
-  secondary = false,
-  diagonal = false,
-}: {
-  href: string;
-  children: React.ReactNode;
-  secondary?: boolean;
-  diagonal?: boolean;
-}) {
-  const Icon = diagonal ? ArrowUpRight : ArrowRight;
-  return (
-    <Link
-      className={`button ${secondary ? "button-outline" : "button-primary"}`}
-      href={href}
-    >
-      {children}
-      <Icon size={17} aria-hidden />
-    </Link>
-  );
-}
+import { Action } from "./action";
+import { Reveal } from "./motion";
+
+export { Action };
 
 export function PageIntro({
   eyebrow,
@@ -64,7 +46,7 @@ export function SectionHead({
   link?: string;
 }) {
   return (
-    <div className="section-head" data-reveal>
+    <Reveal className="section-head">
       <div>
         <p className="eyebrow">{eyebrow}</p>
         <h2>{title}</h2>
@@ -75,13 +57,13 @@ export function SectionHead({
           <ArrowUpRight size={17} />
         </Link>
       )}
-    </div>
+    </Reveal>
   );
 }
 
 export function CollectionCard({ item }: { item: Collection }) {
   return (
-    <article className="media-card" data-reveal>
+    <Reveal as="article" className="media-card">
       <Link
         href={`/collections/${item.slug}`}
         className="image-link"
@@ -103,7 +85,7 @@ export function CollectionCard({ item }: { item: Collection }) {
         </h3>
         <p>{item.description}</p>
       </div>
-    </article>
+    </Reveal>
   );
 }
 
