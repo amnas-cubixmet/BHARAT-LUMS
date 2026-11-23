@@ -17,7 +17,7 @@ import {
 import type { OrbitControls as Orbit } from "three-stdlib";
 import { countries, origin, type Country } from "@/lib/global-presence";
 import styles from "./presence.module.css";
-import { compactSceneQuery, reducedMotionQuery, useMediaQuery } from "../use-media-query";
+import { compactSceneQuery, useMediaQuery, useSiteReducedMotion } from "../use-media-query";
 
 const start = { latitude: 14, longitude: 65 };
 const initialCamera = pointOnGlobe(start, 4.4).toArray();
@@ -422,7 +422,7 @@ type GlobeProps = {
 };
 
 export default function InteractiveGlobe(props: GlobeProps) {
-  const reduced = useMediaQuery(reducedMotionQuery);
+  const reduced = useSiteReducedMotion();
   const compact = useMediaQuery(compactSceneQuery);
   const [visible, setVisible] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null);

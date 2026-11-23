@@ -3,13 +3,10 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { PointerEvent, ReactNode } from "react";
+import { useSiteReducedMotion } from "./use-media-query";
 
 function moveIcon(event: PointerEvent<HTMLAnchorElement>) {
-  if (
-    event.pointerType !== "mouse" ||
-    matchMedia("(prefers-reduced-motion: reduce)").matches
-  )
-    return;
+  if (event.pointerType !== "mouse") return;
   const link = event.currentTarget;
   const rect = link.getBoundingClientRect();
   link.style.setProperty(
@@ -39,11 +36,12 @@ export function Action({
   diagonal?: boolean;
 }) {
   const Icon = diagonal ? ArrowUpRight : ArrowRight;
+  const reduced = useSiteReducedMotion();
   return (
     <Link
       className={`button ${secondary ? "button-outline" : "button-primary"}`}
       href={href}
-      onPointerMove={secondary ? undefined : moveIcon}
+      onPointerMove={secondary || reduced ? undefined : moveIcon}
       onPointerLeave={secondary ? undefined : resetIcon}
     >
       {children}

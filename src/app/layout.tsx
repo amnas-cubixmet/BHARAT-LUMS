@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/nav";
 import { Footer } from "@/components/ui";
+import { MotionPlatform } from "@/components/use-media-query";
 import { brand, description, metadataOrigin, siteUrl } from "@/lib/site";
 import "@fontsource-variable/manrope";
 import "./globals.css";
@@ -45,6 +46,7 @@ export default function RootLayout({
             }}
           />
         )}
+        <MotionPlatform />
         <Header />
         <main id="main-content">{children}</main>
         <Footer />

@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 import { Color, MathUtils, Vector3, type Group } from "three";
 import type { OrbitControls as Controls } from "three-stdlib";
 import { finishColor, fixtures, roomColors, temperatures, type Setup } from "@/lib/studio";
-import { compactSceneQuery, reducedMotionQuery, useMediaQuery } from "./use-media-query";
+import { compactSceneQuery, useMediaQuery, useSiteReducedMotion } from "./use-media-query";
 
 type Position = [number, number, number];
 const initialTarget = new Vector3(0, 1.5, 0);
@@ -276,7 +276,7 @@ export default function Scene({
   command: string;
   onFailure: () => void;
 }) {
-  const reduced = useMediaQuery(reducedMotionQuery);
+  const reduced = useSiteReducedMotion();
   const compact = useMediaQuery(compactSceneQuery);
   const layout = fixtures[setup.arrangement];
   const position =

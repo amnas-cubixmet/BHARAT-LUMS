@@ -14,6 +14,7 @@ import {
   type Product,
 } from "@/lib/catalogue";
 import { Action, CatalogueCategoryCard, ProductCard, ProjectCard } from "./ui";
+import { useSiteReducedMotion } from "./use-media-query";
 
 const verifiedWattages = [
   ...new Set(
@@ -183,6 +184,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
 
 export function ProjectsBrowser() {
   const [category, setCategory] = useState("");
+  const reduced = useSiteReducedMotion();
   if (projects.length === 0) {
     return (
       <div className="empty-state">
@@ -208,11 +210,11 @@ export function ProjectsBrowser() {
         ))}
       </div>
       {visible.length ? (
-        <MotionConfig reducedMotion="user">
+        <MotionConfig reducedMotion={reduced ? "always" : "never"}>
           <motion.div
             initial={false}
             key={category}
-            animate={{ opacity: [0.75, 1] }}
+            animate={reduced ? { opacity: 1 } : { opacity: [0.75, 1] }}
             className="card-grid wide"
           >
             {visible.map((item) => (

@@ -282,7 +282,7 @@
   width: 100%;
   height: auto;
 }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+@media (hover: hover) {
   .aboutArt img {
     transition: transform 0.35s ease;
   }
@@ -502,15 +502,18 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .heroGlow,
-  .heroGlow::after {
+  :global(:root:not([data-motion-platform="android"])) .aboutArt:hover img {
+    transform: none;
+  }
+  :global(:root:not([data-motion-platform="android"])) .heroGlow,
+  :global(:root:not([data-motion-platform="android"])) .heroGlow::after {
     animation: none;
   }
-  .heroIllumination,
-  .faqRow button svg,
-  .faqAnswer,
-  .heroLink,
-  .heroPrimary {
+  :global(:root:not([data-motion-platform="android"])) .heroIllumination,
+  :global(:root:not([data-motion-platform="android"])) .faqRow button svg,
+  :global(:root:not([data-motion-platform="android"])) .faqAnswer,
+  :global(:root:not([data-motion-platform="android"])) .heroLink,
+  :global(:root:not([data-motion-platform="android"])) .heroPrimary {
     transition: none;
   }
 }

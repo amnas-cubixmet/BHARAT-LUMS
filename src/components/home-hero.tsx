@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from "react";
 import { useMotion, type MotionTools } from "./motion";
-import { compactSceneQuery, reducedMotionQuery, useMediaQuery } from "./use-media-query";
+import { compactSceneQuery, useMediaQuery, useSiteReducedMotion } from "./use-media-query";
 import styles from "./home/home.module.css";
 
 const StreetlightScene = dynamic(() => import("./home/streetlight-scene"), {
@@ -40,7 +40,7 @@ class SceneBoundary extends Component<
 function animateHero(root: HTMLElement, { gsap, media }: MotionTools) {
   const items = root.querySelectorAll("[data-hero-enter]");
   const stage = root.querySelector("[data-hero-stage]");
-  media.add("(prefers-reduced-motion: no-preference)", () => {
+  media.add("all", () => {
     gsap.from(items, {
       opacity: 0,
       y: 20,
@@ -51,7 +51,7 @@ function animateHero(root: HTMLElement, { gsap, media }: MotionTools) {
     });
   });
   media.add(
-    "(min-width: 901px) and (prefers-reduced-motion: no-preference)",
+    "(min-width: 901px)",
     () => {
       if (!stage) return;
       gsap.to(stage, {
@@ -68,7 +68,7 @@ function animateHero(root: HTMLElement, { gsap, media }: MotionTools) {
     },
   );
   media.add(
-    "(max-width: 900px) and (prefers-reduced-motion: no-preference)",
+    "(max-width: 900px)",
     () => {
       if (!stage) return;
       gsap.to(stage, {
@@ -93,7 +93,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
   const [brightness, setBrightness] = useState(80);
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
-  const reduced = useMediaQuery(reducedMotionQuery);
+  const reduced = useSiteReducedMotion();
   const compact = useMediaQuery(compactSceneQuery);
   const [visible, setVisible] = useState(false);
   const markReady = useCallback(() => setReady(true), []);

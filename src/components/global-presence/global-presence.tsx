@@ -40,7 +40,7 @@ class GlobeBoundary extends Component<
 function animatePresence(section: HTMLElement, { gsap, media }: MotionTools) {
   const intro = section.querySelector("[data-presence-intro]");
   const stage = section.querySelector("[data-presence-stage]");
-  media.add("(prefers-reduced-motion: no-preference)", () => {
+  media.add("all", () => {
     if (intro) {
       gsap.from(Array.from(intro.children), {
         opacity: 0,

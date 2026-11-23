@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import type { gsap } from "gsap";
+import { useSiteReducedMotion } from "./use-media-query";
 
 export type MotionTools = { gsap: typeof gsap; media: gsap.MatchMedia };
 
@@ -9,9 +10,10 @@ export function useMotion<T extends HTMLElement>(
   setup: (element: T, tools: MotionTools) => void,
 ) {
   const ref = useRef<T>(null);
+  const reduced = useSiteReducedMotion();
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
+    if (!element || reduced) return;
     let cancelled = false;
     let media: gsap.MatchMedia | undefined;
 
@@ -31,12 +33,12 @@ export function useMotion<T extends HTMLElement>(
       cancelled = true;
       media?.revert();
     };
-  }, [setup]);
+  }, [reduced, setup]);
   return ref;
 }
 
 function animateReveal(element: HTMLElement, { gsap, media }: MotionTools) {
-  media.add("(prefers-reduced-motion: no-preference)", () => {
+  media.add("all", () => {
     if (element.getBoundingClientRect().top < innerHeight * 0.96) return;
     gsap.from(element, {
       y: 22,

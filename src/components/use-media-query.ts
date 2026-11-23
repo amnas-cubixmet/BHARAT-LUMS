@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 
-export const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
+const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 export const compactSceneQuery = "(max-width: 650px)";
 
 function serverSnapshot() {
@@ -20,4 +20,25 @@ export function useMediaQuery(query: string) {
   );
   const getSnapshot = useCallback(() => window.matchMedia(query).matches, [query]);
   return useSyncExternalStore(subscribe, getSnapshot, serverSnapshot);
+}
+
+function isAndroidBrowser() {
+  return typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
+}
+
+export function useSiteReducedMotion() {
+  const reduced = useMediaQuery(reducedMotionQuery);
+  return reduced && !isAndroidBrowser();
+}
+
+export function MotionPlatform() {
+  useEffect(() => {
+    if (!isAndroidBrowser()) return;
+    const root = document.documentElement;
+    root.dataset.motionPlatform = "android";
+    return () => {
+      delete root.dataset.motionPlatform;
+    };
+  }, []);
+  return null;
 }
