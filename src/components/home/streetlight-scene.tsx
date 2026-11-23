@@ -51,9 +51,9 @@ function Fixture({
   const invalidate = useThree((state) => state.invalidate);
   useEffect(() => {
     if (window.matchMedia("(max-width: 650px)").matches) {
-      const distance = Math.max(8.4, 4.8 / Math.max(0.4, aspect));
-      camera.position.set(-0.62, -2.7, distance);
-      camera.lookAt(-0.62, -1.8, 0);
+      const distance = Math.max(8.9, 6.2 / aspect);
+      camera.position.set(-0.12, -2.2, distance);
+      camera.lookAt(-0.12, -1.22, 0);
     } else {
       const distance = compact ? Math.max(5.15, 5.75 / Math.max(0.8, aspect)) : 6.5;
       camera.position.set(

@@ -400,50 +400,43 @@
     overflow: clip;
   }
   .heroInner {
-    grid-template-rows: 1fr auto;
-    gap: clamp(24px, 6svh, 52px);
-    padding-block: clamp(139px, 46vw, 250px) 26px;
+    grid-template-rows: auto auto auto;
+    align-content: center;
+    gap: 18px;
+    padding-block: 14px 24px;
   }
   .heroStage {
-    position: absolute;
-    inset: 0 auto 0 50%;
+    grid-row: 1;
     z-index: 0;
-    width: 100cqw;
-    height: auto;
+    width: 100%;
+    height: clamp(192px, 56vw, 320px);
     margin: 0;
-    transform: translateX(-50%);
+    overflow: visible;
   }
   .heroLead {
+    grid-row: 2;
     z-index: 1;
   }
-  .heroCanvas,
   .heroFallback {
-    mask-image: linear-gradient(
-      #000 0 23%,
-      #0006 45%,
-      transparent 83%
-    );
-  }
-  .heroFallback {
-    object-position: right -45px top 18px;
+    object-position: center;
   }
   .heroIllumination {
-    --lens-x: 61%;
-    --lens-y: 17%;
+    --lens-x: 46%;
+    --lens-y: 19%;
   }
   .heroGlow {
     background: radial-gradient(
-      ellipse 31% 15% at 50% 13%,
+      ellipse 29% 15% at 50% 13%,
       #fff7,
       #fff2 55%,
       transparent 100%
     );
   }
   .heroGlow::after {
-    inset: 12% 0 0;
+    inset: 12% 0 -52%;
     background:
-      radial-gradient(ellipse 44% 58% at 44% 40%, #fff4, transparent 96%),
-      radial-gradient(ellipse 51% 29% at 43% 61%, #fff2, transparent 100%);
+      radial-gradient(ellipse 44% 55% at 46% 36%, #fff4, transparent 96%),
+      radial-gradient(ellipse 49% 33% at 46% 67%, #fff2, transparent 100%);
     mask-image: conic-gradient(
       from 117deg at 50% 0,
       transparent 0deg,
