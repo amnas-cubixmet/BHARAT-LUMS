@@ -124,7 +124,6 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
         pointer.current = { x: 0, y: 0 };
       }}
     >
-      <div className={styles.heroGrid} aria-hidden="true" />
       <div
         className={styles.heroStage}
         data-hero-stage
