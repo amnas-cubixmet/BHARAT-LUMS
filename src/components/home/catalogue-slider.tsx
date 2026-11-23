@@ -32,6 +32,8 @@ export function CatalogueSlider({
 
     let timer: number | undefined;
     let touching = false;
+    let activeIndex = 0;
+    let measuredWidth = track.clientWidth;
 
     function settle() {
       window.clearTimeout(timer);
@@ -40,6 +42,11 @@ export function CatalogueSlider({
       const start = slideOffset(track, count);
       const end = slideOffset(track, count * 2);
       const position = track.scrollLeft;
+      const itemWidth = slideOffset(track, count + 1) - start;
+      if (itemWidth > 0) {
+        // Preserve the visible category during resize and iPhone rotation.
+        activeIndex = ((Math.round((position - start) / itemWidth) % count) + count) % count;
+      }
       // Keep the visible cards in place when moving back to the middle copy.
       if (position < start - 1) {
         track.scrollTo({ left: position + end - start, behavior: "instant" });
@@ -62,6 +69,17 @@ export function CatalogueSlider({
       scheduleSettle();
     }
 
+    const resizeObserver = new ResizeObserver(() => {
+      const nextWidth = track.clientWidth;
+      if (Math.abs(nextWidth - measuredWidth) < 1) return;
+      measuredWidth = nextWidth;
+      window.clearTimeout(timer);
+      track.scrollTo({
+        left: slideOffset(track, count + activeIndex),
+        behavior: "instant",
+      });
+    });
+    resizeObserver.observe(track);
     track.addEventListener("scroll", scheduleSettle, { passive: true });
     track.addEventListener("scrollend", settle);
     track.addEventListener("touchstart", beginTouch, { passive: true });
@@ -69,6 +87,7 @@ export function CatalogueSlider({
     track.addEventListener("touchcancel", endTouch, { passive: true });
     return () => {
       window.clearTimeout(timer);
+      resizeObserver.disconnect();
       track.removeEventListener("scroll", scheduleSettle);
       track.removeEventListener("scrollend", settle);
       track.removeEventListener("touchstart", beginTouch);

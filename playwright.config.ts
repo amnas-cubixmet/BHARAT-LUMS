@@ -19,13 +19,18 @@ export default defineConfig({
   projects: [
     {
       name: "desktop",
-      testIgnore: "**/mobile.spec.ts",
+      testIgnore: ["**/mobile.spec.ts", "**/safari.spec.ts"],
       use: { ...devices["Desktop Chrome"] },
     },
     {
       name: "mobile",
       testMatch: "**/mobile.spec.ts",
       use: { ...devices["Pixel 7"] },
+    },
+    {
+      name: "iphone-safari-emulation",
+      testMatch: "**/safari.spec.ts",
+      use: { ...devices["iPhone 13"], browserName: "webkit" },
     },
   ],
   webServer: {

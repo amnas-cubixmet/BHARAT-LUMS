@@ -46,7 +46,8 @@ function Fixture({
   const target = useMemo(() => new Object3D(), []);
   const projected = useMemo(() => new Vector3(), []);
   const gl = useThree((state) => state.gl);
-  const startedAt = useRef<number | null>(null);
+  const elapsedRef = useRef(0);
+  const readySent = useRef(false);
   const camera = useThree((state) => state.camera);
   const aspect = useThree(({ size }) => size.width / (size.height || 1));
   const compact = useThree(({ size }) => size.width < 620);
@@ -81,13 +82,15 @@ function Fixture({
     canvas.addEventListener("webglcontextlost", fail);
     return () => canvas.removeEventListener("webglcontextlost", fail);
   }, [gl, onFailure]);
-  useFrame(({ clock }, delta) => {
+  useFrame((_, delta) => {
     const fixture = group.current;
     const lens = diffuser.current;
     if (!fixture || !lens) return;
-    const firstFrame = startedAt.current === null;
-    startedAt.current ??= clock.elapsedTime;
-    const elapsed = clock.elapsedTime - startedAt.current;
+    const firstFrame = !readySent.current;
+    readySent.current = true;
+    // Three.Clock is deprecated. Cap frame gaps after Safari tab suspension.
+    const elapsed = elapsedRef.current;
+    elapsedRef.current += Math.min(delta, 0.05);
     const t = MathUtils.smoothstep(elapsed, 0, 1.4);
     fixture.rotation.y = reduced
       ? -0.39

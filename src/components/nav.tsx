@@ -80,7 +80,21 @@ export default function Header() {
       window.scrollTo({ top: 0, behavior: "instant" });
     } else if (href === globalPresence) {
       preventDefault();
-      window.location.assign(href);
+      // Avoid reloading the WebGL scene when navigating within the homepage.
+      const oldURL = window.location.href;
+      window.history.pushState(null, "", href);
+      window.dispatchEvent(
+        new HashChangeEvent("hashchange", {
+          oldURL,
+          newURL: window.location.href,
+        }),
+      );
+      document.getElementById("global-presence")?.scrollIntoView({
+        block: "start",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      });
     }
   }
 
