@@ -66,10 +66,6 @@
   margin-bottom: clamp(17px, 2.8vw, 27px);
 }
 
-.panel :global(.enquiry-form) > label {
-  min-width: 0;
-}
-
 .panel :is(input, select, textarea)[aria-invalid="true"] {
   border-color: var(--muted);
 }

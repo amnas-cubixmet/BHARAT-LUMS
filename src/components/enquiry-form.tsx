@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowUpRight, MessageCircle, Send } from "lucide-react";
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   enquiryEmailHref,
@@ -19,6 +19,7 @@ const fields = [
     label: "Full name",
     type: "text",
     auto: "name",
+    placeholder: "Your full name",
     required: true,
   },
   {
@@ -26,22 +27,41 @@ const fields = [
     label: "Company name",
     type: "text",
     auto: "organization",
+    placeholder: "Your company",
   },
   {
     name: "email",
-    label: "Email",
+    label: "Email address",
     type: "email",
     auto: "email",
+    placeholder: "name@example.com",
     required: true,
   },
-  { name: "phone", label: "Phone number", type: "tel", auto: "tel" },
-  { name: "interest", label: "Product interest", type: "text" },
-  { name: "location", label: "Project location", type: "text" },
+  {
+    name: "phone",
+    label: "Phone number",
+    type: "tel",
+    auto: "tel",
+    placeholder: "Include the country code",
+  },
+  {
+    name: "interest",
+    label: "Product interest",
+    type: "text",
+    placeholder: "e.g. LED Street Lights",
+  },
+  {
+    name: "location",
+    label: "Project location",
+    type: "text",
+    placeholder: "City or site location",
+  },
   {
     name: "quantity",
     label: "Estimated quantity",
     type: "text",
     inputMode: "numeric",
+    placeholder: "e.g. 20",
   },
 ] as const;
 
@@ -56,6 +76,7 @@ export default function EnquiryForm({
   whatsappNumber: string;
   defaults?: Defaults;
 }) {
+  const formId = useId();
   const {
     register,
     handleSubmit,
@@ -123,34 +144,39 @@ export default function EnquiryForm({
       }}
       noValidate
     >
-      {fields.map((field) => (
-        <label key={field.name}>
-          <span>
-            {field.label}
-            {"required" in field && " *"}
-          </span>
-          <input
-            type={field.type}
-            autoComplete={"auto" in field ? field.auto : undefined}
-            inputMode={"inputMode" in field ? field.inputMode : undefined}
-            aria-invalid={Boolean(errors[field.name])}
-            aria-required={"required" in field}
-            aria-describedby={
-              errors[field.name] ? `${field.name}-error` : undefined
-            }
-            {...register(field.name)}
-          />
-          {errors[field.name] && (
-            <small className="field-error" id={`${field.name}-error`}>
-              {errors[field.name]?.message}
-            </small>
-          )}
-        </label>
-      ))}
-      <label>
-        <span>Project type</span>
-        <select {...register("projectType")}>
-          <option value="">Select a project type</option>
+      <p className="form-note full">Fields marked with * are required.</p>
+      {fields.map((field) => {
+        const id = `${formId}-${field.name}`;
+        const error = errors[field.name];
+        return (
+          <div className="enquiry-field" key={field.name}>
+            <label htmlFor={id}>
+              {field.label}
+              {"required" in field && <span aria-hidden="true"> *</span>}
+            </label>
+            <input
+              id={id}
+              type={field.type}
+              autoComplete={"auto" in field ? field.auto : undefined}
+              inputMode={"inputMode" in field ? field.inputMode : undefined}
+              placeholder={field.placeholder}
+              aria-invalid={Boolean(error)}
+              required={"required" in field}
+              aria-describedby={error ? `${id}-error` : undefined}
+              {...register(field.name)}
+            />
+            {error && (
+              <small className="field-error" id={`${id}-error`}>
+                {error.message}
+              </small>
+            )}
+          </div>
+        );
+      })}
+      <div className="enquiry-field">
+        <label htmlFor={`${formId}-project-type`}>Project type</label>
+        <select id={`${formId}-project-type`} {...register("projectType")}>
+          <option value="">Choose a project type</option>
           {[
             "Residential",
             "Commercial",
@@ -163,23 +189,32 @@ export default function EnquiryForm({
             <option key={type}>{type}</option>
           ))}
         </select>
-      </label>
-      <label className="full">
-        <span>Message *</span>
+      </div>
+      <div className="enquiry-field full">
+        <label htmlFor={`${formId}-message`}>
+          Message<span aria-hidden="true"> *</span>
+        </label>
+        <p className="form-note" id={`${formId}-message-hint`}>
+          Include the lighting you need, the space, and your timeline.
+        </p>
         <textarea
+          id={`${formId}-message`}
           rows={5}
-          aria-required
+          required
           aria-invalid={Boolean(errors.message)}
-          aria-describedby={errors.message ? "message-error" : undefined}
-          placeholder="Tell us about the space, timeline or lighting you need."
+          aria-describedby={
+            errors.message
+              ? `${formId}-message-error ${formId}-message-hint`
+              : `${formId}-message-hint`
+          }
           {...register("message")}
         />
         {errors.message && (
-          <small id="message-error" className="field-error">
+          <small id={`${formId}-message-error`} className="field-error">
             {errors.message.message}
           </small>
         )}
-      </label>
+      </div>
       <label className="form-trap" aria-hidden="true">
         Website
         <input tabIndex={-1} autoComplete="off" {...register("website")} />
@@ -187,7 +222,7 @@ export default function EnquiryForm({
       <p className="form-note full">
         {online
           ? "We’ll use these details to respond to your enquiry."
-          : "Prepare your enquiry to send by email or WhatsApp."}
+          : "Review your draft before sending it by email or WhatsApp."}
       </p>
       <button
         className="button button-primary full"
@@ -197,9 +232,9 @@ export default function EnquiryForm({
         {isSubmitting
           ? "Submitting…"
           : online
-            ? "Submit enquiry"
-            : "Prepare enquiry"}{" "}
-        <Send size={16} />
+            ? "Send enquiry"
+            : "Prepare enquiry draft"}{" "}
+        <Send size={16} aria-hidden="true" />
       </button>
       <div className="full" aria-live="polite">
         {status && <p className="form-result">{status.message}</p>}
