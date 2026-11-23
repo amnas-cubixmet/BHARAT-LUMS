@@ -1,181 +1,220 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import { ArrowDown } from "lucide-react";
-import { artwork } from "@/lib/catalogue";
-import { Action } from "./action";
+import { ArrowDown, ArrowDownRight, ArrowUpRight, Power } from "lucide-react";
+import {
+  Component,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { useMotion, type MotionTools } from "./motion";
+import styles from "./home/home.module.css";
 
-function animateHero(hero: HTMLElement, { gsap, media }: MotionTools) {
-  const art = hero.querySelector(".hero-art");
-  if (!art) return;
+const StreetlightScene = dynamic(() => import("./home/streetlight-scene"), {
+  ssr: false,
+});
 
-  const select = gsap.utils.selector(hero);
+class SceneBoundary extends Component<
+  { children: ReactNode; fallback: () => void },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    this.props.fallback();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+function animateHero(root: HTMLElement, { gsap, media }: MotionTools) {
+  const items = root.querySelectorAll("[data-hero-enter]");
+  const stage = root.querySelector("[data-hero-stage]");
   media.add("(prefers-reduced-motion: no-preference)", () => {
-    gsap.from(select("[data-intro]"), {
-      y: 14,
+    gsap.from(items, {
       opacity: 0,
-      duration: 0.64,
-      stagger: 0.09,
-      ease: "power2.out",
-      clearProps: "all",
-    });
-    if (matchMedia("(min-width: 806px)").matches) {
-      const entrance = gsap.timeline();
-      entrance.fromTo(
-        select("h1"),
-        { clipPath: "inset(0 0 100% 0)" },
-        {
-          clipPath: "inset(0 0 0 0)",
-          duration: 0.64,
-          ease: "power2.out",
-          clearProps: "clipPath",
-        },
-        0.34,
-      );
-      entrance.set(select("[data-diffuser]"), { opacity: 0 }, 0);
-      entrance.fromTo(
-        select(".hero-installation"),
-        { opacity: 0 },
-        { opacity: 1, duration: 0.12 },
-        0,
-      );
-      entrance.fromTo(
-        select("[data-fixture]"),
-        { y: -140, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-          stagger: 0.09,
-          ease: "power2.out",
-        },
-        0,
-      );
-      entrance.to(
-        select("[data-diffuser]"),
-        { opacity: 1, stagger: 0.12, duration: 0.12 },
-        0.42,
-      );
-      entrance.fromTo(
-        art,
-        { filter: "brightness(.20)" },
-        { filter: "brightness(1)", duration: 0.85, ease: "power2.out" },
-        0.28,
-      );
-      entrance.to(
-        select(".hero-installation"),
-        { opacity: 0, duration: 0.35 },
-        0.76,
-      );
-    } else {
-      gsap.fromTo(
-        art,
-        { filter: "brightness(.65)" },
-        { filter: "brightness(1)", duration: 0.7, ease: "power2.out" },
-      );
-    }
-
-    gsap.to(art, {
-      yPercent: 7,
-      ease: "none",
-      scrollTrigger: {
-        trigger: hero,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-      },
+      y: 20,
+      duration: 0.68,
+      stagger: 0.1,
+      ease: "power3.out",
+      clearProps: "opacity,transform",
     });
   });
-
   media.add(
-    "(pointer: fine) and (prefers-reduced-motion: no-preference)",
+    "(min-width: 901px) and (prefers-reduced-motion: no-preference)",
     () => {
-      const move = gsap.quickTo(art, "x", {
-        duration: 0.65,
-        ease: "power2.out",
+      if (!stage) return;
+      gsap.to(stage, {
+        y: 100,
+        scale: 0.94,
+        ease: "none",
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
       });
-      const onMove = (event: PointerEvent) =>
-        move((event.clientX / innerWidth - 0.5) * 10);
-      const onLeave = () => move(0);
-      hero.addEventListener("pointermove", onMove);
-      hero.addEventListener("pointerleave", onLeave);
-      return () => {
-        hero.removeEventListener("pointermove", onMove);
-        hero.removeEventListener("pointerleave", onLeave);
-      };
     },
   );
 }
 
-export function HomeHero() {
-  const hero = useMotion<HTMLElement>(animateHero);
+export function HomeHero({ catalogue }: { catalogue?: string }) {
+  const root = useMotion<HTMLElement>(animateHero);
+  const pointer = useRef({ x: 0, y: 0 });
+  const [powered, setPowered] = useState(true);
+  const [brightness, setBrightness] = useState(80);
+  const [enabled, setEnabled] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const markReady = useCallback(() => setReady(true), []);
+  const useFallback = useCallback(() => {
+    setEnabled(false);
+    setReady(false);
+  }, []);
+
+  useEffect(() => {
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(motion.matches);
+    motion.addEventListener("change", update);
+    const frame = requestAnimationFrame(() => {
+      update();
+      try {
+        const context = document.createElement("canvas").getContext("webgl2");
+        setEnabled(Boolean(context));
+        context?.getExtension("WEBGL_lose_context")?.loseContext();
+      } catch {
+        setEnabled(false);
+      }
+    });
+    const observer = new IntersectionObserver(([entry]) =>
+      setVisible(entry.isIntersecting),
+    );
+    const element = root.current;
+    if (element) observer.observe(element);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      motion.removeEventListener("change", update);
+    };
+  }, [root]);
+
+  const power = powered ? brightness / 100 : 0;
   return (
-    <section className="hero" ref={hero}>
-      <div className="hero-art">
-        <Image src={artwork("hero")} alt="" fill preload sizes="100vw" />
+    <section
+      className={styles.hero}
+      ref={root}
+      onPointerMove={(event) => {
+        if (reduced || event.pointerType !== "mouse") return;
+        const rect = event.currentTarget.getBoundingClientRect();
+        pointer.current = {
+          x: (event.clientX - rect.left) / rect.width - 0.5,
+          y: (event.clientY - rect.top) / rect.height - 0.5,
+        };
+      }}
+      onPointerLeave={() => {
+        pointer.current = { x: 0, y: 0 };
+      }}
+    >
+      <div className={styles.heroGrid} aria-hidden="true" />
+      <div
+        className={styles.heroStage}
+        data-hero-stage
+        data-testid="streetlight-stage"
+        data-ready={ready}
+        aria-hidden="true"
+      >
+        <div className={styles.heroGlow} style={{ opacity: power }} />
+        <Image
+          className={styles.heroFallback}
+          src="/images/streetlight-concept.webp"
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 900px) 100vw, 64vw"
+        />
+        {enabled && (
+          <div className={styles.heroCanvas}>
+            <SceneBoundary fallback={useFallback}>
+              <StreetlightScene
+                power={power}
+                reduced={reduced}
+                paused={!visible}
+                pointer={pointer}
+                onReady={markReady}
+                onFailure={useFallback}
+              />
+            </SceneBoundary>
+          </div>
+        )}
       </div>
-      <div className="hero-shade" />
-      <div className="hero-installation" aria-hidden="true">
-        <svg viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMid slice">
-          {[
-            [940, 189, 1525, 243],
-            [813, 296, 1300, 329],
-            [716, 385, 1118, 406],
-            [670, 447, 970, 457],
-          ].map(([x1, y1, x2, y2]) => (
-            <g key={x1} data-fixture>
-              <path
-                d={`M ${x1 + 65} 0 V ${y1} M ${x2 - 70} 0 V ${y2 - 6}`}
-                stroke="#807168"
-                opacity=".35"
-              />
-              <path
-                d={`M ${x1} ${y1} L ${x2} ${y2}`}
-                stroke="#221d18"
-                strokeWidth="13"
-              />
-              <path
-                data-diffuser
-                d={`M ${x1} ${y1 + 3} L ${x2} ${y2 + 3}`}
-                stroke="#ffe5c6"
-                strokeWidth="6"
-              />
-            </g>
-          ))}
-        </svg>
-      </div>
-      <div className="shell hero-inner">
-        <div className="hero-copy">
-          <p className="eyebrow hero-eyebrow" data-intro>
-            <span /> Architectural lighting
+
+      <div className={`shell ${styles.heroInner}`}>
+        <div className={styles.heroLead}>
+          <p className={styles.heroKicker} data-hero-enter>
+            Powering a Brighter Tomorrow
           </p>
-          <h1 data-intro>
-            LIGHT BEYOND
-            <br />
-            <em>LIMITS.</em>
+          <h1 data-hero-enter>
+            <span>Light up</span>
+            <span>
+              the future<span className={styles.heroDot}>.</span>
+            </span>
           </h1>
-          <p className="hero-description" data-intro>
-            Architectural lighting crafted to transform spaces.
+          <p className={styles.heroSummary} data-hero-enter>
+            Advanced LED lighting solutions for commercial, industrial and
+            outdoor environments.
           </p>
-          <div className="hero-actions" data-intro>
-            <Action href="/collections">Explore our collections</Action>
-            <Action href="/portfolio" secondary diagonal>
-              Discover our projects
-            </Action>
+          <div className={styles.heroActions} data-hero-enter>
+            <a className={styles.heroPrimary} href="#featured">
+              Explore Products <ArrowDownRight size={19} aria-hidden="true" />
+            </a>
+            {catalogue ? (
+              <a className={styles.heroLink} href={catalogue} download>
+                Download Catalogue <ArrowDown size={17} aria-hidden="true" />
+              </a>
+            ) : (
+              <a className={styles.heroLink} href="/request-quote?catalogue=1">
+                Request Catalogue <ArrowUpRight size={17} aria-hidden="true" />
+              </a>
+            )}
           </div>
         </div>
-        <div className="hero-footer">
-          <a className="hero-scroll" href="#featured">
-            <span>
-              <ArrowDown size={16} />
-            </span>{" "}
-            Scroll to explore
-          </a>
-          <p>
-            Suspended linear lighting <span> / </span> Concept installation
-          </p>
+        <div className={styles.heroPanel}>
+          <span className={styles.modelCaption}>Streetlight concept</span>
+          <div className={styles.lightControls}>
+            <button
+              type="button"
+              aria-pressed={powered}
+              aria-label="Streetlight power"
+              onClick={() => setPowered(!powered)}
+            >
+              <Power size={16} aria-hidden="true" />{" "}
+              {powered ? "Light on" : "Light off"}
+            </button>
+            <label>
+              <span>Brightness</span>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={brightness}
+                onChange={(event) => setBrightness(Number(event.target.value))}
+                disabled={!powered}
+              />
+            </label>
+          </div>
         </div>
+        <a className={styles.quoteFloat} href="/request-quote" data-hero-enter>
+          Get a Quote <ArrowUpRight size={17} aria-hidden="true" />
+        </a>
       </div>
     </section>
   );

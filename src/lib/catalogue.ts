@@ -174,7 +174,7 @@ export type Product = {
   description: string;
   features: string[];
   applications: string;
-  status: "representative" | "verified";
+  status: "draft" | "verified";
   wattages?: number[];
   specifications?: { name: string; value: string }[];
   datasheet?: `/${string}.pdf`;
@@ -183,7 +183,7 @@ export type Product = {
 
 function representativeImage(file: string, alt: string) {
   return {
-    status: "representative" as const,
+    status: "draft" as const,
     images: [
       {
         src: artwork(`products/${file}`),
@@ -458,6 +458,13 @@ const architecturalConcepts: Product[] = [
 
 export const products: Product[] = [...ledConcepts, ...architecturalConcepts];
 
+export const publishedProducts = products.filter(
+  (product) => product.status === "verified",
+);
+export const catalogueDownload = publishedProducts.find(
+  (product) => product.catalogue,
+)?.catalogue;
+
 export function catalogueLabel(product: Product) {
   return product.status === "verified"
     ? "Verified fixture"
@@ -465,7 +472,7 @@ export function catalogueLabel(product: Product) {
 }
 
 export function relatedProducts(product: Product) {
-  return products
+  return publishedProducts
     .filter((item) => item.slug !== product.slug)
     .filter((item) => score(item) > 0)
     .sort((a, b) => score(b) - score(a))

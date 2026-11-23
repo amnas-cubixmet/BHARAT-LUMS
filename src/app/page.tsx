@@ -1,58 +1,111 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowUpRight, Box, Lightbulb, Rows3 } from "lucide-react";
-import {
-  Action,
-  CollectionCard,
-  ProjectCard,
-  QuoteBanner,
-  SectionHead,
-} from "@/components/ui";
+import { Box } from "lucide-react";
+import { Action, ProjectCard, SectionHead } from "@/components/ui";
 import { GlobalPresenceSection } from "@/components/global-presence/global-presence";
 import { HomeHero } from "@/components/home-hero";
+import { HomeFaq } from "@/components/home/faq";
+import { ShowcaseCard } from "@/components/home/showcase";
+import styles from "@/components/home/home.module.css";
 import { Reveal } from "@/components/motion";
 import { ProjectCarousel } from "@/components/project-carousel";
-import { artwork, featuredCollections, projects } from "@/lib/catalogue";
+import {
+  artwork,
+  catalogueCategories,
+  catalogueDownload,
+  projects,
+  publishedProducts,
+} from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 export const metadata = {
-  ...pageMetadata("Architectural Lighting", "/", undefined, "/images/og.webp"),
-  title: { absolute: "Bharat Lums | Architectural Lighting" },
+  ...pageMetadata(
+    "LED Lighting",
+    "/",
+    "Bharat Lums LED lighting solutions for commercial, industrial and outdoor environments.",
+  ),
+  title: { absolute: "Bharat Lums | Powering a Brighter Tomorrow" },
 };
+
+const featured = [
+  "led-street-lights",
+  "floodlights",
+  "high-bay-industrial-lighting",
+  "led-industrial-lights",
+  "commercial-lighting",
+];
 
 export default function Home() {
   return (
     <>
-      <HomeHero />
-
-      <div className="feature-strip">
-        <div className="shell feature-inner">
-          <Link href="/collections/linear-led-lighting">
-            <Rows3 size={20} /> Linear LED systems <ArrowUpRight size={13} />
-          </Link>
-          <Link href="/portfolio">
-            <Lightbulb size={20} /> Architectural applications{" "}
-            <ArrowUpRight size={13} />
-          </Link>
-          <Link href="/light-studio">
-            <Box size={20} /> Interactive Light Studio{" "}
-            <ArrowUpRight size={13} />
-          </Link>
+      <HomeHero catalogue={catalogueDownload} />
+      <section
+        className={styles.showcase}
+        id="featured"
+        aria-labelledby="showcase-title"
+      >
+        <div className="shell">
+          <Reveal className={styles.showcaseIntro}>
+            <p className={styles.sectionKicker}>Lighting solutions</p>
+            <h2 id="showcase-title">Built to light the way.</h2>
+          </Reveal>
+          {featured.map((slug) => {
+            const item = catalogueCategories.find(
+              (category) => category.slug === slug,
+            );
+            if (!item) return null;
+            const image = publishedProducts.find((product) =>
+              product.categories.includes(slug),
+            )?.images[0];
+            return (
+              <ShowcaseCard
+                key={slug}
+                item={item}
+                image={image?.src ?? artwork(item.image)}
+                alt={image?.alt ?? `${item.name} application concept`}
+                representative={image?.representative ?? true}
+              />
+            );
+          })}
         </div>
-      </div>
+      </section>
 
-      <section className="section shell" id="featured">
+      <section className={styles.about} aria-labelledby="home-about">
+        <Reveal className={`shell ${styles.aboutInner}`}>
+          <div className={styles.aboutCopy}>
+            <p className={styles.sectionKicker}>About Bharat Lums</p>
+            <h2 id="home-about">Engineering brighter possibilities.</h2>
+            <p>
+              Bharat Lums takes a practical approach to LED lighting. Tell us
+              how your space is used, what needs to be lit and where the
+              fixtures will go so we can help you explore the options.
+            </p>
+            <Action href="/about">About Bharat Lums</Action>
+          </div>
+          <div className={styles.aboutArt}>
+            <Image
+              src={artwork("office")}
+              alt="Office lighting application concept"
+              fill
+              sizes="(max-width: 650px) 92vw, 48vw"
+            />
+          </div>
+        </Reveal>
+      </section>
+
+      <GlobalPresenceSection />
+
+      <section className="section shell">
         <SectionHead
-          eyebrow="Lighting collections"
-          title="Made to shape a space."
-          href="/collections"
-          link="View all collections"
+          eyebrow="Lighting concepts"
+          title="Spaces transformed by light."
+          href="/portfolio"
+          link="Explore projects"
         />
-        <div className="card-grid">
-          {featuredCollections.map((item) => (
-            <CollectionCard key={item.slug} item={item} />
+        <ProjectCarousel>
+          {projects.map((item) => (
+            <ProjectCard key={item.slug} item={item} />
           ))}
-        </div>
+        </ProjectCarousel>
       </section>
 
       <Reveal as="section" className="shell studio-feature">
@@ -70,8 +123,8 @@ export default function Home() {
           </p>
           <h2>Design with light.</h2>
           <p>
-            Change the colour temperature, brightness and arrangement. See how
-            the same fixture can change the feel of a room.
+            Change the colour temperature, brightness and arrangement to see how
+            a fixture changes the feel of a room.
           </p>
           <Action href="/light-studio" diagonal>
             Open the Light Studio
@@ -79,21 +132,7 @@ export default function Home() {
         </div>
       </Reveal>
 
-      <section className="section shell">
-        <SectionHead
-          eyebrow="Lighting concepts"
-          title="Spaces transformed by light."
-          href="/portfolio"
-          link="Explore projects"
-        />
-        <ProjectCarousel>
-          {projects.map((item) => (
-            <ProjectCard key={item.slug} item={item} />
-          ))}
-        </ProjectCarousel>
-      </section>
-      <GlobalPresenceSection />
-      <QuoteBanner />
+      <HomeFaq catalogue={catalogueDownload} />
     </>
   );
 }

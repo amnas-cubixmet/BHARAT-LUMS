@@ -8,21 +8,23 @@ import {
   catalogueCategories,
   catalogueLabel,
   collections,
-  products,
+  publishedProducts,
   projectCategories,
   projects,
   type Product,
 } from "@/lib/catalogue";
-import { Action, ProductCard, ProjectCard } from "./ui";
+import { Action, CollectionCard, ProductCard, ProjectCard } from "./ui";
 
 const architecturalCategories = collections.filter(
   (category) =>
     !catalogueCategories.includes(category) &&
-    products.some((product) => product.categories.includes(category.slug)),
+    publishedProducts.some((product) =>
+      product.categories.includes(category.slug),
+    ),
 );
 const verifiedWattages = [
   ...new Set(
-    products.flatMap((product) =>
+    publishedProducts.flatMap((product) =>
       product.status === "verified" ? (product.wattages ?? []) : [],
     ),
   ),
@@ -36,7 +38,7 @@ export function ProductsBrowser() {
   const [selected, setSelected] = useState<Product | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const search = query.trim().toLowerCase();
-  const visible = products.filter(
+  const visible = publishedProducts.filter(
     (item) =>
       (!category || item.categories.includes(category)) &&
       (!wattage ||
@@ -46,6 +48,13 @@ export function ProductsBrowser() {
         .toLowerCase()
         .includes(search),
   );
+  const categoryMatches = catalogueCategories.filter(
+    (item) =>
+      (!category || item.slug === category) &&
+      `${item.name} ${item.description}`.toLowerCase().includes(search),
+  );
+  if (sort === "name")
+    categoryMatches.sort((a, b) => a.name.localeCompare(b.name));
   if (sort === "name") visible.sort((a, b) => a.name.localeCompare(b.name));
   useEffect(() => {
     if (selected && !dialog.current?.open) dialog.current?.showModal();
@@ -119,7 +128,9 @@ export function ProductsBrowser() {
         </label>
       </div>
       <p className="results-count" role="status">
-        {visible.length} {visible.length === 1 ? "fixture" : "fixtures"}
+        {publishedProducts.length
+          ? `${visible.length} ${visible.length === 1 ? "fixture" : "fixtures"}`
+          : `${categoryMatches.length} lighting ${categoryMatches.length === 1 ? "category" : "categories"}`}
       </p>
       {visible.length ? (
         <div className="card-grid catalogue-grid-transition" key={category}>
@@ -131,9 +142,15 @@ export function ProductsBrowser() {
             />
           ))}
         </div>
+      ) : !publishedProducts.length && categoryMatches.length ? (
+        <div className="card-grid catalogue-grid-transition" key={category}>
+          {categoryMatches.map((item) => (
+            <CollectionCard item={item} key={item.slug} />
+          ))}
+        </div>
       ) : (
         <div className="empty-state">
-          <p>No fixtures match your search or filters.</p>
+          <p>No fixtures or categories match your search or filters.</p>
           <button
             className="button button-outline"
             onClick={() => {

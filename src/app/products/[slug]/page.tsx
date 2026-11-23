@@ -6,18 +6,18 @@ import { Action, PageIntro, ProductCard, QuoteBanner } from "@/components/ui";
 import {
   catalogueLabel,
   collections,
-  products,
+  publishedProducts,
   relatedProducts,
 } from "@/lib/catalogue";
 import { brand, metadata as pageMetadata } from "@/lib/site";
 
 type Params = { params: Promise<{ slug: string }> };
 export function generateStaticParams() {
-  return products.map(({ slug }) => ({ slug }));
+  return publishedProducts.map(({ slug }) => ({ slug }));
 }
 export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
-  const item = products.find((product) => product.slug === slug);
+  const item = publishedProducts.find((product) => product.slug === slug);
   return item
     ? pageMetadata(
         item.name,
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Params) {
 
 export default async function ProductPage({ params }: Params) {
   const { slug } = await params;
-  const item = products.find((product) => product.slug === slug);
+  const item = publishedProducts.find((product) => product.slug === slug);
   if (!item) notFound();
 
   const specs =

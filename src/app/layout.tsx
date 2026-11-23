@@ -40,7 +40,8 @@ export default function RootLayout({
                 "@type": "Organization",
                 name: brand.name,
                 url: siteUrl,
-                logo: new URL("/images/logo.png", siteUrl).href,
+                logo: new URL("/images/logo/bharat-lums-blue.png", siteUrl)
+                  .href,
                 email: brand.email,
                 telephone: brand.phone,
                 slogan: brand.tagline,

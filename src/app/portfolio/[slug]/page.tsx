@@ -7,7 +7,12 @@ import {
   QuoteBanner,
   SectionHead,
 } from "@/components/ui";
-import { artwork, projects } from "@/lib/catalogue";
+import {
+  artwork,
+  products,
+  projects,
+  publishedProducts,
+} from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -30,6 +35,14 @@ export default async function ProjectPage({ params }: Params) {
   const { slug } = await params;
   const item = projects.find((project) => project.slug === slug);
   if (!item) notFound();
+  const published = publishedProducts.some(({ slug }) => slug === item.product);
+  const category = products.find(({ slug }) => slug === item.product)
+    ?.categories[0];
+  const fixtureHref = published
+    ? `/products/${item.product}`
+    : category
+      ? `/collections/${category}`
+      : "/collections";
   return (
     <>
       <PageIntro
@@ -53,8 +66,8 @@ export default async function ProjectPage({ params }: Params) {
             <p>{item.approach}</p>
             <h2>Fixture used in the concept</h2>
             <p>{item.application}</p>
-            <Action href={`/products/${item.product}`} secondary>
-              View fixture concept
+            <Action href={fixtureHref} secondary>
+              {published ? "View fixture" : "Explore lighting collection"}
             </Action>
           </div>
           <div className="detail-image">
