@@ -7,7 +7,6 @@
   display: grid;
   background: var(--bg);
   color: var(--text);
-  border-bottom: 1px solid var(--line);
 }
 
 .heroInner {

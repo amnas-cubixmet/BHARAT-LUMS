@@ -4,7 +4,6 @@
   @apply relative isolate overflow-hidden;
   padding-block: clamp(4.5rem, 10vw, 9rem);
   background: var(--bg);
-  border-block: 1px solid var(--line);
   scroll-margin-top: 1rem;
 }
 

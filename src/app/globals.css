@@ -451,7 +451,6 @@ svg {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   background: var(--bg);
-  border: 1px solid var(--line);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -484,6 +483,9 @@ svg {
 }
 .site-footer {
   border-top: 1px solid var(--line);
+}
+.home-header ~ .site-footer {
+  border-top: 0;
 }
 .footer-main {
   display: grid;
