@@ -225,6 +225,11 @@ function CameraControls({
     const orbit = ref.current;
     if (!orbit || !reset) return;
     if (command === "reset") {
+      // Clear any remaining drag or pinch momentum before restoring the view.
+      const damping = orbit.enableDamping;
+      orbit.enableDamping = false;
+      orbit.update();
+      orbit.enableDamping = damping;
       camera.position.set(...cameraPosition);
       orbit.target.copy(initialTarget);
     }

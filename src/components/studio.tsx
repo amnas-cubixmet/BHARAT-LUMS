@@ -136,22 +136,23 @@ export default function Studio() {
   function update<K extends keyof Setup>(field: K, value: Setup[K]) {
     setSetup((current) => ({ ...current, [field]: value }));
   }
-  function cameraAction(command: string) {
+  function cameraAction(command: "rotate" | "zoom") {
     setCamera((current) => ({
       count: current.count + 1,
       command,
       rotation:
-        command === "reset"
-          ? 0
-          : command === "rotate"
-            ? (current.rotation + 1) % 5
-            : current.rotation,
-      zoom:
-        command === "reset"
-          ? 0
-          : command === "zoom"
-            ? (current.zoom + 1) % 4
-            : current.zoom,
+        command === "rotate" ? (current.rotation + 1) % 5 : current.rotation,
+      zoom: command === "zoom" ? (current.zoom + 1) % 4 : current.zoom,
+    }));
+  }
+  function resetStudio() {
+    setSetup(defaultSetup);
+    setUseFlat(false);
+    setCamera((current) => ({
+      count: current.count + 1,
+      command: "reset",
+      rotation: 0,
+      zoom: 0,
     }));
   }
   const flat = (
@@ -182,8 +183,10 @@ export default function Studio() {
             </button>
             <button
               className="icon-button"
-              aria-label="Reset camera"
-              onClick={() => cameraAction("reset")}
+              type="button"
+              aria-label="Reset Light Studio"
+              title="Reset Light Studio"
+              onClick={resetStudio}
             >
               <RotateCcw size={17} />
             </button>
