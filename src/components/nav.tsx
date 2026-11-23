@@ -7,23 +7,29 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const links = [
-  ["/collections", "Collections"],
-  ["/products", "Products"],
-  ["/light-studio", "Light Studio"],
-  ["/portfolio", "Projects"],
   ["/about", "About"],
+  ["/products", "Products"],
+  ["/collections", "Catalogue"],
+  ["/#global-presence", "Global Presence"],
   ["/contact", "Contact"],
 ];
 
-export function BrandMark() {
+export function BrandMark({
+  variant = "dark",
+  eager = false,
+}: {
+  variant?: "light" | "dark";
+  eager?: boolean;
+}) {
   return (
     <Image
       className="brand-logo"
-      src="/images/logo-dark.png"
+      src={`/images/logo/bharat-lums-${variant === "light" ? "blue" : "white"}.png`}
       alt="Bharat Lums — Powering a Brighter Tomorrow"
-      width={128}
-      height={69}
-      priority
+      width={432}
+      height={237}
+      sizes="104px"
+      loading={eager ? "eager" : "lazy"}
     />
   );
 }
@@ -38,7 +44,7 @@ export default function Header() {
     >
       <div className="shell header-inner">
         <Link href="/" className="brand-link" onClick={() => setOpenedAt(null)}>
-          <BrandMark />
+          <BrandMark variant={path === "/" ? "light" : "dark"} eager />
         </Link>
         <button
           className="menu-toggle icon-button"

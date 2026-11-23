@@ -10,8 +10,8 @@ export default function AboutPage() {
   return (
     <>
       <PageIntro
-        eyebrow="Bharat Lums"
-        title={brand.tagline}
+        eyebrow={brand.tagline}
+        title="Engineering brighter possibilities."
         description="We approach architectural lighting as part of the room itself. A line of light can reveal an edge, guide movement or bring attention to a surface."
       />
       <section className="shell detail-grid section-tight">

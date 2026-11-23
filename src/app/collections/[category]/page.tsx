@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Action, PageIntro, ProductCard, QuoteBanner } from "@/components/ui";
-import { artwork, collections, products } from "@/lib/catalogue";
+import { artwork, collections, publishedProducts } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 type Params = { params: Promise<{ category: string }> };
@@ -23,7 +23,9 @@ export default async function CollectionPage({ params }: Params) {
   const { category } = await params;
   const collection = collections.find(({ slug }) => slug === category);
   if (!collection) notFound();
-  const matches = products.filter((item) => item.categories.includes(category));
+  const matches = publishedProducts.filter((item) =>
+    item.categories.includes(category),
+  );
   return (
     <>
       <PageIntro

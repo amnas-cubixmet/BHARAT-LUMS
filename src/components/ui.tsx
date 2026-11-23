@@ -213,6 +213,10 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="shell">
+        <div className="footer-project">
+          <h2>Let’s light up your next project.</h2>
+          <Action href="/contact">Contact Us</Action>
+        </div>
         <div className="footer-main">
           <div>
             <Link href="/" className="brand-link">
@@ -222,14 +226,14 @@ export function Footer() {
           </div>
           <div>
             <h2>Explore</h2>
-            <Link href="/collections">Collections</Link>
+            <Link href="/collections">Product Catalogue</Link>
             <Link href="/products">Products</Link>
             <Link href="/light-studio">Light Studio</Link>
           </div>
           <div>
             <h2>Company</h2>
             <Link href="/portfolio">Projects</Link>
-            <Link href="/about">About</Link>
+            <Link href="/about">Company Information</Link>
             <Link href="/#global-presence">Global presence</Link>
             <Link href="/contact">Contact</Link>
           </div>
@@ -237,6 +241,13 @@ export function Footer() {
             <h2>Get in touch</h2>
             <a href={`mailto:${brand.email}`}>{brand.email}</a>
             <a href={brand.phoneHref}>{brand.phone}</a>
+            <a
+              href={`https://wa.me/${brand.phoneHref.replace(/\D/g, "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp enquiries
+            </a>
           </div>
         </div>
         <div className="footer-bottom">

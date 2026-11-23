@@ -21,7 +21,12 @@ export default async function QuotePage({
         interest: "Linear LED Lighting",
         message: `Light Studio configuration\n${summarizeSetup(configuration.data)}\n\nProject details\n`,
       }
-    : { interest: product?.name ?? collection?.name };
+    : query.catalogue === "1"
+      ? {
+          interest: "LED product catalogue",
+          message: "Please share the current Bharat Lums product catalogue.",
+        }
+      : { interest: product?.name ?? collection?.name };
   return (
     <>
       <PageIntro
