@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 export const compactSceneQuery = "(max-width: 650px)";
@@ -22,23 +22,6 @@ export function useMediaQuery(query: string) {
   return useSyncExternalStore(subscribe, getSnapshot, serverSnapshot);
 }
 
-function usesFullMotionOnMobile() {
-  return typeof navigator !== "undefined" && /Android|iPhone/i.test(navigator.userAgent);
-}
-
 export function useSiteReducedMotion() {
-  const reduced = useMediaQuery(reducedMotionQuery);
-  return reduced && !usesFullMotionOnMobile();
-}
-
-export function MotionPlatform() {
-  useEffect(() => {
-    if (!usesFullMotionOnMobile()) return;
-    const root = document.documentElement;
-    root.dataset.motionPlatform = "mobile";
-    return () => {
-      delete root.dataset.motionPlatform;
-    };
-  }, []);
-  return null;
+  return useMediaQuery(reducedMotionQuery);
 }

@@ -426,6 +426,7 @@
   }
   .heroFallback {
     object-position: right -45px top 18px;
+    filter: grayscale(1) brightness(calc(1 + 0.28 * var(--hero-light-power)));
   }
   .heroIllumination {
     --lens-x: 61%;
@@ -466,7 +467,7 @@
   }
   .heroPrimary,
   .heroLink {
-    min-height: 43px;
+    min-height: 44px;
     font-size: 0.72rem;
     gap: 5px;
   }
@@ -501,19 +502,91 @@
     order: -1;
   }
 }
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 900px) {
+  .hero {
+    overflow: clip;
+  }
+  .heroInner {
+    grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px 14px;
+    padding-block: 14px;
+  }
+  .heroLead {
+    grid-area: 1 / 1 / 3 / 2;
+  }
+  .hero h1 {
+    margin-top: 12px;
+    font-size: clamp(2rem, 6.55vw, 4rem);
+  }
+  .heroSummary {
+    margin-top: 14px;
+    font-size: 0.91rem;
+  }
+  .heroActions {
+    margin-top: 12px;
+    gap: 6px 9px;
+  }
+  .heroPrimary,
+  .heroLink {
+    gap: 5px;
+    padding-inline: 7px;
+    font-size: 0.72rem;
+  }
+  .heroStage {
+    grid-area: 1 / 2 / 2 / 3;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: clamp(125px, 44svh, 225px);
+    margin: 0;
+    transform: none;
+    translate: none;
+    z-index: 0;
+  }
+  .heroCanvas,
+  .heroFallback {
+    mask-image: none;
+  }
+  .heroFallback {
+    object-position: center;
+  }
+  .heroPanel {
+    grid-area: 2 / 2 / 3 / 3;
+    justify-self: center;
+    width: min(100%, 265px);
+    margin: 0;
+    padding: 6px 9px;
+  }
+  .lightControls {
+    gap: 8px;
+  }
+  .lightControls button {
+    min-height: 44px;
+  }
+  .lightControls label {
+    flex: 1;
+    min-width: 0;
+  }
+  .lightControls input {
+    width: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  :global(:root:not([data-motion-platform="mobile"])) .aboutArt:hover img {
+  .aboutArt:hover img {
     transform: none;
   }
-  :global(:root:not([data-motion-platform="mobile"])) .heroGlow,
-  :global(:root:not([data-motion-platform="mobile"])) .heroGlow::after {
+  .heroGlow,
+  .heroGlow::after {
     animation: none;
   }
-  :global(:root:not([data-motion-platform="mobile"])) .heroIllumination,
-  :global(:root:not([data-motion-platform="mobile"])) .faqRow button svg,
-  :global(:root:not([data-motion-platform="mobile"])) .faqAnswer,
-  :global(:root:not([data-motion-platform="mobile"])) .heroLink,
-  :global(:root:not([data-motion-platform="mobile"])) .heroPrimary {
+  .heroIllumination,
+  .faqRow button svg,
+  .faqAnswer,
+  .heroLink,
+  .heroPrimary {
     transition: none;
   }
 }

@@ -198,14 +198,24 @@
     color: inherit;
   }
 }
-@media (max-width: 420px) {
+@media (any-pointer: coarse) {
+  /* OrbitControls sets touch-action inline on the R3F event container. */
+  .canvas > div,
+  .canvas canvas {
+    touch-action: pan-y !important;
+  }
+}
+
+@media (max-width: 420px),
+  (min-width: 651px) and (max-width: 800px),
+  (min-width: 981px) and (max-width: 1140px) {
   .countries button span[aria-hidden="true"],
   .countries button svg {
     display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  :global(:root:not([data-motion-platform="mobile"])) .countries button {
+  .countries button {
     transition: none;
   }
 }

@@ -769,13 +769,17 @@ textarea::placeholder {
     gap: 0;
     border-bottom: 1px solid var(--line);
     max-height: calc(100svh - var(--header-height) - 1px);
-    overflow: auto;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
   }
   .main-nav.open {
     display: grid;
   }
   .main-nav > a:not(.button) {
-    padding: 11px 0;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 0;
     border-bottom: 1px solid var(--line);
     font-size: 0.93rem;
   }
@@ -899,10 +903,16 @@ textarea::placeholder {
     grid-template-columns: 1fr;
   }
 }
+@media (any-pointer: coarse) and (max-width: 1024px) {
+  .enquiry-field :is(input, select, textarea) {
+    font-size: 1rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  :root:not([data-motion-platform="mobile"]) *,
-  :root:not([data-motion-platform="mobile"]) *::before,
-  :root:not([data-motion-platform="mobile"]) *::after {
+  *,
+  *::before,
+  *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
@@ -1027,7 +1037,7 @@ textarea::placeholder {
 .product-lightbox {
   margin: auto;
   width: min(94vw, 850px);
-  max-height: 90vh;
+  max-height: 90dvh;
   color: var(--text);
   background: var(--bg);
   border: 1px solid var(--line);
@@ -1054,7 +1064,7 @@ textarea::placeholder {
 }
 .lightbox-image {
   width: 100%;
-  height: min(68dvh, 560px);
+  height: min(68dvh, calc(90dvh - 80px), 560px);
   display: block;
   position: relative;
   overflow: hidden;
@@ -1103,10 +1113,10 @@ textarea::placeholder {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  :root:not([data-motion-platform="mobile"]) .catalogue-grid-transition {
+  .catalogue-grid-transition {
     animation: none;
   }
-  :root:not([data-motion-platform="mobile"]) .lightbox-image > span {
+  .lightbox-image > span {
     transition: none;
   }
 }

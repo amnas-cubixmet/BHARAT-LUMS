@@ -123,7 +123,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :global(:root:not([data-motion-platform="mobile"])) .track {
+  .track {
     scroll-behavior: auto;
   }
 }

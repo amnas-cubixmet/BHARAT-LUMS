@@ -159,7 +159,17 @@
   }
 }
 
+@media (any-pointer: coarse) and (max-width: 1024px) {
+  .catalogue :global(.filters) :is(input, select) {
+    font-size: 1rem;
+  }
+}
+
 @media (max-width: 540px) {
+  .catalogue :global(.filters) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .catalogue :global(.card-grid) {
     grid-template-columns: minmax(0, 1fr);
   }
