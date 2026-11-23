@@ -240,17 +240,19 @@ function CountryMarker({
   const group = useRef<Group>(null);
   const ring = useRef<Group>(null);
   const shown = useRef(false);
+  const elapsedRef = useRef(0);
   const [front, setFront] = useState(false);
   const [hover, setHover] = useState(false);
-  useFrame(({ camera, clock }) => {
+  useFrame(({ camera }, delta) => {
     if (!group.current || !ring.current) return;
+    elapsedRef.current += Math.min(delta, 0.05);
     const visible = camera.position.dot(position) > 1.08;
     if (visible !== shown.current) {
       shown.current = visible;
       setFront(visible);
       if (!visible) setHover(false);
     }
-    const elapsed = clock.elapsedTime;
+    const elapsed = elapsedRef.current;
     const reveal = reduced
       ? 1
       : MathUtils.smoothstep(
