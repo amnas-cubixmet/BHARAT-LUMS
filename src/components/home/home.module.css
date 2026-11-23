@@ -246,81 +246,8 @@
   outline-offset: 4px;
 }
 
-.showcase {
-  padding-block: clamp(66px, 10vw, 135px);
-  color: var(--text);
-  background: var(--bg);
-}
 .sectionKicker {
   color: var(--text);
-}
-.showcase h2 {
-  font-size: clamp(3rem, 7.8vw, 8rem);
-  line-height: 0.87;
-  letter-spacing: -0.09em;
-  text-transform: uppercase;
-  max-width: 11ch;
-  margin: 13px 0 clamp(32px, 5vw, 65px);
-}
-.showcaseItem {
-  display: grid;
-  min-height: 450px;
-  grid-template-columns: 0.87fr 1.13fr;
-  align-items: center;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--bg);
-}
-.showcaseItem + .showcaseItem {
-  margin-top: 18px;
-}
-.showcaseCopy {
-  padding: clamp(24px, 5vw, 74px);
-  position: relative;
-  z-index: 1;
-}
-.showcaseCopy h3 {
-  font-size: clamp(2.45rem, 5.7vw, 5.7rem);
-  line-height: 0.85;
-  text-transform: uppercase;
-  letter-spacing: -0.09em;
-  max-width: 10ch;
-}
-.showcaseCopy p {
-  color: var(--muted);
-  margin: 19px 0 24px;
-  max-width: 37ch;
-}
-.showcaseArt {
-  aspect-ratio: 1.28;
-  position: relative;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  isolation: isolate;
-}
-.showcaseArt::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  box-shadow: inset 18px 0 50px #000000ab;
-}
-.showcaseArt img {
-  object-fit: cover;
-}
-.showcaseArt figcaption {
-  z-index: 2;
-  position: absolute;
-  right: 14px;
-  bottom: 12px;
-  background: var(--bg);
-  color: var(--text);
-  padding: 0.35rem 0.55rem;
-  font-size: 0.7rem;
-  border-radius: 3px;
 }
 .about {
   color: var(--text);
@@ -347,13 +274,21 @@
   margin: 22px 0;
 }
 .aboutArt {
-  aspect-ratio: 1.04;
-  position: relative;
   overflow: hidden;
   border-radius: 6px;
 }
 .aboutArt img {
-  object-fit: cover;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .aboutArt img {
+    transition: transform 0.35s ease;
+  }
+  .aboutArt:hover img {
+    transform: scale(1.035);
+  }
 }
 .faq {
   background: var(--bg);
@@ -458,9 +393,6 @@
     bottom: auto;
     margin-top: 12px;
   }
-  .showcaseItem {
-    min-height: 360px;
-  }
 }
 @media (max-width: 650px) {
   .heroInner {
@@ -493,16 +425,6 @@
   }
   .lightControls input {
     width: 79px;
-  }
-  .showcaseItem {
-    grid-template-columns: 1fr;
-    min-height: 0;
-  }
-  .showcaseArt {
-    aspect-ratio: 1.55;
-  }
-  .showcaseArt::before {
-    box-shadow: inset 0 10px 28px #000000ab;
   }
   .aboutInner,
   .faqInner {

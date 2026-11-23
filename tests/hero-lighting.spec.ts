@@ -103,7 +103,8 @@ test("streetlight fallback and hero links work without WebGL", async ({ page }) 
     name: "Request a quote",
   })).toBeVisible();
   await page.getByRole("link", { name: "Explore Products" }).click();
-  await expect(page).toHaveURL(/#featured$/);
+  await expect(page).toHaveURL(/\/products$/);
+  await page.goBack();
   await page.getByRole("link", { name: "Request Catalogue", exact: true }).click();
   await expect(page).toHaveURL(/\/request-quote\?catalogue=1$/);
   await expect(page.getByRole("textbox", { name: "Message" })).toHaveValue(

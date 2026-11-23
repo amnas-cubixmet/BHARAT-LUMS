@@ -32,6 +32,22 @@ for (const viewport of [
     page.on("console", (message) => {
       if (message.type() === "error") errors.push(message.text());
     });
+    await page.goto("/");
+    await expect(page.getByText("Lighting solutions", { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Built to light the way." })).toHaveCount(0);
+    const about = page.getByRole("region", { name: "Engineering brighter possibilities." });
+    await expect(about.getByText("About Bharat Lums", { exact: true }).first()).toBeVisible();
+    const image = about.getByRole("img", { name: /suspended linear LED fixtures/ });
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(() => image.evaluate((photo: HTMLImageElement) => photo.naturalWidth))
+      .toBeGreaterThan(0);
+    const source = await image.evaluate((photo: HTMLImageElement) => photo.currentSrc);
+    expect(source).toMatch(/\/_next\/image\?.*conference-room-linear-lighting\.[a-z0-9]+\.webp/);
+    const bounds = await image.boundingBox();
+    expect(bounds!.width / bounds!.height).toBeCloseTo(518 / 502, 2);
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewport.width);
+
     for (const route of routes) {
       expect((await page.goto(route))?.status(), route).toBe(200);
       await page.locator("main h1").waitFor({ state: "attached" });
@@ -85,12 +101,14 @@ test("homepage sections and outlined CTAs use the strict palette and remain acce
     "src",
     /bharat-lums-white\.png/,
   );
-  for (const section of ["#global-presence", "#featured", "#faq"]) {
-    await expect(page.locator(section)).toHaveCSS(
-      "background-color",
-      "rgb(0, 0, 0)",
-    );
-    await expect(page.locator(section)).toHaveCSS("background-image", "none");
+  for (const section of [
+    "#global-presence",
+    'section[aria-labelledby="home-about"]',
+    "#faq",
+  ]) {
+    const surface = page.locator(section);
+    await expect(surface).toHaveCSS("background-color", "rgb(0, 0, 0)");
+    await expect(surface).toHaveCSS("background-image", "none");
   }
   const presence = page.locator("#global-presence");
   const oman = presence.getByRole("button", { name: "Oman", exact: true });

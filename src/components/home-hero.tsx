@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowDown, ArrowDownRight, ArrowUpRight, Power } from "lucide-react";
 import {
   Component,
@@ -143,9 +144,9 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
             outdoor environments.
           </p>
           <div className={styles.heroActions} data-hero-enter>
-            <a className={styles.heroPrimary} href="#featured">
+            <Link className={styles.heroPrimary} href="/products">
               Explore Products <ArrowDownRight size={19} aria-hidden="true" />
-            </a>
+            </Link>
             {catalogue ? (
               <a className={styles.heroLink} href={catalogue} download>
                 Download Catalogue <ArrowDown size={17} aria-hidden="true" />

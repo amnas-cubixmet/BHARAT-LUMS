@@ -4,17 +4,11 @@ import { Action, ProjectCard, SectionHead } from "@/components/ui";
 import { GlobalPresenceSection } from "@/components/global-presence/global-presence";
 import { HomeHero } from "@/components/home-hero";
 import { HomeFaq } from "@/components/home/faq";
-import { ShowcaseCard } from "@/components/home/showcase";
 import styles from "@/components/home/home.module.css";
 import { Reveal } from "@/components/motion";
 import { ProjectCarousel } from "@/components/project-carousel";
-import {
-  artwork,
-  catalogueCategories,
-  catalogueDownload,
-  projects,
-  publishedProducts,
-} from "@/lib/catalogue";
+import conferenceRoom from "../../public/images/conference-room-linear-lighting.webp";
+import { artwork, catalogueDownload, projects } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 export const metadata = {
@@ -26,49 +20,10 @@ export const metadata = {
   title: { absolute: "Bharat Lums | Powering a Brighter Tomorrow" },
 };
 
-const featured = [
-  "led-street-lights",
-  "floodlights",
-  "high-bay-industrial-lighting",
-  "led-industrial-lights",
-  "commercial-lighting",
-];
-
 export default function Home() {
   return (
     <>
       <HomeHero catalogue={catalogueDownload} />
-      <section
-        className={styles.showcase}
-        id="featured"
-        aria-labelledby="showcase-title"
-      >
-        <div className="shell">
-          <Reveal className={styles.showcaseIntro}>
-            <p className={styles.sectionKicker}>Lighting solutions</p>
-            <h2 id="showcase-title">Built to light the way.</h2>
-          </Reveal>
-          {featured.map((slug) => {
-            const item = catalogueCategories.find(
-              (category) => category.slug === slug,
-            );
-            if (!item) return null;
-            const image = publishedProducts.find((product) =>
-              product.categories.includes(slug),
-            )?.images[0];
-            return (
-              <ShowcaseCard
-                key={slug}
-                item={item}
-                image={image?.src ?? artwork(item.image)}
-                alt={image?.alt ?? `${item.name} application concept`}
-                representative={image?.representative ?? true}
-              />
-            );
-          })}
-        </div>
-      </section>
-
       <section className={styles.about} aria-labelledby="home-about">
         <Reveal className={`shell ${styles.aboutInner}`}>
           <div className={styles.aboutCopy}>
@@ -83,10 +38,9 @@ export default function Home() {
           </div>
           <div className={styles.aboutArt}>
             <Image
-              src={artwork("office")}
-              alt="Office lighting application concept"
-              fill
-              sizes="(max-width: 650px) 92vw, 48vw"
+              src={conferenceRoom}
+              alt="Lighting application reference showing suspended linear LED fixtures above a conference table"
+              sizes="(max-width: 650px) 92vw, (max-width: 1450px) 41vw, 570px"
             />
           </div>
         </Reveal>
