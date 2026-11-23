@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Download, MessageCircle } from "lucide-react";
@@ -9,7 +10,9 @@ import {
   products,
   relatedProducts,
 } from "@/lib/catalogue";
+import { fixturePhotoGroups } from "@/lib/fixture-photos";
 import { brand, metadata as pageMetadata } from "@/lib/site";
+import photoStyles from "./fixture-photos.module.css";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -49,6 +52,7 @@ export default async function ProductPage({ params }: Params) {
         ].filter((download) => download.href)
       : [];
   const related = relatedProducts(item);
+  const photoGroup = fixturePhotoGroups[slug];
   const enquiryHref =
     item.status === "verified"
       ? `/request-quote?product=${slug}`
@@ -141,6 +145,36 @@ export default async function ProductPage({ params }: Params) {
           </div>
         </div>
       </section>
+      {photoGroup && (
+        <section className="shell section-tight" aria-labelledby="fixture-photos">
+          <div className={photoStyles.intro}>
+            <h2 id="fixture-photos">{photoGroup.title}</h2>
+            <p>{photoGroup.description}</p>
+          </div>
+          <div className="card-grid">
+            {photoGroup.photos.map(({ image, name, wattage, rating }) => {
+              const title = wattage ? `${name} · ${wattage}W` : name;
+              return (
+                <figure className={photoStyles.figure} key={image}>
+                  <div className={photoStyles.photo}>
+                    <Image
+                      src={`/images/products/fixture-photos/${image}.webp`}
+                      alt=""
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 560px) 92vw, (max-width: 805px) 45vw, (max-width: 1450px) 30vw, 430px"
+                    />
+                  </div>
+                  <figcaption className={photoStyles.caption}>
+                    <h3>{title}</h3>
+                    {rating && <p>{rating} on label</p>}
+                  </figcaption>
+                </figure>
+              );
+            })}
+          </div>
+        </section>
+      )}
       {related.length > 0 && (
         <section className="shell section-tight" aria-labelledby="related-fixtures">
           <h2 className="catalogue-section-title" id="related-fixtures">
