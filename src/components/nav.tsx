@@ -47,7 +47,7 @@ export function BrandMark({
       alt="Bharat Lums — Powering a Brighter Tomorrow"
       width={432}
       height={237}
-      sizes="104px"
+      sizes={eager ? "(max-width: 805px) 122px, 104px" : "108px"}
       loading={eager ? "eager" : "lazy"}
     />
   );

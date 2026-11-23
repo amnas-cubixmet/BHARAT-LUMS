@@ -774,6 +774,9 @@ textarea::placeholder {
     display: flex;
     justify-content: space-between;
   }
+  .site-header .brand-logo {
+    width: 122px;
+  }
   .header-quote {
     display: none;
   }

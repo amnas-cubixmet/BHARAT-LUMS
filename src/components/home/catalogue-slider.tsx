@@ -3,9 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 import type { CatalogueCategory } from "@/lib/catalogue";
 import styles from "./catalogue-slider.module.css";
+
+const copies = [-1, 0, 1] as const;
+
+function slideOffset(track: HTMLUListElement, index: number) {
+  return track.children[index].getBoundingClientRect().left -
+    track.children[0].getBoundingClientRect().left;
+}
 
 export function CatalogueSlider({
   categories,
@@ -13,38 +20,70 @@ export function CatalogueSlider({
   categories: readonly CatalogueCategory[];
 }) {
   const trackRef = useRef<HTMLUListElement>(null);
-  const [edges, setEdges] = useState({ start: true, end: false });
+  const canLoop = categories.length > 1;
+  const count = categories.length;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const track = trackRef.current;
-    if (!track) return;
-    const updateEdges = () => {
-      const start = track.scrollLeft <= 2;
-      const end = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
-      setEdges((previous) =>
-        previous.start === start && previous.end === end
-          ? previous
-          : { start, end },
-      );
-    };
+    if (!track || !canLoop) return;
 
-    updateEdges();
-    const observer = new ResizeObserver(updateEdges);
-    observer.observe(track);
-    track.addEventListener("scroll", updateEdges, { passive: true });
+    // Start in the middle copy so both directions have a matching neighbour.
+    track.scrollTo({ left: slideOffset(track, count), behavior: "instant" });
+
+    let timer: number | undefined;
+    let touching = false;
+
+    function settle() {
+      window.clearTimeout(timer);
+      if (!track || touching) return;
+
+      const start = slideOffset(track, count);
+      const end = slideOffset(track, count * 2);
+      const position = track.scrollLeft;
+      // Keep the visible cards in place when moving back to the middle copy.
+      if (position < start - 1) {
+        track.scrollTo({ left: position + end - start, behavior: "instant" });
+      } else if (position >= end - 1) {
+        track.scrollTo({ left: position - (end - start), behavior: "instant" });
+      }
+    }
+
+    function scheduleSettle() {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(settle, 160);
+    }
+
+    function beginTouch() {
+      touching = true;
+    }
+
+    function endTouch() {
+      touching = false;
+      scheduleSettle();
+    }
+
+    track.addEventListener("scroll", scheduleSettle, { passive: true });
+    track.addEventListener("scrollend", settle);
+    track.addEventListener("touchstart", beginTouch, { passive: true });
+    track.addEventListener("touchend", endTouch, { passive: true });
+    track.addEventListener("touchcancel", endTouch, { passive: true });
     return () => {
-      observer.disconnect();
-      track.removeEventListener("scroll", updateEdges);
+      window.clearTimeout(timer);
+      track.removeEventListener("scroll", scheduleSettle);
+      track.removeEventListener("scrollend", settle);
+      track.removeEventListener("touchstart", beginTouch);
+      track.removeEventListener("touchend", endTouch);
+      track.removeEventListener("touchcancel", endTouch);
     };
-  }, []);
+  }, [canLoop, count]);
 
   function step(direction: -1 | 1) {
     const track = trackRef.current;
-    const first = track?.children[0];
-    const second = track?.children[1];
-    if (!track || !first || !second) return;
-    const distance = second.getBoundingClientRect().left - first.getBoundingClientRect().left;
-    track.scrollBy({ left: direction * distance });
+    if (!track || !canLoop) return;
+    const distance = slideOffset(track, 1);
+    const current = Math.round(track.scrollLeft / distance);
+    const target = Math.max(0, Math.min(track.children.length - 1, current + direction));
+    track.scrollTo({ left: slideOffset(track, target) });
   }
 
   return (
@@ -62,36 +101,45 @@ export function CatalogueSlider({
         role="list"
         aria-label="LED lighting categories"
         tabIndex={0}
+        onKeyDown={(event) => {
+          if (!canLoop || event.target !== event.currentTarget) return;
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+          event.preventDefault();
+          step(event.key === "ArrowLeft" ? -1 : 1);
+        }}
       >
-        {categories.map(({ slug, name, image }) => (
-          <li key={slug}>
-            <Link
-              href={{ pathname: "/products", query: { category: slug } }}
-              prefetch={false}
-              className={styles.card}
-            >
-              <span className={styles.image}>
-                <Image
-                  src={`/images/${image}.webp`}
-                  alt=""
-                  fill
-                  loading="lazy"
-                  sizes="(max-width: 560px) 82vw, (max-width: 900px) 43vw, (max-width: 1450px) 29vw, 425px"
-                />
-              </span>
-              <span className={styles.label}>
-                {name} <ArrowUpRight size={18} aria-hidden="true" />
-              </span>
-            </Link>
-          </li>
-        ))}
+        {(canLoop ? copies : [0]).flatMap((copy) =>
+          categories.map(({ slug, name, image }) => (
+            <li key={`${copy}-${slug}`} aria-hidden={copy !== 0 || undefined}>
+              <Link
+                href={{ pathname: "/products", query: { category: slug } }}
+                prefetch={false}
+                tabIndex={copy === 0 ? undefined : -1}
+                className={styles.card}
+              >
+                <span className={styles.image}>
+                  <Image
+                    src={`/images/${image}.webp`}
+                    alt=""
+                    fill
+                    loading="lazy"
+                    sizes="(max-width: 560px) 82vw, (max-width: 900px) 43vw, (max-width: 1450px) 29vw, 425px"
+                  />
+                </span>
+                <span className={styles.label}>
+                  {name} <ArrowUpRight size={18} aria-hidden="true" />
+                </span>
+              </Link>
+            </li>
+          )),
+        )}
       </ul>
       <div className={styles.controls}>
         <button
           type="button"
           aria-label="Previous category"
           aria-controls="catalogue-slider-track"
-          disabled={edges.start}
+          disabled={!canLoop}
           onClick={() => step(-1)}
         >
           <ArrowLeft size={19} aria-hidden="true" />
@@ -100,7 +148,7 @@ export function CatalogueSlider({
           type="button"
           aria-label="Next category"
           aria-controls="catalogue-slider-track"
-          disabled={edges.end}
+          disabled={!canLoop}
           onClick={() => step(1)}
         >
           <ArrowRight size={19} aria-hidden="true" />

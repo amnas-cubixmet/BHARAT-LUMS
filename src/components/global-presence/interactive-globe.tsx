@@ -311,7 +311,7 @@ function CountryMarker({
           zIndexRange={[2, 0]}
           style={{ pointerEvents: "none" }}
         >
-          <span className={styles.markerLabel}>{country.name}</span>
+          <span className={styles.markerLabel} lang="ml">{country.name}</span>
         </Html>
       )}
     </group>
@@ -444,7 +444,7 @@ export default function InteractiveGlobe(props: GlobeProps) {
     >
       <Canvas
         frameloop={visible && !reduced ? "always" : "demand"}
-        camera={{ position: initialCamera, fov: 51 }}
+        camera={{ position: initialCamera, fov: compact ? 43 : 51 }}
         dpr={[1, compact ? 1.2 : 1.4]}
         gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
       >
