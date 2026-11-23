@@ -4,7 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowUpRight, MessageCircle, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { enquirySchema, enquiryText, type Enquiry } from "@/lib/enquiry";
+import {
+  enquiryEmailHref,
+  enquirySchema,
+  enquiryText,
+  type Enquiry,
+} from "@/lib/enquiry";
 
 type Defaults = { interest?: string; message?: string };
 type Status = { kind: "ok" | "error" | "draft"; message: string };
@@ -109,6 +114,7 @@ export default function EnquiryForm({
   return (
     <form
       className="enquiry-form"
+      aria-labelledby="enquiry-title"
       onSubmit={(event) => {
         void handleSubmit(submit, () => {
           setStatus(null);
@@ -202,7 +208,7 @@ export default function EnquiryForm({
         <div className="full flex flex-wrap gap-3">
           <a
             className="button button-outline"
-            href={`mailto:${email}?subject=${encodeURIComponent("Bharat Lums website enquiry")}&body=${encodeURIComponent(draft)}`}
+            href={enquiryEmailHref(email, draft)}
           >
             Open email app <ArrowUpRight size={16} aria-hidden="true" />
           </a>

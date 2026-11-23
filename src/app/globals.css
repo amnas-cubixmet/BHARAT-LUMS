@@ -646,8 +646,7 @@ textarea::placeholder {
 .gallery-controls button[aria-pressed="true"] {
   border: 2px solid var(--text);
 }
-.detail-copy h2,
-.contact-panel h2 {
+.detail-copy h2 {
   font-size: clamp(1.5rem, 3vw, 2.65rem);
 }
 .detail-copy p,
@@ -670,20 +669,6 @@ textarea::placeholder {
   grid-template-columns: 0.7fr 1.3fr;
   gap: clamp(20px, 5vw, 70px);
   align-items: start;
-}
-.contact-panel {
-  padding: clamp(19px, 3vw, 32px);
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-}
-.contact-panel p {
-  color: var(--muted);
-  margin-block: 12px;
-}
-.contact-panel .text-link {
-  display: flex;
-  margin-top: 13px;
 }
 .enquiry-form {
   display: grid;
@@ -854,9 +839,6 @@ textarea::placeholder {
   .enquiry-form,
   .filters {
     gap: 10px;
-  }
-  .contact-panel .text-link {
-    overflow-wrap: anywhere;
   }
   .hero {
     min-height: clamp(540px, calc(90svh - var(--header-height)), 650px);

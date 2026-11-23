@@ -1,17 +1,22 @@
 import { ContactSection } from "@/components/contact";
-import { PageIntro } from "@/components/ui";
 import { metadata as pageMetadata } from "@/lib/site";
+import styles from "./contact.module.css";
 
-export const metadata = pageMetadata("Contact", "/contact");
+const description =
+  "Ask about a product, request a quote or tell us what you need for your lighting project.";
+
+export const metadata = pageMetadata("Contact", "/contact", description);
 
 export default function ContactPage() {
   return (
     <>
-      <PageIntro
-        eyebrow="Contact Bharat Lums"
-        title="Let’s talk lighting."
-        description="Ask about a lighting family, discuss an application or share the details of your project."
-      />
+      <section className={`shell ${styles.intro}`} aria-labelledby="contact-title">
+        <div>
+          <p className="eyebrow">Contact Bharat Lums</p>
+          <h1 id="contact-title">Let’s talk lighting.</h1>
+        </div>
+        <p>{description}</p>
+      </section>
       <ContactSection />
     </>
   );

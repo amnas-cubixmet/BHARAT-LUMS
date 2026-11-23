@@ -32,6 +32,14 @@ export const enquirySchema = z.object({
 
 export type Enquiry = z.infer<typeof enquirySchema>;
 
+export function enquiryEmailHref(email: string, draft?: string) {
+  const subject = encodeURIComponent("Bharat Lums website enquiry");
+  const body = draft
+    ? `&body=${encodeURIComponent(draft.replace(/\r?\n/g, "\r\n"))}`
+    : "";
+  return `mailto:${email}?subject=${subject}${body}`;
+}
+
 export function enquiryText(input: Enquiry) {
   return (
     [
