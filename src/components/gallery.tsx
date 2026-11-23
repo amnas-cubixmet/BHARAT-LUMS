@@ -10,6 +10,8 @@ export function Gallery({ images, name }: { images: string[]; name: string }) {
     <div>
       <div className="detail-image">
         <Image
+          key={images[index]}
+          className="gallery-image-transition"
           src={artwork(images[index])}
           alt={`${name} lighting concept, view ${index + 1}`}
           fill

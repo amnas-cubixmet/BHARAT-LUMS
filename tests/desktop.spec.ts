@@ -34,6 +34,20 @@ test("homepage accessibility, catalogue navigation and assets", async ({
         .analyze()
     ).violations,
   ).toEqual([]);
+  const carousel = page.getByRole("region", {
+    name: "Featured project concepts",
+  });
+  await expect(
+    page.getByRole("button", { name: "Previous projects" }),
+  ).toBeDisabled();
+  await page.getByRole("button", { name: "Next projects" }).click();
+  await expect
+    .poll(() => carousel.evaluate((track) => track.scrollLeft))
+    .toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Previous projects" }).click();
+  await expect(
+    page.getByRole("button", { name: "Previous projects" }),
+  ).toBeDisabled();
   await page.getByRole("link", { name: "Explore our collections" }).click();
   await expect(page.locator(".media-card")).toHaveCount(16);
   await page

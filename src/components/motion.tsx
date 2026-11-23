@@ -47,6 +47,22 @@ export function SiteMotion() {
         if (!hero || !art) return;
         if (matchMedia("(min-width: 806px)").matches) {
           const entrance = gsap.timeline();
+          entrance.from(
+            ".site-header .brand-logo",
+            { opacity: 0.24, duration: 0.54, clearProps: "all" },
+            0,
+          );
+          entrance.fromTo(
+            ".hero h1",
+            { clipPath: "inset(0 0 100% 0)" },
+            {
+              clipPath: "inset(0 0 0 0)",
+              duration: 0.64,
+              ease: "power2.out",
+              clearProps: "clipPath",
+            },
+            0.34,
+          );
           entrance.set("[data-diffuser]", { opacity: 0 });
           entrance.fromTo(
             ".hero-installation",
@@ -114,6 +130,37 @@ export function SiteMotion() {
           hero.removeEventListener("pointerleave", onLeave);
         };
       });
+      media.add(
+        "(pointer: fine) and (prefers-reduced-motion: no-preference)",
+        () => {
+          const listeners = Array.from(
+            document.querySelectorAll<HTMLElement>(".button-primary"),
+          ).flatMap((button) => {
+            const icon = button.querySelector("svg");
+            if (!icon) return [];
+            const moveX = gsap.quickTo(icon, "x", { duration: 0.4 });
+            const moveY = gsap.quickTo(icon, "y", { duration: 0.4 });
+            const move = (event: PointerEvent) => {
+              const rect = button.getBoundingClientRect();
+              moveX((event.clientX - rect.left - rect.width / 2) * 0.045);
+              moveY((event.clientY - rect.top - rect.height / 2) * 0.09);
+            };
+            const leave = () => {
+              moveX(0);
+              moveY(0);
+            };
+            button.addEventListener("pointermove", move);
+            button.addEventListener("pointerleave", leave);
+            return [
+              () => {
+                button.removeEventListener("pointermove", move);
+                button.removeEventListener("pointerleave", leave);
+              },
+            ];
+          });
+          return () => listeners.forEach((remove) => remove());
+        },
+      );
       cleanup = () => media.revert();
     }
     void animate();

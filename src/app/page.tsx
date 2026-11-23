@@ -8,6 +8,7 @@ import {
   QuoteBanner,
   SectionHead,
 } from "@/components/ui";
+import { ProjectCarousel } from "@/components/project-carousel";
 import { artwork, featuredCollections, projects } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
@@ -148,11 +149,11 @@ export default function Home() {
           href="/portfolio"
           link="Explore projects"
         />
-        <div className="card-grid wide">
-          {projects.slice(0, 2).map((item) => (
+        <ProjectCarousel>
+          {projects.map((item) => (
             <ProjectCard key={item.slug} item={item} />
           ))}
-        </div>
+        </ProjectCarousel>
       </section>
       <QuoteBanner />
     </>
