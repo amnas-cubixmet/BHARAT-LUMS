@@ -75,12 +75,12 @@ test("homepage sections and outlined CTAs use the strict palette and remain acce
   await expect(
     hero.getByText("Advanced LED lighting solutions", { exact: false }),
   ).toHaveCSS("color", "rgb(255, 255, 255)");
-  const quote = hero.getByRole("link", { name: "Get a Quote" });
-  await expect(quote).toHaveCSS("background-color", "rgb(0, 0, 0)");
-  await expect(quote).toHaveCSS("border-top-color", "rgb(255, 255, 255)");
-  await quote.hover();
-  await expect(quote).toHaveCSS("background-color", "rgb(255, 255, 255)");
-  await expect(quote).toHaveCSS("color", "rgb(0, 0, 0)");
+  const cta = hero.getByRole("link", { name: "Explore Products" });
+  await expect(cta).toHaveCSS("background-color", "rgb(0, 0, 0)");
+  await expect(cta).toHaveCSS("border-top-color", "rgb(255, 255, 255)");
+  await cta.hover();
+  await expect(cta).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(cta).toHaveCSS("color", "rgb(0, 0, 0)");
   await expect(page.locator("header .brand-logo")).toHaveAttribute(
     "src",
     /bharat-lums-white\.png/,

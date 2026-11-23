@@ -68,6 +68,7 @@ function animateHero(root: HTMLElement, { gsap, media }: MotionTools) {
 
 export function HomeHero({ catalogue }: { catalogue?: string }) {
   const root = useMotion<HTMLElement>(animateHero);
+  const illumination = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const [powered, setPowered] = useState(true);
   const [brightness, setBrightness] = useState(80);
@@ -79,6 +80,8 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
   const useFallback = useCallback(() => {
     setEnabled(false);
     setReady(false);
+    illumination.current?.style.removeProperty("--lens-x");
+    illumination.current?.style.removeProperty("--lens-y");
   }, []);
 
   useEffect(() => {
@@ -124,38 +127,6 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
         pointer.current = { x: 0, y: 0 };
       }}
     >
-      <div
-        className={styles.heroStage}
-        data-hero-stage
-        data-testid="streetlight-stage"
-        data-ready={ready}
-        aria-hidden="true"
-      >
-        <div className={styles.heroGlow} style={{ opacity: power }} />
-        <Image
-          className={styles.heroFallback}
-          src="/images/streetlight-concept.webp"
-          alt=""
-          fill
-          priority
-          sizes="(max-width: 900px) 100vw, 64vw"
-        />
-        {enabled && (
-          <div className={styles.heroCanvas}>
-            <SceneBoundary fallback={useFallback}>
-              <StreetlightScene
-                power={power}
-                reduced={reduced}
-                paused={!visible}
-                pointer={pointer}
-                onReady={markReady}
-                onFailure={useFallback}
-              />
-            </SceneBoundary>
-          </div>
-        )}
-      </div>
-
       <div className={`shell ${styles.heroInner}`}>
         <div className={styles.heroLead}>
           <p className={styles.heroKicker} data-hero-enter>
@@ -186,6 +157,44 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
             )}
           </div>
         </div>
+        <div
+          className={styles.heroStage}
+          data-hero-stage
+          data-testid="streetlight-stage"
+          data-ready={ready}
+          aria-hidden="true"
+        >
+          <div
+            className={styles.heroIllumination}
+            ref={illumination}
+            style={{ opacity: power }}
+          >
+            <div className={styles.heroGlow} />
+          </div>
+          <Image
+            className={styles.heroFallback}
+            src="/images/streetlight-concept.webp"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 900px) 100vw, 64vw"
+          />
+          {enabled && (
+            <div className={styles.heroCanvas}>
+              <SceneBoundary fallback={useFallback}>
+                <StreetlightScene
+                  power={power}
+                  reduced={reduced}
+                  paused={!visible}
+                  pointer={pointer}
+                  illumination={illumination}
+                  onReady={markReady}
+                  onFailure={useFallback}
+                />
+              </SceneBoundary>
+            </div>
+          )}
+        </div>
         <div className={styles.heroPanel}>
           <span className={styles.modelCaption}>Streetlight concept</span>
           <div className={styles.lightControls}>
@@ -211,9 +220,6 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
             </label>
           </div>
         </div>
-        <a className={styles.quoteFloat} href="/request-quote" data-hero-enter>
-          Get a Quote <ArrowUpRight size={17} aria-hidden="true" />
-        </a>
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 .hero {
   min-height: max(690px, calc(100svh - 80px));
   position: relative;
+  container-type: inline-size;
   isolation: isolate;
   overflow: clip;
   display: grid;
@@ -16,6 +17,7 @@
   padding-block: 60px 96px;
 }
 .heroLead {
+  min-width: 0;
   display: grid;
   justify-items: start;
   position: relative;
@@ -61,8 +63,7 @@
   margin-top: 23px;
 }
 .heroPrimary,
-.heroLink,
-.quoteFloat {
+.heroLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -71,8 +72,7 @@
   font-size: 0.82rem;
   font-weight: 800;
 }
-.heroPrimary,
-.quoteFloat {
+.heroPrimary {
   padding: 0 17px;
   border-radius: 99px;
   transition:
@@ -80,8 +80,7 @@
     color 0.25s;
 }
 .heroPrimary,
-.heroLink,
-.quoteFloat {
+.heroLink {
   background: var(--bg);
   color: var(--text);
   border: 1px solid var(--text);
@@ -94,34 +93,30 @@
     color 0.25s;
 }
 .heroPrimary:hover,
-.heroLink:hover,
-.quoteFloat:hover {
+.heroLink:hover {
   background: var(--text);
   color: var(--bg);
-}
-.quoteFloat {
-  position: absolute;
-  z-index: 3;
-  right: 2%;
-  top: 17%;
 }
 .heroStage {
   position: absolute;
   z-index: 2;
-  right: 0;
+  right: calc((100% - 100cqw) / 2);
   top: -3%;
-  width: 65%;
+  width: 65cqw;
   height: 110%;
   pointer-events: none;
   transform-origin: 68% 35%;
+  isolation: isolate;
 }
 .heroCanvas,
 .heroFallback,
-.heroGlow {
+.heroIllumination {
   position: absolute;
   inset: 0;
 }
 .heroCanvas {
+  width: 100%;
+  height: 100%;
   opacity: 0;
 }
 .heroStage[data-ready="true"] .heroCanvas {
@@ -134,17 +129,71 @@
   object-fit: contain;
   filter: grayscale(1);
 }
-.heroGlow {
+.heroIllumination {
+  --lens-x: 44%;
+  --lens-y: 18%;
   z-index: -1;
-  background:
-    radial-gradient(
-      ellipse 24% 10% at 47% 36%,
-      #ffffff4a,
-      #ffffff24 42%,
-      transparent 100%
-    ),
-    radial-gradient(ellipse 23% 31% at 49% 60%, #ffffff20, transparent 94%);
   transition: opacity 0.35s ease;
+}
+.heroGlow {
+  position: absolute;
+  left: var(--lens-x);
+  top: var(--lens-y);
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -12%);
+  background: radial-gradient(
+    ellipse 24% 9% at 50% 13%,
+    #ffffff42,
+    #ffffff17 56%,
+    transparent 100%
+  );
+  animation: lens-halo 1.5s ease-out both;
+}
+.heroGlow::after {
+  content: "";
+  position: absolute;
+  inset: 12% 13% 18%;
+  background:
+    radial-gradient(ellipse 35% 43% at 53% 46%, #ffffff1b, transparent 100%),
+    radial-gradient(ellipse 47% 17% at 57% 73%, #ffffff13, transparent 100%);
+  mask-image: conic-gradient(
+    from 128deg at 50% 0%,
+    transparent 0deg,
+    #000 34deg,
+    #000 68deg,
+    transparent 105deg
+  );
+  transform-origin: 50% 0;
+  animation: light-spread 1s 1.5s ease-out both;
+}
+.heroStage[data-ready="true"] .heroGlow {
+  animation: none;
+  opacity: var(--lens-halo, 1);
+}
+.heroStage[data-ready="true"] .heroGlow::after {
+  animation: none;
+  opacity: var(--light-spread, 1);
+  transform: scaleY(calc(0.45 + 0.55 * var(--light-spread, 1)));
+}
+@keyframes lens-halo {
+  0%,
+  33.333% {
+    opacity: 0.08;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes light-spread {
+  from {
+    opacity: 0;
+    transform: scaleY(0.45);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
 .heroPanel {
   z-index: 3;
@@ -382,24 +431,22 @@
 }
 @media (max-width: 900px) {
   .hero {
-    min-height: 0;
+    min-height: calc(100svh - var(--header-height));
+    overflow: visible;
   }
   .heroInner {
     padding-block: 48px 23px;
+    grid-template-rows: auto minmax(min-content, 1fr) auto;
     align-items: start;
   }
-  .heroLead {
-    z-index: 3;
-    pointer-events: none;
-  }
-  .heroLead a {
-    pointer-events: auto;
-  }
   .heroStage {
-    width: 75%;
-    height: 93%;
-    top: 6%;
-    right: -6%;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: clamp(250px, 74vw, 455px);
+    justify-self: center;
+    margin-top: 8px;
+    overflow: clip;
   }
   .hero h1 {
     font-size: clamp(4.65rem, 12vw, 7.9rem);
@@ -409,12 +456,7 @@
     width: max-content;
     right: auto;
     bottom: auto;
-    margin-top: 36px;
-  }
-  .quoteFloat {
-    top: auto;
-    right: 0;
-    bottom: 27px;
+    margin-top: 12px;
   }
   .showcaseItem {
     min-height: 360px;
@@ -423,9 +465,6 @@
 @media (max-width: 650px) {
   .heroInner {
     padding-top: 32px;
-  }
-  .heroLead {
-    pointer-events: auto;
   }
   .hero h1 {
     font-size: clamp(2.85rem, 12.3vw, 5rem);
@@ -441,26 +480,12 @@
     gap: 8px 12px;
   }
   .heroPrimary,
-  .heroLink,
-  .quoteFloat {
+  .heroLink {
     min-height: 43px;
     font-size: 0.72rem;
     gap: 5px;
   }
-  .heroStage {
-    top: auto;
-    bottom: 47px;
-    width: 98%;
-    height: clamp(265px, 75vw, 365px);
-    right: 0;
-  }
-  .heroGlow {
-    background:
-      radial-gradient(ellipse 23% 7% at 47% 25%, #ffffff4a, transparent 100%),
-      radial-gradient(ellipse 22% 25% at 47% 49%, #ffffff20, transparent 94%);
-  }
   .heroPanel {
-    margin-top: clamp(230px, 65vw, 314px);
     padding: 8px 9px;
   }
   .lightControls {
@@ -468,10 +493,6 @@
   }
   .lightControls input {
     width: 79px;
-  }
-  .quoteFloat {
-    bottom: 29px;
-    padding-inline: 10px;
   }
   .showcaseItem {
     grid-template-columns: 1fr;
@@ -490,11 +511,14 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .heroGlow,
+  .heroGlow::after {
+    animation: none;
+  }
+  .heroIllumination,
   .faqRow button svg,
   .faqAnswer,
   .heroLink,
-  .heroPrimary,
-  .quoteFloat {
+  .heroPrimary {
     transition: none;
   }
 }
