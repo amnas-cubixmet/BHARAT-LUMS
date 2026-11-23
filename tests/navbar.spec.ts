@@ -4,12 +4,11 @@ const menu = [
   "Home",
   "About",
   "Products",
-  "Catalogue",
   "Global Presence",
   "Contact",
 ];
 
-test("desktop navbar stays centered and sticky, and all six links navigate", async ({
+test("desktop navbar stays centered and sticky, and all five links navigate", async ({
   page,
 }) => {
   await page.goto("/");
@@ -49,7 +48,6 @@ test("desktop navbar stays centered and sticky, and all six links navigate", asy
   for (const [name, path] of [
     ["About", "/about"],
     ["Products", "/products"],
-    ["Catalogue", "/collections"],
     ["Contact", "/contact"],
   ]) {
     const link = nav.getByRole("link", { name, exact: true });

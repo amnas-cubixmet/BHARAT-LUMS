@@ -8,15 +8,15 @@ import {
   catalogueCategories,
   catalogueLabel,
   findCollection,
-  legacyCollections,
+  legacyCategories,
   publishedProducts,
   projectCategories,
   projects,
   type Product,
 } from "@/lib/catalogue";
-import { Action, CollectionCard, ProductCard, ProjectCard } from "./ui";
+import { Action, CatalogueCategoryCard, ProductCard, ProjectCard } from "./ui";
 
-const architecturalCategories = legacyCollections.filter((category) =>
+const architecturalCategories = legacyCategories.filter((category) =>
   publishedProducts.some((product) => product.categories.includes(category.slug)),
 );
 const verifiedWattages = [
@@ -27,9 +27,9 @@ const verifiedWattages = [
   ),
 ].sort((a, b) => a - b);
 
-export function ProductsBrowser() {
+export function ProductsBrowser({ initialCategory }: { initialCategory: string }) {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(initialCategory);
   const [wattage, setWattage] = useState("");
   const [sort, setSort] = useState("featured");
   const [selected, setSelected] = useState<Product | null>(null);
@@ -144,7 +144,7 @@ export function ProductsBrowser() {
       ) : !publishedProducts.length && categoryMatches.length ? (
         <div className="card-grid catalogue-grid-transition" key={category}>
           {categoryMatches.map((item) => (
-            <CollectionCard item={item} key={item.slug} />
+            <CatalogueCategoryCard item={item} key={item.slug} />
           ))}
         </div>
       ) : (

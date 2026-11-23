@@ -15,7 +15,7 @@ export function HomeFaq({ catalogue }: { catalogue?: string }) {
       <>
         Explore lighting applications for roads, outdoor sites, warehouses,
         commercial buildings and offices in our{" "}
-        <Link href="/collections">lighting collections</Link>. Our team can
+        <Link href="/products">product catalogue</Link>. Our team can
         confirm which fixtures suit your project.
       </>,
     ],

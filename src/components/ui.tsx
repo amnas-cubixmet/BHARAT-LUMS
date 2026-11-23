@@ -4,8 +4,8 @@ import { ArrowDown, ArrowUpRight, ArrowRight } from "lucide-react";
 import {
   artwork,
   catalogueLabel,
-  collections,
-  type Collection,
+  findCollection,
+  type CatalogueCategory,
   type Product,
   type Project,
 } from "@/lib/catalogue";
@@ -63,13 +63,14 @@ export function SectionHead({
   );
 }
 
-export function CollectionCard({ item }: { item: Collection }) {
+export function CatalogueCategoryCard({ item }: { item: CatalogueCategory }) {
+  const enquiryHref = `/request-quote?collection=${item.slug}`;
   return (
     <Reveal as="article" className="media-card collection-card">
       <Link
-        href={`/collections/${item.slug}`}
+        href={enquiryHref}
         className="image-link"
-        aria-label={`Explore ${item.name}`}
+        aria-label={`Enquire about ${item.name}`}
       >
         <Image
           src={artwork(item.image)}
@@ -83,7 +84,7 @@ export function CollectionCard({ item }: { item: Collection }) {
       </Link>
       <div className="card-body">
         <h3>
-          <Link href={`/collections/${item.slug}`}>{item.name}</Link>
+          <Link href={enquiryHref}>{item.name}</Link>
         </h3>
         <p>{item.description}</p>
       </div>
@@ -116,7 +117,7 @@ export function ProductCard({
       </Link>
       <div className="card-body">
         <p className="label">
-          {collections.find(({ slug }) => slug === item.categories[0])?.name}
+          {findCollection(item.categories[0])?.name}
           <span className="catalogue-image-note">
             {item.images[0].representative
               ? "Representative image"
@@ -226,8 +227,7 @@ export function Footer() {
           </div>
           <div>
             <h2>Explore</h2>
-            <Link href="/collections">Product Catalogue</Link>
-            <Link href="/products">Products</Link>
+            <Link href="/products">Product Catalogue</Link>
             <Link href="/light-studio">Light Studio</Link>
           </div>
           <div>

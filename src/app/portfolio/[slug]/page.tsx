@@ -9,7 +9,6 @@ import {
 } from "@/components/ui";
 import {
   artwork,
-  products,
   projects,
   publishedProducts,
 } from "@/lib/catalogue";
@@ -36,13 +35,7 @@ export default async function ProjectPage({ params }: Params) {
   const item = projects.find((project) => project.slug === slug);
   if (!item) notFound();
   const published = publishedProducts.some(({ slug }) => slug === item.product);
-  const category = products.find(({ slug }) => slug === item.product)
-    ?.categories[0];
-  const fixtureHref = published
-    ? `/products/${item.product}`
-    : category
-      ? `/collections/${category}`
-      : "/collections";
+  const fixtureHref = published ? `/products/${item.product}` : "/products";
   return (
     <>
       <PageIntro
@@ -67,7 +60,7 @@ export default async function ProjectPage({ params }: Params) {
             <h2>Fixture used in the concept</h2>
             <p>{item.application}</p>
             <Action href={fixtureHref} secondary>
-              {published ? "View fixture" : "Explore lighting collection"}
+              {published ? "View fixture" : "Explore the product catalogue"}
             </Action>
           </div>
           <div className="detail-image">

@@ -1,17 +1,15 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { collections, projects, publishedProducts } from "../src/lib/catalogue";
+import { projects, publishedProducts } from "../src/lib/catalogue";
 
 const routes = [
   "/",
   "/about",
   "/contact",
   "/products",
-  "/collections",
   "/portfolio",
   "/light-studio",
   "/request-quote",
-  ...collections.map(({ slug }) => `/collections/${slug}`),
   ...projects.map(({ slug }) => `/portfolio/${slug}`),
   ...publishedProducts.map(({ slug }) => `/products/${slug}`),
 ];

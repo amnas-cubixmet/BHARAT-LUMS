@@ -62,81 +62,21 @@ const ledFamilies = [
 ] as const;
 
 const legacyFamilies = [
-  [
-    "linear-led-lighting",
-    "Linear LED Lighting",
-    "Clean, continuous lines for ceilings, walls and suspended installations.",
-    "linear",
-  ],
-  [
-    "architectural-lighting",
-    "Architectural Lighting",
-    "Light that follows the structure and reveals its material.",
-    "recessed",
-  ],
-  [
-    "pendant-lighting",
-    "Pendant Lighting",
-    "Suspended fixtures that define the space below.",
-    "linear",
-  ],
-  [
-    "track-lighting",
-    "Track Lighting",
-    "Adjustable light for changing displays and layouts.",
-    "track",
-  ],
-  [
-    "magnetic-track-lighting",
-    "Magnetic Track Lighting",
-    "A flexible track layout for directional and diffuse fixtures.",
-    "track",
-  ],
-  [
-    "recessed-lighting",
-    "Recessed Lighting",
-    "Light integrated into the ceiling plane.",
-    "recessed",
-  ],
-  [
-    "surface-mounted-lighting",
-    "Surface-Mounted Lighting",
-    "Direct-mounted profiles for exposed ceilings and walls.",
-    "linear",
-  ],
-  [
-    "downlights",
-    "Downlights",
-    "Discrete overhead lighting for circulation and task areas.",
-    "track",
-  ],
-  [
-    "spotlights",
-    "Spotlights",
-    "Focused light for artwork, merchandise and textured surfaces.",
-    "track",
-  ],
-  [
-    "decorative-lighting",
-    "Decorative Lighting",
-    "Fixtures that shape the character of an interior.",
-    "dining",
-  ],
-  [
-    "smart-lighting",
-    "Smart Lighting",
-    "Controllable lighting concepts for changing needs.",
-    "living",
-  ],
-  [
-    "modular-lighting-systems",
-    "Modular Lighting Systems",
-    "Linked sections for uninterrupted runs and geometric layouts.",
-    "recessed",
-  ],
+  ["linear-led-lighting", "Linear LED Lighting"],
+  ["architectural-lighting", "Architectural Lighting"],
+  ["pendant-lighting", "Pendant Lighting"],
+  ["track-lighting", "Track Lighting"],
+  ["magnetic-track-lighting", "Magnetic Track Lighting"],
+  ["recessed-lighting", "Recessed Lighting"],
+  ["surface-mounted-lighting", "Surface-Mounted Lighting"],
+  ["downlights", "Downlights"],
+  ["spotlights", "Spotlights"],
+  ["decorative-lighting", "Decorative Lighting"],
+  ["smart-lighting", "Smart Lighting"],
+  ["modular-lighting-systems", "Modular Lighting Systems"],
 ] as const;
 
-const collectionFrom = ([slug, name, description, image]: readonly [
+const categoryFrom = ([slug, name, description, image]: readonly [
   string,
   string,
   string,
@@ -147,22 +87,19 @@ const collectionFrom = ([slug, name, description, image]: readonly [
   description,
   image,
 });
-export const catalogueCategories = ledFamilies.map(collectionFrom);
-export const collections = catalogueCategories;
-export const legacyCollections = legacyFamilies.map(collectionFrom);
+export const catalogueCategories = ledFamilies.map(categoryFrom);
+export const legacyCategories = legacyFamilies.map(([slug, name]) => ({
+  slug,
+  name,
+}));
 
 export function findCollection(slug: unknown) {
   return (
-    collections.find((item) => item.slug === slug) ??
-    legacyCollections.find((item) => item.slug === slug)
+    catalogueCategories.find((item) => item.slug === slug) ??
+    legacyCategories.find((item) => item.slug === slug)
   );
 }
 
-export const featuredCollections = [
-  collections[0],
-  collections[5],
-  collections[4],
-];
 export const artwork = (name: string) => `/images/${name}.webp`;
 
 export type ProductImage = {
@@ -572,4 +509,4 @@ export const projects = [
 ];
 
 export type Project = (typeof projects)[number];
-export type Collection = (typeof collections)[number];
+export type CatalogueCategory = (typeof catalogueCategories)[number];

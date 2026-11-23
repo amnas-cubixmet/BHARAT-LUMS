@@ -12,7 +12,6 @@ const links = [
   ["/", "Home"],
   ["/about", "About"],
   ["/products", "Products"],
-  ["/collections", "Catalogue"],
   [globalPresence, "Global Presence"],
   ["/contact", "Contact"],
 ];

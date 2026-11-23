@@ -1,11 +1,28 @@
 import { ProductsBrowser } from "@/components/browse";
 import { PageIntro, QuoteBanner } from "@/components/ui";
-import { publishedProducts } from "@/lib/catalogue";
+import {
+  catalogueCategories,
+  legacyCategories,
+  publishedProducts,
+} from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata("Lighting Products", "/products");
 
-export default function ProductsPage() {
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string | string[] }>;
+}) {
+  const { category } = await searchParams;
+  const initialCategory =
+    catalogueCategories.find((item) => item.slug === category)?.slug ??
+    legacyCategories.find(
+      (item) =>
+        item.slug === category &&
+        publishedProducts.some((product) => product.categories.includes(item.slug)),
+    )?.slug ??
+    "";
   return (
     <>
       <PageIntro
@@ -18,7 +35,7 @@ export default function ProductsPage() {
         }
       />
       <section className="shell section-tight" aria-label="Browse fixtures">
-        <ProductsBrowser />
+        <ProductsBrowser key={initialCategory} initialCategory={initialCategory} />
       </section>
       <QuoteBanner />
     </>

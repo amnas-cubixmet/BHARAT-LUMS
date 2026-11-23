@@ -5,8 +5,8 @@ import { Gallery } from "@/components/gallery";
 import { Action, PageIntro, ProductCard, QuoteBanner } from "@/components/ui";
 import {
   catalogueLabel,
-  collections,
-  legacyCollections,
+  catalogueCategories,
+  legacyCategories,
   publishedProducts,
   relatedProducts,
 } from "@/lib/catalogue";
@@ -110,13 +110,13 @@ export default async function ProductPage({ params }: Params) {
             </div>
           )}
           <div className="filter-pills">
-            {[...collections, ...legacyCollections]
+            {[...catalogueCategories, ...legacyCategories]
               .filter((category) => item.categories.includes(category.slug))
               .map((category) => (
                 <Link
                   className="text-link"
                   key={category.slug}
-                  href={`/collections/${category.slug}`}
+                  href={{ pathname: "/products", query: { category: category.slug } }}
                 >
                   {category.name}
                 </Link>
