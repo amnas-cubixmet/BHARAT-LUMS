@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Component, useEffect, useState, type ReactNode } from "react";
+import Image from "next/image";
+import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import { Box, Power, RotateCcw, RotateCw, ZoomIn } from "lucide-react";
 import { Action } from "./ui";
 import {
@@ -12,6 +13,7 @@ import {
   finishes,
   fixtures,
   mountings,
+  roomColors,
   setupQuery,
   temperatures,
   type Setup,
@@ -25,13 +27,6 @@ const Scene = dynamic(() => import("./scene"), {
     </p>
   ),
 });
-const sceneImages: Record<Setup["environment"], string> = {
-  Office: "office",
-  "Living room": "living",
-  "Retail store": "track",
-  Restaurant: "dining",
-};
-
 class SceneBoundary extends Component<
   { fallback: ReactNode; children: ReactNode },
   { failed: boolean }
@@ -68,11 +63,21 @@ function FlatPreview({
       <div
         className="flat-room"
         style={{
-          backgroundImage: `url(/images/${sceneImages[setup.environment]}.webp)`,
+          background: `linear-gradient(${roomColors[setup.environment]} 68%, #413934 68%)`,
           filter: `brightness(${0.18 + power * 0.53})`,
           transform: `scale(${1 + zoom * 0.08}) translateX(${rotation * 3}%)`,
         }}
-      />
+      >
+        {setup.environment === "Office" && (
+          <Image
+            src="/images/office.webp"
+            alt=""
+            fill
+            loading="lazy"
+            sizes="(max-width: 805px) 92vw, (max-width: 1450px) 58vw, 835px"
+          />
+        )}
+      </div>
       <div
         className="flat-ambient"
         style={{
@@ -109,8 +114,13 @@ export default function Studio() {
     rotation: 0,
     zoom: 0,
   });
+  const preview = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
+    const element = preview.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
       const canvas = document.createElement("canvas");
       let available = false;
       try {
@@ -119,8 +129,9 @@ export default function Studio() {
         context?.getExtension("WEBGL_lose_context")?.loseContext();
       } catch {}
       setSupported(available);
-    });
-    return () => cancelAnimationFrame(frame);
+    }, { rootMargin: "120px" });
+    observer.observe(element);
+    return () => observer.disconnect();
   }, []);
   function update<K extends keyof Setup>(field: K, value: Setup[K]) {
     setSetup((current) => ({ ...current, [field]: value }));
@@ -178,7 +189,7 @@ export default function Studio() {
             </button>
           </div>
         </div>
-        <div className="scene-view">
+        <div className="scene-view" ref={preview}>
           {supported && !useFlat ? (
             <SceneBoundary fallback={flat}>
               <Scene

@@ -380,6 +380,7 @@
     width: 100%;
     height: clamp(250px, 74vw, 455px);
     justify-self: center;
+    translate: 0 var(--hero-scroll-y, 0px);
     margin-top: 8px;
     overflow: clip;
   }

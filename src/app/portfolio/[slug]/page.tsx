@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: Params) {
             src={artwork(item.image)}
             alt={`${item.name} architectural lighting concept`}
             fill
-            priority
+            loading="lazy"
             sizes="95vw"
           />
         </div>
@@ -68,6 +68,7 @@ export default async function ProjectPage({ params }: Params) {
               src={artwork(item.gallery)}
               alt={`${item.application} lighting study`}
               fill
+              loading="lazy"
               sizes="(max-width: 760px) 100vw, 50vw"
             />
           </div>

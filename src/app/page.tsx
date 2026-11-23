@@ -40,6 +40,7 @@ export default function Home() {
             <Image
               src={conferenceRoom}
               alt="Lighting application reference showing suspended linear LED fixtures above a conference table"
+              loading="lazy"
               sizes="(max-width: 650px) 92vw, (max-width: 1450px) 41vw, 570px"
             />
           </div>
@@ -56,6 +57,7 @@ export default function Home() {
             src={artwork("office")}
             alt="Linear fixtures illuminating a boardroom concept"
             fill
+            loading="lazy"
             sizes="(max-width: 760px) 100vw, 55vw"
           />
         </div>

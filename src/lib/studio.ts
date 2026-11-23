@@ -47,6 +47,13 @@ export const finishColor: Record<Setup["finish"], string> = {
   Aluminum: "#9ca3aa",
 };
 
+export const roomColors: Record<Setup["environment"], string> = {
+  Office: "#46413e",
+  "Living room": "#544a43",
+  "Retail store": "#42454a",
+  Restaurant: "#4c3530",
+};
+
 type Fixture = {
   x: number;
   z: number;

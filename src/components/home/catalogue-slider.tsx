@@ -75,6 +75,7 @@ export function CatalogueSlider({
                   src={`/images/${image}.webp`}
                   alt=""
                   fill
+                  loading="lazy"
                   sizes="(max-width: 560px) 82vw, (max-width: 900px) 43vw, (max-width: 1450px) 29vw, 425px"
                 />
               </span>

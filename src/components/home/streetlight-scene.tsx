@@ -15,6 +15,7 @@ import {
 type SceneProps = {
   power: number;
   reduced: boolean;
+  compactLayout: boolean;
   paused: boolean;
   pointer: RefObject<{ x: number; y: number }>;
   illumination: RefObject<HTMLDivElement | null>;
@@ -32,6 +33,7 @@ function Fixture({
   power,
   paused,
   reduced,
+  compactLayout,
   pointer,
   illumination,
   onReady,
@@ -50,7 +52,7 @@ function Fixture({
   const compact = useThree(({ size }) => size.width < 620);
   const invalidate = useThree((state) => state.invalidate);
   useEffect(() => {
-    if (window.matchMedia("(max-width: 650px)").matches) {
+    if (compactLayout) {
       const distance = Math.max(8.4, 4.8 / Math.max(0.4, aspect));
       camera.position.set(-0.62, -2.7, distance);
       camera.lookAt(-0.62, -1.8, 0);
@@ -64,7 +66,7 @@ function Fixture({
       camera.lookAt(compact ? -0.38 : -0.12, compact ? -0.68 : -0.26, 0);
     }
     invalidate();
-  }, [aspect, camera, compact, invalidate]);
+  }, [aspect, camera, compact, compactLayout, invalidate]);
 
   useEffect(() => {
     invalidate();
@@ -252,7 +254,7 @@ export default function StreetlightScene(props: SceneProps) {
   return (
     <Canvas
       aria-hidden
-      dpr={[1, 1.5]}
+      dpr={[1, props.compactLayout ? 1.2 : 1.5]}
       frameloop={props.reduced || props.paused ? "demand" : "always"}
       camera={{ position: [-0.18, -1.26, 6.5], fov: 39 }}
       gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}

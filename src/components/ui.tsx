@@ -76,6 +76,7 @@ export function CatalogueCategoryCard({ item }: { item: CatalogueCategory }) {
           src={artwork(item.image)}
           alt=""
           fill
+          loading="lazy"
           sizes="(max-width: 560px) 92vw, (max-width: 805px) 45vw, (max-width: 1450px) 30vw, 420px"
         />
         <span className="card-icon">
@@ -174,6 +175,7 @@ export function ProjectCard({ item }: { item: Project }) {
           src={artwork(item.image)}
           alt=""
           fill
+          loading="lazy"
           sizes="(max-width: 680px) 100vw, 48vw"
         />
         <span className="card-icon">

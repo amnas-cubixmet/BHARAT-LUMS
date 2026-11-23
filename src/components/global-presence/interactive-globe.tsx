@@ -17,6 +17,7 @@ import {
 import type { OrbitControls as Orbit } from "three-stdlib";
 import { countries, origin, type Country } from "@/lib/global-presence";
 import styles from "./presence.module.css";
+import { compactSceneQuery, reducedMotionQuery, useMediaQuery } from "../use-media-query";
 
 const start = { latitude: 14, longitude: 65 };
 const initialCamera = pointOnGlobe(start, 4.4).toArray();
@@ -421,17 +422,10 @@ type GlobeProps = {
 };
 
 export default function InteractiveGlobe(props: GlobeProps) {
-  const [reduced, setReduced] = useState(
-    () => matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
-  const [visible, setVisible] = useState(true);
+  const reduced = useMediaQuery(reducedMotionQuery);
+  const compact = useMediaQuery(compactSceneQuery);
+  const [visible, setVisible] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const motion = matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(motion.matches);
-    motion.addEventListener("change", update);
-    return () => motion.removeEventListener("change", update);
-  }, []);
   useEffect(() => {
     const element = wrapper.current;
     if (!element) return;
@@ -451,7 +445,7 @@ export default function InteractiveGlobe(props: GlobeProps) {
       <Canvas
         frameloop={visible && !reduced ? "always" : "demand"}
         camera={{ position: initialCamera, fov: 51 }}
-        dpr={[1, 1.4]}
+        dpr={[1, compact ? 1.2 : 1.4]}
         gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
       >
         <GlobeScene {...props} reduced={reduced} />

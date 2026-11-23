@@ -1,13 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpRight, Send } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { enquirySchema, enquiryText, type Enquiry } from "@/lib/enquiry";
 
 type Defaults = { interest?: string; message?: string };
-type Status = { kind: "ok" | "error" | "email"; message: string };
+type Status = { kind: "ok" | "error" | "draft"; message: string };
 const fields = [
   {
     name: "name",
@@ -43,10 +43,12 @@ const fields = [
 export default function EnquiryForm({
   online,
   email,
+  whatsappNumber,
   defaults,
 }: {
   online: boolean;
   email: string;
+  whatsappNumber: string;
   defaults?: Defaults;
 }) {
   const {
@@ -69,21 +71,18 @@ export default function EnquiryForm({
     },
   });
   const [status, setStatus] = useState<Status | null>(null);
-  const [mailLink, setMailLink] = useState("");
+  const [draft, setDraft] = useState("");
   const attempt = useRef<{ body: string; id: string } | null>(null);
   async function submit(values: Enquiry) {
-    const message = enquiryText(values);
-    setMailLink(
-      `mailto:${email}?subject=${encodeURIComponent("Bharat Lums website enquiry")}&body=${encodeURIComponent(message)}`,
-    );
+    setDraft(enquiryText(values));
     if (!online) {
       setStatus({
-        kind: "email",
-        message:
-          "Your email draft is ready. Open your email app to review and send it.",
+        kind: "draft",
+        message: "Your enquiry draft is ready. Choose email or WhatsApp to review and send it.",
       });
       return;
     }
+    setStatus(null);
     const body = JSON.stringify(values);
     if (body !== attempt.current?.body)
       attempt.current = { body, id: crypto.randomUUID() };
@@ -102,7 +101,7 @@ export default function EnquiryForm({
       setStatus({
         kind: "error",
         message:
-          "Online submission is temporarily unavailable. Use the email option below.",
+          "Online submission is temporarily unavailable. You can send your draft by email or WhatsApp.",
       });
     }
   }
@@ -113,7 +112,7 @@ export default function EnquiryForm({
       onSubmit={(event) => {
         void handleSubmit(submit, () => {
           setStatus(null);
-          setMailLink("");
+          setDraft("");
         })(event);
       }}
       noValidate
@@ -182,7 +181,7 @@ export default function EnquiryForm({
       <p className="form-note full">
         {online
           ? "We’ll use these details to respond to your enquiry."
-          : "Online submission is currently unavailable. Prepare an email draft to send from your email app."}
+          : "Prepare your enquiry to send by email or WhatsApp."}
       </p>
       <button
         className="button button-primary full"
@@ -193,16 +192,29 @@ export default function EnquiryForm({
           ? "Submitting…"
           : online
             ? "Submit enquiry"
-            : "Prepare email draft"}{" "}
+            : "Prepare enquiry"}{" "}
         <Send size={16} />
       </button>
       <div className="full" aria-live="polite">
         {status && <p className="form-result">{status.message}</p>}
       </div>
-      {mailLink && status?.kind !== "ok" && (
-        <a className="button button-outline full" href={mailLink}>
-          Open email app <ArrowUpRight size={16} />
-        </a>
+      {draft && status && status.kind !== "ok" && (
+        <div className="full flex flex-wrap gap-3">
+          <a
+            className="button button-outline"
+            href={`mailto:${email}?subject=${encodeURIComponent("Bharat Lums website enquiry")}&body=${encodeURIComponent(draft)}`}
+          >
+            Open email app <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
+          <a
+            className="button button-outline"
+            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(draft)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open WhatsApp <MessageCircle size={16} aria-hidden="true" />
+          </a>
+        </div>
       )}
     </form>
   );

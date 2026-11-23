@@ -5,15 +5,10 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { Color, MathUtils, Vector3, type Group } from "three";
 import type { OrbitControls as Controls } from "three-stdlib";
-import { finishColor, fixtures, temperatures, type Setup } from "@/lib/studio";
+import { finishColor, fixtures, roomColors, temperatures, type Setup } from "@/lib/studio";
+import { compactSceneQuery, reducedMotionQuery, useMediaQuery } from "./use-media-query";
 
 type Position = [number, number, number];
-const roomColors: Record<Setup["environment"], string> = {
-  Office: "#46413e",
-  "Living room": "#544a43",
-  "Retail store": "#42454a",
-  Restaurant: "#4c3530",
-};
 const initialTarget = new Vector3(0, 1.5, 0);
 const cameraPosition: Position = [6.1, 2.95, 7.1];
 
@@ -128,6 +123,7 @@ function Fixture({
   vertical,
   setup,
   index,
+  reduced,
 }: {
   position: Position;
   length: number;
@@ -135,6 +131,7 @@ function Fixture({
   vertical?: boolean;
   setup: Setup;
   index: number;
+  reduced: boolean;
 }) {
   const ref = useRef<Group>(null);
   const { invalidate } = useThree();
@@ -143,9 +140,6 @@ function Fixture({
     temperatures.find((item) => item.value === setup.temperature)?.color ??
     "#fff";
   const intensity = setup.power ? setup.brightness / 100 : 0;
-  const reduced =
-    typeof window !== "undefined" &&
-    matchMedia("(prefers-reduced-motion: reduce)").matches;
   const suspended = setup.mounting === "Suspended" && !vertical;
   const recessed = setup.mounting === "Recessed";
   const height = recessed ? 0.035 : 0.095;
@@ -218,9 +212,11 @@ function Fixture({
 function CameraControls({
   reset,
   command,
+  reduced,
 }: {
   reset: number;
   command: string;
+  reduced: boolean;
 }) {
   const ref = useRef<Controls>(null);
   const camera = useThree((state) => state.camera);
@@ -254,7 +250,7 @@ function CameraControls({
       minPolarAngle={0.29}
       maxPolarAngle={Math.PI / 2.05}
       enablePan={false}
-      enableDamping
+      enableDamping={!reduced}
       rotateSpeed={0.58}
     />
   );
@@ -280,6 +276,8 @@ export default function Scene({
   command: string;
   onFailure: () => void;
 }) {
+  const reduced = useMediaQuery(reducedMotionQuery);
+  const compact = useMediaQuery(compactSceneQuery);
   const layout = fixtures[setup.arrangement];
   const position =
     setup.mounting === "Suspended"
@@ -293,7 +291,7 @@ export default function Scene({
       camera={{ position: cameraPosition, fov: 39 }}
       frameloop="demand"
       shadows
-      dpr={[1, 1.35]}
+      dpr={[1, compact ? 1.2 : 1.35]}
       gl={{ antialias: true, powerPreference: "low-power" }}
       fallback={<span role="status">Interactive 3D is unavailable.</span>}
     >
@@ -342,6 +340,7 @@ export default function Scene({
         <Fixture
           key={`${setup.arrangement}-${setup.mounting}-${index}`}
           setup={setup}
+          reduced={reduced}
           index={index}
           position={[item.x, item.vertical ? 1.85 : position, item.z]}
           vertical={item.vertical}
@@ -349,7 +348,7 @@ export default function Scene({
           angle={item.angle}
         />
       ))}
-      <CameraControls reset={reset} command={command} />
+      <CameraControls reset={reset} command={command} reduced={reduced} />
     </Canvas>
   );
 }

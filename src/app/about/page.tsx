@@ -20,6 +20,7 @@ export default function AboutPage() {
             src={artwork("about-bharat-lums-conference")}
             alt="Suspended linear lighting above a conference table"
             fill
+            loading="lazy"
             sizes="(max-width: 760px) 100vw, 56vw"
           />
         </Reveal>

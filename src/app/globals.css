@@ -1015,11 +1015,13 @@ textarea::placeholder {
   overflow: hidden;
 }
 .flat-room {
-  background-position: center 64%;
-  background-size: cover;
   transition:
     filter 0.26s,
     transform 0.26s;
+}
+.flat-room img {
+  object-fit: cover;
+  object-position: center 64%;
 }
 .flat-ambient {
   transition: opacity 0.26s;

@@ -32,6 +32,7 @@ export function ContactSection({
       <EnquiryForm
         online={deliveryEnabled()}
         email={brand.email}
+        whatsappNumber={brand.phoneHref.replace(/\D/g, "")}
         defaults={defaults}
       />
     </section>

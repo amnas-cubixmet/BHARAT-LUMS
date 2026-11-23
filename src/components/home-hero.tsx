@@ -14,6 +14,7 @@ import {
   type ReactNode,
 } from "react";
 import { useMotion, type MotionTools } from "./motion";
+import { compactSceneQuery, reducedMotionQuery, useMediaQuery } from "./use-media-query";
 import styles from "./home/home.module.css";
 
 const StreetlightScene = dynamic(() => import("./home/streetlight-scene"), {
@@ -66,6 +67,22 @@ function animateHero(root: HTMLElement, { gsap, media }: MotionTools) {
       });
     },
   );
+  media.add(
+    "(max-width: 900px) and (prefers-reduced-motion: no-preference)",
+    () => {
+      if (!stage) return;
+      gsap.to(stage, {
+        "--hero-scroll-y": "22px",
+        ease: "none",
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    },
+  );
 }
 
 export function HomeHero({ catalogue }: { catalogue?: string }) {
@@ -76,8 +93,9 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
   const [brightness, setBrightness] = useState(80);
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
-  const [reduced, setReduced] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const reduced = useMediaQuery(reducedMotionQuery);
+  const compact = useMediaQuery(compactSceneQuery);
+  const [visible, setVisible] = useState(false);
   const markReady = useCallback(() => setReady(true), []);
   const useFallback = useCallback(() => {
     setEnabled(false);
@@ -87,11 +105,11 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
   }, []);
 
   useEffect(() => {
-    const motion = matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(motion.matches);
-    motion.addEventListener("change", update);
-    const frame = requestAnimationFrame(() => {
-      update();
+    const element = root.current;
+    if (!element) return;
+    const loader = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      loader.disconnect();
       try {
         const context = document.createElement("canvas").getContext("webgl2");
         setEnabled(Boolean(context));
@@ -99,16 +117,15 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
       } catch {
         setEnabled(false);
       }
-    });
-    const observer = new IntersectionObserver(([entry]) =>
+    }, { rootMargin: "120px" });
+    const visibility = new IntersectionObserver(([entry]) =>
       setVisible(entry.isIntersecting),
     );
-    const element = root.current;
-    if (element) observer.observe(element);
+    loader.observe(element);
+    visibility.observe(element);
     return () => {
-      cancelAnimationFrame(frame);
-      observer.disconnect();
-      motion.removeEventListener("change", update);
+      loader.disconnect();
+      visibility.disconnect();
     };
   }, [root]);
 
@@ -184,6 +201,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
                 <StreetlightScene
                   power={power}
                   reduced={reduced}
+                  compactLayout={compact}
                   paused={!visible}
                   pointer={pointer}
                   illumination={illumination}
