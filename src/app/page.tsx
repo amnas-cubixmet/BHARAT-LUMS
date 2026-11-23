@@ -3,11 +3,12 @@ import { Box } from "lucide-react";
 import { Action } from "@/components/ui";
 import { GlobalPresenceSection } from "@/components/global-presence/global-presence";
 import { HomeHero } from "@/components/home-hero";
+import { CatalogueSlider } from "@/components/home/catalogue-slider";
 import { HomeFaq } from "@/components/home/faq";
 import styles from "@/components/home/home.module.css";
 import { Reveal } from "@/components/motion";
 import conferenceRoom from "../../public/images/about-bharat-lums-conference.webp";
-import { artwork, catalogueDownload } from "@/lib/catalogue";
+import { artwork, catalogueCategories, catalogueDownload } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 export const metadata = {
@@ -44,6 +45,8 @@ export default function Home() {
           </div>
         </Reveal>
       </section>
+
+      <CatalogueSlider categories={catalogueCategories} />
 
       <GlobalPresenceSection />
 
