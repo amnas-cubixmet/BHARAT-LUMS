@@ -396,23 +396,60 @@
   }
 }
 @media (max-width: 650px) {
+  .hero {
+    overflow: clip;
+  }
   .heroInner {
-    padding-top: 32px;
+    grid-template-rows: 1fr auto;
+    gap: clamp(24px, 6svh, 52px);
+    padding-block: clamp(139px, 46vw, 250px) 26px;
+  }
+  .heroStage {
+    position: absolute;
+    inset: 0 auto 0 50%;
+    z-index: 0;
+    width: 100cqw;
+    height: auto;
+    margin: 0;
+    transform: translateX(-50%);
   }
   .heroLead {
-    isolation: isolate;
+    z-index: 1;
   }
-  .heroLead::before {
-    content: "";
-    position: absolute;
-    inset: -18px 0 -10px;
-    z-index: -1;
-    pointer-events: none;
+  .heroCanvas,
+  .heroFallback {
+    mask-image: linear-gradient(
+      #000 0 23%,
+      #0006 45%,
+      transparent 83%
+    );
+  }
+  .heroFallback {
+    object-position: right -45px top 18px;
+  }
+  .heroIllumination {
+    --lens-x: 61%;
+    --lens-y: 17%;
+  }
+  .heroGlow {
+    background: radial-gradient(
+      ellipse 31% 15% at 50% 13%,
+      #fff7,
+      #fff2 55%,
+      transparent 100%
+    );
+  }
+  .heroGlow::after {
+    inset: 12% 0 0;
     background:
-      radial-gradient(ellipse 50% 49% at 50% 50%, #ffffff27, transparent 100%),
-      radial-gradient(ellipse 33% 20% at 61% 77%, #ffffff17, transparent 100%);
-    opacity: var(--hero-light-power);
-    transition: opacity 0.35s ease;
+      radial-gradient(ellipse 44% 58% at 44% 40%, #fff4, transparent 96%),
+      radial-gradient(ellipse 51% 29% at 43% 61%, #fff2, transparent 100%);
+    mask-image: conic-gradient(
+      from 117deg at 50% 0,
+      transparent 0deg,
+      #000 38deg 98deg,
+      transparent 146deg
+    );
   }
   .hero h1 {
     font-size: clamp(2.85rem, 12.3vw, 5rem);
@@ -434,13 +471,22 @@
     gap: 5px;
   }
   .heroPanel {
-    padding: 8px 9px;
+    width: min(100%, 295px);
+    margin-top: 0;
+    padding: 9px 13px;
+    background: #000d;
   }
   .lightControls {
-    gap: 8px;
+    gap: 14px;
+  }
+  .lightControls button {
+    min-height: 44px;
+  }
+  .lightControls label {
+    flex: 1;
   }
   .lightControls input {
-    width: 79px;
+    width: 100%;
   }
   .aboutInner,
   .faqInner {
@@ -453,7 +499,6 @@
     animation: none;
   }
   .heroIllumination,
-  .heroLead::before,
   .faqRow button svg,
   .faqAnswer,
   .heroLink,

@@ -50,13 +50,19 @@ function Fixture({
   const compact = useThree(({ size }) => size.width < 620);
   const invalidate = useThree((state) => state.invalidate);
   useEffect(() => {
-    const distance = compact ? Math.max(5.15, 5.75 / Math.max(0.8, aspect)) : 6.5;
-    camera.position.set(
-      compact ? -0.38 : -0.18,
-      compact ? -1.7 : -1.26,
-      distance,
-    );
-    camera.lookAt(compact ? -0.38 : -0.12, compact ? -0.68 : -0.26, 0);
+    if (window.matchMedia("(max-width: 650px)").matches) {
+      const distance = Math.max(8.4, 4.8 / Math.max(0.4, aspect));
+      camera.position.set(-0.62, -2.7, distance);
+      camera.lookAt(-0.62, -1.8, 0);
+    } else {
+      const distance = compact ? Math.max(5.15, 5.75 / Math.max(0.8, aspect)) : 6.5;
+      camera.position.set(
+        compact ? -0.38 : -0.18,
+        compact ? -1.7 : -1.26,
+        distance,
+      );
+      camera.lookAt(compact ? -0.38 : -0.12, compact ? -0.68 : -0.26, 0);
+    }
     invalidate();
   }, [aspect, camera, compact, invalidate]);
 
