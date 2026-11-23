@@ -73,16 +73,11 @@ function CountryDetails({ country }: { country: Country }) {
       <p className={styles.kicker}>
         <MapPin size={14} aria-hidden="true" /> {country.region}
       </p>
-      <h3 lang="ml">{country.name}</h3>
+      <h3>{country.name}</h3>
       <p>
         {country.code === origin.code
           ? "Starting point for the routes shown on this map."
-          : (
-              <>
-                Map connection from <span lang="ml">{origin.name}</span> to{" "}
-                <span lang="ml">{country.name}</span>.
-              </>
-            )}
+          : `Map connection from ${origin.name} to ${country.name}.`}
       </p>
     </div>
   );
@@ -99,8 +94,7 @@ function RegionalMap({ country }: { country: Country }) {
     <div
       className={styles.fallback}
       role="img"
-      lang="ml"
-      aria-label={`ഭൂപടത്തിൽ ${country.name} അടയാളപ്പെടുത്തിയിരിക്കുന്നു`}
+      aria-label={`Regional map with ${country.name} highlighted`}
     >
       <svg viewBox="0 0 1000 560" aria-hidden="true">
         <image href="/maps/region.webp" width="1000" height="560" />
@@ -237,7 +231,7 @@ export function GlobalPresenceSection() {
                   onClick={() => select(point)}
                 >
                   <span aria-hidden="true">{point.code}</span>
-                  <span lang="ml">{point.name}</span>
+                  <span className={styles.countryName}>{point.name}</span>
                   <ArrowRight size={14} aria-hidden="true" />
                 </button>
               ))}
@@ -248,7 +242,7 @@ export function GlobalPresenceSection() {
               onClick={() => select(origin)}
             >
               <RotateCcw size={14} aria-hidden="true" />
-              <span lang="ml">ഇന്ത്യയിലേക്ക് മടങ്ങുക</span>
+              Return to India
             </button>
           </div>
         </div>

@@ -311,7 +311,7 @@ function CountryMarker({
           zIndexRange={[2, 0]}
           style={{ pointerEvents: "none" }}
         >
-          <span className={styles.markerLabel} lang="ml">{country.name}</span>
+          <span className={styles.markerLabel}>{country.name}</span>
         </Html>
       )}
     </group>

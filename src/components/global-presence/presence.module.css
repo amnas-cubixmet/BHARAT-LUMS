@@ -115,7 +115,7 @@
   font-size: 0.61rem;
   letter-spacing: 0.08em;
 }
-.countries button span[lang="ml"] {
+.countryName {
   min-width: 0;
   overflow-wrap: anywhere;
 }
