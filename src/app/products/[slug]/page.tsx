@@ -6,18 +6,21 @@ import { Action, PageIntro, ProductCard, QuoteBanner } from "@/components/ui";
 import {
   catalogueLabel,
   collections,
-  publishedProducts,
+  products,
   relatedProducts,
 } from "@/lib/catalogue";
 import { brand, metadata as pageMetadata } from "@/lib/site";
 
 type Params = { params: Promise<{ slug: string }> };
+
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  return publishedProducts.map(({ slug }) => ({ slug }));
+  return products.map(({ slug }) => ({ slug }));
 }
 export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
-  const item = publishedProducts.find((product) => product.slug === slug);
+  const item = products.find((product) => product.slug === slug);
   return item
     ? pageMetadata(
         item.name,
@@ -30,7 +33,7 @@ export async function generateMetadata({ params }: Params) {
 
 export default async function ProductPage({ params }: Params) {
   const { slug } = await params;
-  const item = publishedProducts.find((product) => product.slug === slug);
+  const item = products.find((product) => product.slug === slug);
   if (!item) notFound();
 
   const specs =
@@ -45,6 +48,11 @@ export default async function ProductPage({ params }: Params) {
           { label: "Download catalogue", href: item.catalogue },
         ].filter((download) => download.href)
       : [];
+  const related = relatedProducts(item);
+  const enquiryHref =
+    item.status === "verified"
+      ? `/request-quote?product=${slug}`
+      : `/request-quote?collection=${item.categories[0]}`;
   const whatsappNumber = brand.phoneHref.replace(/\D/g, "");
   const message = encodeURIComponent(
     `Hello Bharat Lums, I would like more information about ${item.name}. Please share the available options and specifications.`,
@@ -64,7 +72,7 @@ export default async function ProductPage({ params }: Params) {
         <Gallery images={item.images} />
         <div className="detail-copy">
           <Link className="text-link" href="/products">
-            ← All fixtures
+            ← All products
           </Link>
           <h2>
             {item.status === "verified"
@@ -78,7 +86,7 @@ export default async function ProductPage({ params }: Params) {
           </ul>
           <h2>Applications</h2>
           <p>{item.applications}</p>
-          <h2>Specifications and downloads</h2>
+          <h2>Technical information</h2>
           {specs.length > 0 ? (
             <table className="product-spec-table">
               <caption className="sr-only">
@@ -95,8 +103,7 @@ export default async function ProductPage({ params }: Params) {
             </table>
           ) : (
             <p>
-              Verified specifications are pending. Ask our team for available
-              models and technical information for your project.
+              Ask our team for available models and verified specifications.
             </p>
           )}
           {downloads.length > 0 && (
@@ -122,9 +129,7 @@ export default async function ProductPage({ params }: Params) {
               ))}
           </div>
           <div className="product-detail-actions">
-            <Action href={`/request-quote?product=${slug}`}>
-              Request a quote
-            </Action>
+            <Action href={enquiryHref}>Request a quote</Action>
             <a
               className="button button-outline"
               href={`https://wa.me/${whatsappNumber}?text=${message}`}
@@ -136,19 +141,18 @@ export default async function ProductPage({ params }: Params) {
           </div>
         </div>
       </section>
-      <section
-        className="shell section-tight"
-        aria-labelledby="related-fixtures"
-      >
-        <h2 className="catalogue-section-title" id="related-fixtures">
-          Related fixtures
-        </h2>
-        <div className="card-grid">
-          {relatedProducts(item).map((product) => (
-            <ProductCard item={product} key={product.slug} />
-          ))}
-        </div>
-      </section>
+      {related.length > 0 && (
+        <section className="shell section-tight" aria-labelledby="related-fixtures">
+          <h2 className="catalogue-section-title" id="related-fixtures">
+            Related fixtures
+          </h2>
+          <div className="card-grid">
+            {related.map((product) => (
+              <ProductCard item={product} key={product.slug} />
+            ))}
+          </div>
+        </section>
+      )}
       <QuoteBanner />
     </>
   );

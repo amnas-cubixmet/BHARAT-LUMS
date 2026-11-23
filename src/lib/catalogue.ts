@@ -264,6 +264,10 @@ export const products: Product[] = [
   },
 ];
 
+export function findCatalogueFixture(categorySlug: string) {
+  return products.find((item) => item.categories[0] === categorySlug);
+}
+
 export const publishedProducts = products.filter(
   (product) => product.status === "verified",
 );
@@ -278,7 +282,7 @@ export function catalogueLabel(product: Product) {
 }
 
 export function relatedProducts(product: Product) {
-  return publishedProducts
+  return products
     .filter((item) => item.slug !== product.slug)
     .filter((item) => score(item) > 0)
     .sort((a, b) => score(b) - score(a))

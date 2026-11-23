@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { publishedProducts, projects } from "@/lib/catalogue";
+import { products, projects } from "@/lib/catalogue";
 import { siteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about",
     "/contact",
     "/request-quote",
-    ...publishedProducts.map((item) => `/products/${item.slug}`),
+    ...products.map((item) => `/products/${item.slug}`),
     ...projects.map((item) => `/portfolio/${item.slug}`),
   ].map((path) => ({ url: new URL(path, siteUrl).href }));
 }

@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUpRight, ArrowRight } from "lucide-react";
 import {
   artwork,
   catalogueLabel,
+  findCatalogueFixture,
   findCollection,
   type CatalogueCategory,
   type Product,
@@ -65,9 +66,13 @@ export function SectionHead({
 
 export function CatalogueCategoryCard({ item }: { item: CatalogueCategory }) {
   const enquiryHref = `/request-quote?collection=${item.slug}`;
+  const fixture = findCatalogueFixture(item.slug);
   return (
     <Reveal as="article" className="media-card collection-card">
-      <Link className="collection-card-link" href={enquiryHref}>
+      <Link
+        className="collection-card-link"
+        href={fixture ? `/products/${fixture.slug}` : enquiryHref}
+      >
         <div className="image-link">
           <Image
             src={artwork(item.image)}
@@ -81,7 +86,8 @@ export function CatalogueCategoryCard({ item }: { item: CatalogueCategory }) {
           <h3>{item.name}</h3>
           <p>{item.description}</p>
           <span className="collection-card-action">
-            Enquire now <ArrowUpRight size={17} aria-hidden="true" />
+            {fixture ? "View details" : "Enquire now"}{" "}
+            <ArrowUpRight size={17} aria-hidden="true" />
           </span>
         </div>
       </Link>
