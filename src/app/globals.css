@@ -88,19 +88,6 @@ svg {
 .section-tight {
   padding-bottom: clamp(55px, 8vw, 110px);
 }
-.skip-link {
-  position: fixed;
-  top: 10px;
-  left: 12px;
-  z-index: 1001;
-  transform: translateY(-180%);
-  background: var(--text);
-  color: var(--bg);
-  padding: 12px 18px;
-}
-.skip-link:focus {
-  transform: none;
-}
 .site-header {
   position: sticky;
   top: 0;
@@ -848,6 +835,45 @@ textarea::placeholder {
   }
 }
 @media (max-width: 560px) {
+  .section {
+    padding-block: clamp(38px, 10vw, 56px);
+  }
+  .section-tight {
+    padding-bottom: clamp(38px, 10vw, 56px);
+  }
+  .page-intro {
+    padding-block: clamp(38px, 11vw, 62px) clamp(24px, 7vw, 38px);
+  }
+  .page-intro h1 {
+    font-size: clamp(2.25rem, 10vw, 3.8rem);
+    font-weight: 720;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+  }
+  .intro-copy {
+    font-size: 0.95rem;
+    margin-top: 14px;
+  }
+  .button {
+    max-width: 100%;
+    padding-inline: 14px;
+  }
+  .text-link {
+    white-space: normal;
+  }
+  input:not([type="range"]),
+  textarea,
+  select {
+    font-size: 1rem;
+  }
+  .enquiry-form,
+  .filters {
+    gap: 10px;
+  }
+  .contact-panel .text-link,
+  .footer-main a {
+    overflow-wrap: anywhere;
+  }
   .hero {
     min-height: clamp(540px, calc(90svh - 67px), 650px);
   }
@@ -1109,6 +1135,26 @@ textarea::placeholder {
     min-height: 42px;
   }
 }
+@media (max-width: 560px) {
+  .scene-view {
+    height: clamp(230px, 71vw, 340px);
+  }
+  .scene-toolbar,
+  .scene-caption {
+    flex-wrap: wrap;
+  }
+  .scene-toolbar .icon-button,
+  .power-button,
+  .options button {
+    min-height: 44px;
+  }
+  .scene-toolbar .icon-button {
+    min-width: 44px;
+  }
+  .finish-options button {
+    flex-direction: column;
+  }
+}
 .hero-installation {
   position: absolute;
   z-index: -1;
@@ -1340,5 +1386,12 @@ textarea::placeholder {
   .footer-project {
     align-items: start;
     flex-direction: column;
+    gap: 20px;
+    padding-block: clamp(42px, 11vw, 65px);
+  }
+  .footer-project h2 {
+    font-size: clamp(2.35rem, 9.6vw, 3.8rem);
+    line-height: 0.9;
+    overflow-wrap: anywhere;
   }
 }

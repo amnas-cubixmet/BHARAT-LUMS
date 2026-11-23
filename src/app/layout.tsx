@@ -27,9 +27,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body id="top">
-        <a className="skip-link" href="#main-content">
-          Skip to content
-        </a>
         {siteUrl && (
           <script
             type="application/ld+json"

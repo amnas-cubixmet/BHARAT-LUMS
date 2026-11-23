@@ -17,8 +17,8 @@ export default function AboutPage() {
       <section className="shell detail-grid section-tight">
         <Reveal className="detail-image">
           <Image
-            src={artwork("hero")}
-            alt="Suspended linear lighting in a gallery entrance concept"
+            src={artwork("about-bharat-lums-conference")}
+            alt="Suspended linear lighting above a conference table"
             fill
             sizes="(max-width: 760px) 100vw, 56vw"
           />

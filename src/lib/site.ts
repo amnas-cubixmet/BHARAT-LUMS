@@ -21,7 +21,7 @@ export function metadata(
   title: string,
   path: string,
   summary = description,
-  image = "/images/hero.webp",
+  image = "/images/about-bharat-lums-conference.webp",
 ): Metadata {
   const url = siteUrl ? new URL(path, siteUrl) : undefined;
   return {
