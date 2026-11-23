@@ -1,15 +1,21 @@
 import { notFound } from "next/navigation";
 import { Action, PageIntro, ProductCard, QuoteBanner } from "@/components/ui";
-import { artwork, collections, publishedProducts } from "@/lib/catalogue";
+import {
+  artwork,
+  collections,
+  findCollection,
+  legacyCollections,
+  publishedProducts,
+} from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 type Params = { params: Promise<{ category: string }> };
 export function generateStaticParams() {
-  return collections.map(({ slug }) => ({ category: slug }));
+  return [...collections, ...legacyCollections].map(({ slug }) => ({ category: slug }));
 }
 export async function generateMetadata({ params }: Params) {
   const { category } = await params;
-  const collection = collections.find(({ slug }) => slug === category);
+  const collection = findCollection(category);
   return collection
     ? pageMetadata(
         collection.name,
@@ -21,7 +27,7 @@ export async function generateMetadata({ params }: Params) {
 }
 export default async function CollectionPage({ params }: Params) {
   const { category } = await params;
-  const collection = collections.find(({ slug }) => slug === category);
+  const collection = findCollection(category);
   if (!collection) notFound();
   const matches = publishedProducts.filter((item) =>
     item.categories.includes(category),

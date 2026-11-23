@@ -7,7 +7,8 @@ import { MotionConfig, motion } from "motion/react";
 import {
   catalogueCategories,
   catalogueLabel,
-  collections,
+  findCollection,
+  legacyCollections,
   publishedProducts,
   projectCategories,
   projects,
@@ -15,12 +16,8 @@ import {
 } from "@/lib/catalogue";
 import { Action, CollectionCard, ProductCard, ProjectCard } from "./ui";
 
-const architecturalCategories = collections.filter(
-  (category) =>
-    !catalogueCategories.includes(category) &&
-    publishedProducts.some((product) =>
-      product.categories.includes(category.slug),
-    ),
+const architecturalCategories = legacyCollections.filter((category) =>
+  publishedProducts.some((product) => product.categories.includes(category.slug)),
 );
 const verifiedWattages = [
   ...new Set(
@@ -44,7 +41,7 @@ export function ProductsBrowser() {
       (!wattage ||
         (item.status === "verified" &&
           item.wattages?.includes(Number(wattage)))) &&
-      `${item.name} ${item.description} ${item.categories.map((slug) => collections.find((group) => group.slug === slug)?.name).join(" ")}`
+      `${item.name} ${item.description} ${item.categories.map((slug) => findCollection(slug)?.name).join(" ")}`
         .toLowerCase()
         .includes(search),
   );
@@ -91,13 +88,15 @@ export function ProductsBrowser() {
                 </option>
               ))}
             </optgroup>
-            <optgroup label="Architectural concepts">
-              {architecturalCategories.map((item) => (
-                <option value={item.slug} key={item.slug}>
-                  {item.name}
-                </option>
-              ))}
-            </optgroup>
+            {architecturalCategories.length > 0 && (
+              <optgroup label="Architectural concepts">
+                {architecturalCategories.map((item) => (
+                  <option value={item.slug} key={item.slug}>
+                    {item.name}
+                  </option>
+                ))}
+              </optgroup>
+            )}
           </select>
         </label>
         {verifiedWattages.length > 0 && (

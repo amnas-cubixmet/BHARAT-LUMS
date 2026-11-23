@@ -7,7 +7,7 @@ import { HomeFaq } from "@/components/home/faq";
 import styles from "@/components/home/home.module.css";
 import { Reveal } from "@/components/motion";
 import { ProjectCarousel } from "@/components/project-carousel";
-import conferenceRoom from "../../public/images/conference-room-linear-lighting.webp";
+import conferenceRoom from "../../public/images/about-bharat-lums-conference.webp";
 import { artwork, catalogueDownload, projects } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 

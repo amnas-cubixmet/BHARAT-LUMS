@@ -65,7 +65,7 @@ export function SectionHead({
 
 export function CollectionCard({ item }: { item: Collection }) {
   return (
-    <Reveal as="article" className="media-card">
+    <Reveal as="article" className="media-card collection-card">
       <Link
         href={`/collections/${item.slug}`}
         className="image-link"
@@ -75,7 +75,7 @@ export function CollectionCard({ item }: { item: Collection }) {
           src={artwork(item.image)}
           alt=""
           fill
-          sizes="(max-width: 680px) 100vw, (max-width: 960px) 50vw, 34vw"
+          sizes="(max-width: 560px) 92vw, (max-width: 805px) 45vw, (max-width: 1450px) 30vw, 420px"
         />
         <span className="card-icon">
           <ArrowUpRight size={19} />

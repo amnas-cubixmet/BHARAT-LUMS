@@ -42,7 +42,7 @@ for (const viewport of [
     await expect.poll(() => image.evaluate((photo: HTMLImageElement) => photo.naturalWidth))
       .toBeGreaterThan(0);
     const source = await image.evaluate((photo: HTMLImageElement) => photo.currentSrc);
-    expect(source).toMatch(/\/_next\/image\?.*conference-room-linear-lighting\.[a-z0-9]+\.webp/);
+    expect(source).toMatch(/\/_next\/image\?.*about-bharat-lums-conference\.[a-z0-9]+\.webp/);
     const bounds = await image.boundingBox();
     expect(bounds!.width / bounds!.height).toBeCloseTo(518 / 502, 2);
     expect(bounds!.x).toBeGreaterThanOrEqual(0);

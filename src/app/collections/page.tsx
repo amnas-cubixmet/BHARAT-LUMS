@@ -2,19 +2,26 @@ import { CollectionCard, PageIntro, QuoteBanner } from "@/components/ui";
 import { collections } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
-export const metadata = pageMetadata("Lighting Collections", "/collections");
+const description =
+  "Explore LED lighting solutions for commercial, industrial and outdoor applications.";
+
+export const metadata = pageMetadata(
+  "Professional LED Lighting",
+  "/collections",
+  description,
+);
 
 export default function CollectionsPage() {
   return (
     <>
       <PageIntro
-        eyebrow="Global catalogue"
-        title="Lighting collections."
-        description="Explore proposed lighting collections for commercial, industrial and outdoor spaces, alongside architectural and linear LED concepts."
+        eyebrow="Product catalogue"
+        title="Professional LED Lighting."
+        description={description}
       />
       <section
         className="shell section-tight card-grid"
-        aria-label="Lighting families"
+        aria-label="LED lighting categories"
       >
         {collections.map((item) => (
           <CollectionCard item={item} key={item.slug} />

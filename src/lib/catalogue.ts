@@ -61,7 +61,7 @@ const ledFamilies = [
   ],
 ] as const;
 
-const families = [
+const legacyFamilies = [
   [
     "linear-led-lighting",
     "Linear LED Lighting",
@@ -148,10 +148,16 @@ const collectionFrom = ([slug, name, description, image]: readonly [
   image,
 });
 export const catalogueCategories = ledFamilies.map(collectionFrom);
-export const collections = [
-  ...families.map(collectionFrom),
-  ...catalogueCategories,
-];
+export const collections = catalogueCategories;
+export const legacyCollections = legacyFamilies.map(collectionFrom);
+
+export function findCollection(slug: unknown) {
+  return (
+    collections.find((item) => item.slug === slug) ??
+    legacyCollections.find((item) => item.slug === slug)
+  );
+}
+
 export const featuredCollections = [
   collections[0],
   collections[5],
