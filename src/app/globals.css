@@ -838,6 +838,9 @@ textarea::placeholder {
   .detail-grid {
     grid-template-columns: 1fr;
   }
+  .detail-grid > .detail-image {
+    order: -1;
+  }
   .contact-grid {
     grid-template-columns: 1fr;
   }
