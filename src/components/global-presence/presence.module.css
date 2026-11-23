@@ -236,7 +236,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  :global(:root:not([data-motion-platform="android"])) .countries button {
+  :global(:root:not([data-motion-platform="mobile"])) .countries button {
     transition: none;
   }
 }

@@ -502,18 +502,18 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  :global(:root:not([data-motion-platform="android"])) .aboutArt:hover img {
+  :global(:root:not([data-motion-platform="mobile"])) .aboutArt:hover img {
     transform: none;
   }
-  :global(:root:not([data-motion-platform="android"])) .heroGlow,
-  :global(:root:not([data-motion-platform="android"])) .heroGlow::after {
+  :global(:root:not([data-motion-platform="mobile"])) .heroGlow,
+  :global(:root:not([data-motion-platform="mobile"])) .heroGlow::after {
     animation: none;
   }
-  :global(:root:not([data-motion-platform="android"])) .heroIllumination,
-  :global(:root:not([data-motion-platform="android"])) .faqRow button svg,
-  :global(:root:not([data-motion-platform="android"])) .faqAnswer,
-  :global(:root:not([data-motion-platform="android"])) .heroLink,
-  :global(:root:not([data-motion-platform="android"])) .heroPrimary {
+  :global(:root:not([data-motion-platform="mobile"])) .heroIllumination,
+  :global(:root:not([data-motion-platform="mobile"])) .faqRow button svg,
+  :global(:root:not([data-motion-platform="mobile"])) .faqAnswer,
+  :global(:root:not([data-motion-platform="mobile"])) .heroLink,
+  :global(:root:not([data-motion-platform="mobile"])) .heroPrimary {
     transition: none;
   }
 }

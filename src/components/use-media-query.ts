@@ -22,20 +22,20 @@ export function useMediaQuery(query: string) {
   return useSyncExternalStore(subscribe, getSnapshot, serverSnapshot);
 }
 
-function isAndroidBrowser() {
-  return typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
+function usesFullMotionOnMobile() {
+  return typeof navigator !== "undefined" && /Android|iPhone/i.test(navigator.userAgent);
 }
 
 export function useSiteReducedMotion() {
   const reduced = useMediaQuery(reducedMotionQuery);
-  return reduced && !isAndroidBrowser();
+  return reduced && !usesFullMotionOnMobile();
 }
 
 export function MotionPlatform() {
   useEffect(() => {
-    if (!isAndroidBrowser()) return;
+    if (!usesFullMotionOnMobile()) return;
     const root = document.documentElement;
-    root.dataset.motionPlatform = "android";
+    root.dataset.motionPlatform = "mobile";
     return () => {
       delete root.dataset.motionPlatform;
     };
