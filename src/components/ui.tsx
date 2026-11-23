@@ -212,6 +212,7 @@ export function Footer() {
             <h2>Company</h2>
             <Link href="/portfolio">Projects</Link>
             <Link href="/about">About</Link>
+            <Link href="/#global-presence">Global presence</Link>
             <Link href="/contact">Contact</Link>
           </div>
           <div>

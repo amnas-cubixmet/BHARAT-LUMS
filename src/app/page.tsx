@@ -8,6 +8,7 @@ import {
   QuoteBanner,
   SectionHead,
 } from "@/components/ui";
+import { GlobalPresenceSection } from "@/components/global-presence/global-presence";
 import { HomeHero } from "@/components/home-hero";
 import { Reveal } from "@/components/motion";
 import { ProjectCarousel } from "@/components/project-carousel";
@@ -91,6 +92,7 @@ export default function Home() {
           ))}
         </ProjectCarousel>
       </section>
+      <GlobalPresenceSection />
       <QuoteBanner />
     </>
   );

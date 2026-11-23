@@ -1,0 +1,226 @@
+@reference "../../app/globals.css";
+
+.section {
+  @apply relative isolate overflow-hidden;
+  padding-block: clamp(4.5rem, 10vw, 9rem);
+  background: radial-gradient(
+    ellipse at 30% 52%,
+    #101e2f 0%,
+    #0a1019 36%,
+    #0b0d12 72%
+  );
+  border-block: 1px solid #252b35;
+  scroll-margin-top: 1rem;
+}
+
+.intro {
+  @apply mx-auto flex flex-col items-center text-center;
+  max-width: 56rem;
+  margin-bottom: clamp(2.25rem, 5vw, 4.25rem);
+}
+
+.kicker {
+  @apply flex items-center gap-2 font-bold uppercase;
+  letter-spacing: 0.19em;
+  font-size: 0.72rem;
+  color: #9ec9f3;
+}
+
+.intro h2 {
+  @apply uppercase;
+  margin-block: 0.8rem 0.95rem;
+  font-size: clamp(2.75rem, 8vw, 7rem);
+  max-width: 16ch;
+  line-height: 0.92;
+  color: #faf8f4;
+}
+
+.intro h2 span {
+  display: block;
+  color: #edbe8d;
+}
+.intro > p:last-child {
+  color: #b7c6d7;
+  font-size: clamp(0.98rem, 2vw, 1.24rem);
+}
+
+.console {
+  @apply grid min-w-0;
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+  border: 1px solid #2b3949;
+  border-radius: 1rem;
+  background: #0a101b;
+  box-shadow: 0 24px 80px #02050a5c;
+}
+
+.stage {
+  @apply relative isolate min-w-0 overflow-hidden;
+  min-height: 32rem;
+  border-radius: 1rem 0 0 1rem;
+  background: radial-gradient(ellipse at 50% 46%, #122846, #070d17 69%);
+}
+
+.canvas,
+.fallback {
+  @apply absolute inset-0;
+}
+.canvas {
+  touch-action: pan-y;
+}
+.fallback {
+  @apply grid place-items-center;
+}
+.fallback svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.stageBadge {
+  @apply pointer-events-none absolute flex items-center gap-2 font-bold uppercase;
+  bottom: 1rem;
+  left: 1rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #3a5269;
+  background: #08101be8;
+  border-radius: 0.25rem;
+  color: #d0e2f5;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+}
+.stageBadge span {
+  width: 0.39rem;
+  height: 0.39rem;
+  border-radius: 50%;
+  background: #87caff;
+  box-shadow: 0 0 8px #87caff;
+}
+
+.controls {
+  @apply flex min-w-0 flex-col justify-center;
+  padding: clamp(1.15rem, 3vw, 2.25rem);
+  border-inline-start: 1px solid #2b3949;
+}
+.details h3 {
+  margin-block: 0.65rem 0.5rem;
+  font-size: clamp(1.85rem, 4vw, 3.65rem);
+  color: #f8f2e9;
+}
+.details > p:last-child,
+.instruction {
+  color: #bbc8d7;
+}
+.details > p:last-child {
+  min-height: 3em;
+}
+.instruction {
+  margin-block: 1rem 0.72rem;
+  font-size: 0.83rem;
+}
+.countries {
+  @apply grid gap-2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.countries button {
+  @apply flex min-w-0 items-center gap-2 text-left font-bold;
+  min-height: 45px;
+  padding: 0.58rem 0.6rem;
+  border: 1px solid #304459;
+  border-radius: 0.36rem;
+  background: #111c2a;
+  color: #e1e9f3;
+  font-size: 0.79rem;
+  transition:
+    border-color 0.22s,
+    background 0.22s,
+    box-shadow 0.22s;
+}
+.countries button span {
+  color: #9dc4eb;
+  font-size: 0.61rem;
+  letter-spacing: 0.08em;
+}
+.countries button svg {
+  margin-left: auto;
+  opacity: 0.7;
+}
+.countries button:hover {
+  border-color: #7fc5ff;
+  box-shadow: 0 0 14px #2c74b635;
+}
+.countries button[aria-pressed="true"] {
+  color: #ffe5c5;
+  border-color: #d9a776;
+  background: #2a211d;
+}
+.countries button[aria-pressed="true"] span {
+  color: #ffcb99;
+}
+.reset {
+  @apply mt-3 flex w-fit items-center gap-2 text-left;
+  color: #b8d8f6;
+  min-height: 44px;
+  font-size: 0.81rem;
+}
+.reset:hover {
+  color: #f6c795;
+}
+.cta {
+  @apply flex flex-wrap items-center justify-between gap-5;
+  padding-top: clamp(2.4rem, 6vw, 4rem);
+}
+.cta h3 {
+  font-size: clamp(1.65rem, 3.6vw, 3.3rem);
+}
+.cta p {
+  color: #b7c6d7;
+  margin-top: 0.65rem;
+  max-width: 53ch;
+}
+.actions {
+  @apply flex flex-wrap gap-3;
+}
+.markerLabel {
+  white-space: nowrap;
+  pointer-events: none;
+  border: 1px solid #82baf1;
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.47rem;
+  background: #091223ee;
+  color: #eef5ff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+@media (max-width: 980px) {
+  .console {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stage {
+    min-height: clamp(20rem, 67vw, 32rem);
+    border-radius: 1rem 1rem 0 0;
+  }
+  .controls {
+    border-inline-start: 0;
+    border-top: 1px solid #2b3949;
+  }
+  .countries {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .countries {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stage {
+    min-height: clamp(15.5rem, 81vw, 24rem);
+  }
+}
+@media (max-width: 365px) {
+  .countries {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .countries button {
+    transition: none;
+  }
+}
