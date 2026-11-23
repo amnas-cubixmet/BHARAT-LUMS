@@ -1,0 +1,178 @@
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: center;
+  gap: clamp(26px, 5vw, 74px);
+  padding-block: clamp(50px, 7vw, 104px);
+}
+
+.heroCopy {
+  display: grid;
+  justify-items: start;
+  gap: clamp(14px, 2vw, 24px);
+}
+
+.heroCopy h1 {
+  font-size: clamp(2.65rem, 5.7vw, 5.7rem);
+  text-wrap: balance;
+}
+
+.lead {
+  color: var(--muted);
+  max-width: 35ch;
+  font-size: clamp(1rem, 1.65vw, 1.2rem);
+}
+
+.heroFigure {
+  margin: 0;
+}
+
+.heroFigure figcaption {
+  margin-top: 9px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.heroImage,
+.applicationImage {
+  position: relative;
+  overflow: hidden;
+}
+
+.heroImage {
+  aspect-ratio: 1.38;
+  background: #151515;
+  border-radius: 8px;
+}
+
+.heroImage img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.applications {
+  display: grid;
+  gap: clamp(18px, 3vw, 36px);
+  padding-block: 6px clamp(54px, 7vw, 106px);
+}
+
+.applicationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 24px);
+}
+
+.applicationItem {
+  min-width: 0;
+}
+
+.applicationCard {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  background: #111;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.applicationImage {
+  aspect-ratio: 1.65;
+  border-radius: 8px 8px 0 0;
+  background: #151515;
+}
+
+.applicationImage img {
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.applicationCard:hover img,
+.applicationCard:focus-visible img {
+  transform: scale(1.05);
+}
+
+.applicationCopy {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: clamp(15px, 2vw, 24px);
+}
+
+.applicationCopy p,
+.contact p:not(:global(.eyebrow)) {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.approach {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  align-items: start;
+  gap: clamp(16px, 5vw, 72px);
+  padding-bottom: clamp(42px, 7vw, 96px);
+}
+
+.approachCopy p {
+  max-width: 51ch;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+}
+
+.contact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 22px;
+  padding: clamp(22px, 4vw, 52px);
+  margin-bottom: clamp(42px, 7vw, 96px);
+  border-radius: 8px;
+  background: #111;
+}
+
+.contact h2 {
+  margin-top: 9px;
+  font-size: clamp(1.85rem, 3.8vw, 3.3rem);
+}
+
+.contact a {
+  flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+  .hero,
+  .approach {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero {
+    gap: 24px;
+    padding-block: 35px 44px;
+  }
+
+  .heroCopy h1 {
+    max-width: 17ch;
+    font-size: clamp(2.3rem, 8.5vw, 4.1rem);
+  }
+}
+
+@media (max-width: 580px) {
+  .applicationGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .applicationImage {
+    aspect-ratio: 1.8;
+  }
+
+  .contact {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .applicationImage img {
+    transition: none;
+  }
+}
