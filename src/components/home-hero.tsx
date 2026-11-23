@@ -10,6 +10,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from "react";
 import { useMotion, type MotionTools } from "./motion";
@@ -115,6 +116,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
   return (
     <section
       className={styles.hero}
+      style={{ "--hero-light-power": power } as CSSProperties}
       ref={root}
       onPointerMove={(event) => {
         if (reduced || event.pointerType !== "mouse") return;
@@ -165,11 +167,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
           data-ready={ready}
           aria-hidden="true"
         >
-          <div
-            className={styles.heroIllumination}
-            ref={illumination}
-            style={{ opacity: power }}
-          >
+          <div className={styles.heroIllumination} ref={illumination}>
             <div className={styles.heroGlow} />
           </div>
           <Image

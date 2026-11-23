@@ -50,7 +50,7 @@ for (const width of [320, 360, 375, 390, 430, 768, 1024, 1440]) {
   });
 }
 
-test("streetlight power updates the rendered diffuser with reduced motion", async ({ page }) => {
+test("streetlight controls update the diffuser and mobile text glow with reduced motion", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 820 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
@@ -62,11 +62,18 @@ test("streetlight power updates the rendered diffuser with reduced motion", asyn
   const canvas = stage.locator("canvas");
   const power = page.getByRole("button", { name: "Streetlight power" });
   const brightness = page.getByRole("slider", { name: "Brightness" });
+  const copy = page.getByRole("heading", { level: 1 }).locator("..");
+  const copyGlow = () => copy.evaluate((element) => {
+    const glow = getComputedStyle(element, "::before");
+    return { opacity: glow.opacity, transition: glow.transitionProperty };
+  });
+  await expect.poll(copyGlow).toEqual({ opacity: "0.8", transition: "none" });
   const lit = await canvas.screenshot();
 
   await power.click();
   await expect(power).toHaveAttribute("aria-pressed", "false");
   await expect(brightness).toBeDisabled();
+  await expect.poll(copyGlow).toEqual({ opacity: "0", transition: "none" });
   await expect.poll(async () => (await canvas.screenshot()).equals(lit)).toBe(false);
   const unlit = await canvas.screenshot();
 
@@ -78,7 +85,11 @@ test("streetlight power updates the rendered diffuser with reduced motion", asyn
   await brightness.focus();
   await brightness.press("Home");
   await expect(brightness).toHaveValue("0");
+  await expect.poll(copyGlow).toEqual({ opacity: "0", transition: "none" });
   await expect.poll(async () => (await canvas.screenshot()).equals(unlit)).toBe(true);
+
+  await brightness.press("ArrowRight");
+  await expect.poll(copyGlow).toEqual({ opacity: "0.01", transition: "none" });
 });
 
 test("streetlight fallback and hero links work without WebGL", async ({ page }) => {
