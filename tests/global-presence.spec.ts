@@ -142,6 +142,7 @@ test("touch can rotate the globe on an emulated phone", async ({ browser }) => {
   try {
     const page = await context.newPage();
     await page.goto("/#global-presence");
+    await page.locator("[data-presence-stage]").scrollIntoViewIfNeeded();
     await expect(
       page.getByText("Interactive globe", { exact: true }),
     ).toBeVisible({ timeout: 20_000 });
