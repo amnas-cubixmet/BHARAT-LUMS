@@ -221,24 +221,21 @@ export function Footer() {
           <Action href="/contact">Contact Us</Action>
         </div>
         <div className="footer-main">
-          <div>
+          <div className="footer-brand">
             <Link href="/" className="brand-link">
               <BrandMark />
             </Link>
-            <p>Architectural lighting for spaces with purpose.</p>
+            <p>LED lighting for commercial, industrial and outdoor spaces.</p>
           </div>
-          <div>
-            <h2>Explore</h2>
+          <nav className="footer-links" aria-labelledby="footer-explore">
+            <h2 id="footer-explore">Explore</h2>
             <Link href="/products">Product Catalogue</Link>
-          </div>
-          <div>
-            <h2>Company</h2>
             <Link href="/portfolio">Projects</Link>
             <Link href="/about">Company Information</Link>
             <Link href="/#global-presence">Global presence</Link>
             <Link href="/contact">Contact</Link>
-          </div>
-          <div>
+          </nav>
+          <div className="footer-links">
             <h2>Get in touch</h2>
             <a href={`mailto:${brand.email}`}>{brand.email}</a>
             <a href={brand.phoneHref}>{brand.phone}</a>

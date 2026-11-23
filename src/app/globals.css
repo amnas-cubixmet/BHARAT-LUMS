@@ -458,11 +458,12 @@ svg {
 }
 .footer-main {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1.1fr;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 27px;
   padding-block: 44px;
 }
-.footer-main > div {
+.footer-brand,
+.footer-links {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -471,7 +472,7 @@ svg {
 .footer-main h2 {
   font-size: 0.88rem;
   letter-spacing: 0;
-  margin-bottom: 8px;
+  margin-bottom: 3px;
 }
 .footer-main .brand-logo {
   width: 108px;
@@ -482,6 +483,13 @@ svg {
   color: var(--text);
   font-size: 0.82rem;
   text-decoration: none;
+}
+.footer-brand p {
+  max-width: 34ch;
+  color: var(--muted);
+}
+.footer-links a {
+  overflow-wrap: anywhere;
 }
 .footer-main a:hover,
 .footer-bottom a:hover {
@@ -847,8 +855,7 @@ textarea::placeholder {
   .filters {
     gap: 10px;
   }
-  .contact-panel .text-link,
-  .footer-main a {
+  .contact-panel .text-link {
     overflow-wrap: anywhere;
   }
   .hero {
@@ -894,16 +901,6 @@ textarea::placeholder {
   .card-grid,
   .card-grid.wide {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .footer-main {
-    grid-template-columns: 1fr 1fr;
-    gap: 23px 15px;
-  }
-  .footer-main > div:first-child {
-    grid-column: 1 / -1;
-  }
-  .footer-main > div:last-child {
-    grid-column: 1 / -1;
   }
   .filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1150,11 +1147,39 @@ textarea::placeholder {
 }
 
 @media (max-width: 620px) {
+  .footer-main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 18px 14px;
+    padding-block: 24px;
+  }
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+  .footer-main .brand-logo {
+    width: 94px;
+  }
+  .footer-links {
+    gap: 0;
+  }
+  .footer-links a {
+    display: block;
+    min-height: 32px;
+    padding-block: 6px;
+  }
+  .footer-bottom {
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 4px;
+    padding-block: 10px;
+  }
+  .footer-bottom a {
+    min-height: 32px;
+  }
   .footer-project {
     align-items: start;
     flex-direction: column;
-    gap: 20px;
-    padding-block: clamp(42px, 11vw, 65px);
+    gap: 16px;
+    padding-block: clamp(32px, 8vw, 48px);
   }
   .footer-project h2 {
     font-size: clamp(2.35rem, 9.6vw, 3.8rem);
