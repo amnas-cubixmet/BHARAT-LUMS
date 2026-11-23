@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Header from "@/components/nav";
-import { SiteMotion } from "@/components/motion";
 import { Footer } from "@/components/ui";
 import { brand, description, metadataOrigin, siteUrl } from "@/lib/site";
 import "@fontsource-variable/manrope";
@@ -49,7 +48,6 @@ export default function RootLayout({
             }}
           />
         )}
-        <SiteMotion />
         <Header />
         <main id="main-content">{children}</main>
         <Footer />

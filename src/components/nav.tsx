@@ -4,15 +4,35 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
+
+const globalPresence = "/#global-presence";
 
 const links = [
+  ["/", "Home"],
   ["/about", "About"],
   ["/products", "Products"],
   ["/collections", "Catalogue"],
-  ["/#global-presence", "Global Presence"],
+  [globalPresence, "Global Presence"],
   ["/contact", "Contact"],
 ];
+
+function subscribeToHash(onChange: () => void) {
+  window.addEventListener("hashchange", onChange);
+  window.addEventListener("popstate", onChange);
+  return () => {
+    window.removeEventListener("hashchange", onChange);
+    window.removeEventListener("popstate", onChange);
+  };
+}
+
+function getHash() {
+  return window.location.hash;
+}
+
+function getServerHash() {
+  return "";
+}
 
 export function BrandMark({
   variant = "dark",
@@ -36,18 +56,56 @@ export function BrandMark({
 
 export default function Header() {
   const path = usePathname();
+  const hash = useSyncExternalStore(subscribeToHash, getHash, getServerHash);
+  const menuToggle = useRef<HTMLButtonElement>(null);
   const [openedAt, setOpenedAt] = useState<string | null>(null);
   const open = openedAt === path;
+  const atGlobalPresence = path === "/" && hash === "#global-presence";
+
+  function followLink(href: string, preventDefault: () => void) {
+    setOpenedAt(null);
+    if (path !== "/") return;
+
+    if (href === "/") {
+      preventDefault();
+      const oldURL = window.location.href;
+      if (window.location.hash || window.location.search) {
+        window.history.pushState(null, "", "/");
+        window.dispatchEvent(
+          new HashChangeEvent("hashchange", {
+            oldURL,
+            newURL: window.location.href,
+          }),
+        );
+      }
+      window.scrollTo({ top: 0, behavior: "instant" });
+    } else if (href === globalPresence) {
+      preventDefault();
+      window.location.assign(href);
+    }
+  }
+
   return (
     <header
       className={path === "/" ? "site-header home-header" : "site-header"}
+      onKeyDown={(event) => {
+        if (open && event.key === "Escape") {
+          setOpenedAt(null);
+          menuToggle.current?.focus();
+        }
+      }}
     >
       <div className="shell header-inner">
-        <Link href="/" className="brand-link" onClick={() => setOpenedAt(null)}>
+        <Link
+          href="/"
+          className="brand-link"
+          onNavigate={(event) => followLink("/", event.preventDefault)}
+        >
           <BrandMark eager />
         </Link>
         <button
           className="menu-toggle icon-button"
+          ref={menuToggle}
           aria-controls="site-navigation"
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
@@ -59,26 +117,31 @@ export default function Header() {
           id="site-navigation"
           className={open ? "main-nav open" : "main-nav"}
           aria-label="Main navigation"
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              setOpenedAt(null);
-              document
-                .querySelector<HTMLButtonElement>(".menu-toggle")
-                ?.focus();
-            }
-          }}
         >
-          {links.map(([href, label]) => (
-            <Link
-              key={href}
-              href={href}
-              aria-current={path === href ? "page" : undefined}
-              className={path.startsWith(href) ? "active" : undefined}
-              onClick={() => setOpenedAt(null)}
-            >
-              {label}
-            </Link>
-          ))}
+          {links.map(([href, label]) => {
+            const current =
+              href === globalPresence
+                ? atGlobalPresence
+                : path === href && !atGlobalPresence;
+            const inSection = href !== "/" && path.startsWith(`${href}/`);
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={
+                  current
+                    ? href === globalPresence
+                      ? "location"
+                      : "page"
+                    : undefined
+                }
+                className={current || inSection ? "active" : undefined}
+                onNavigate={(event) => followLink(href, event.preventDefault)}
+              >
+                {label}
+              </Link>
+            );
+          })}
           <Link
             className="button button-outline mobile-quote"
             href="/request-quote"
