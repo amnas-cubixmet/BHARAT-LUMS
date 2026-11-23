@@ -1,10 +1,6 @@
 import { ProductsBrowser } from "@/components/browse";
 import { PageIntro, QuoteBanner } from "@/components/ui";
-import {
-  catalogueCategories,
-  legacyCategories,
-  publishedProducts,
-} from "@/lib/catalogue";
+import { findCollection, publishedProducts } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata("Lighting Products", "/products");
@@ -15,14 +11,7 @@ export default async function ProductsPage({
   searchParams: Promise<{ category?: string | string[] }>;
 }) {
   const { category } = await searchParams;
-  const initialCategory =
-    catalogueCategories.find((item) => item.slug === category)?.slug ??
-    legacyCategories.find(
-      (item) =>
-        item.slug === category &&
-        publishedProducts.some((product) => product.categories.includes(item.slug)),
-    )?.slug ??
-    "";
+  const initialCategory = findCollection(category)?.slug ?? "";
   return (
     <>
       <PageIntro

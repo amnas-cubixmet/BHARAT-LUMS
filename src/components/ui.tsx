@@ -117,7 +117,7 @@ export function ProductCard({
       </Link>
       <div className="card-body">
         <p className="label">
-          {findCollection(item.categories[0])?.name}
+          {item.categories.map(findCollection).find(Boolean)?.name}
           <span className="catalogue-image-note">
             {item.images[0].representative
               ? "Representative image"

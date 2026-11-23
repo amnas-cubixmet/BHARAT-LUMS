@@ -5,8 +5,7 @@ import { Gallery } from "@/components/gallery";
 import { Action, PageIntro, ProductCard, QuoteBanner } from "@/components/ui";
 import {
   catalogueLabel,
-  catalogueCategories,
-  legacyCategories,
+  collections,
   publishedProducts,
   relatedProducts,
 } from "@/lib/catalogue";
@@ -110,7 +109,7 @@ export default async function ProductPage({ params }: Params) {
             </div>
           )}
           <div className="filter-pills">
-            {[...catalogueCategories, ...legacyCategories]
+            {collections
               .filter((category) => item.categories.includes(category.slug))
               .map((category) => (
                 <Link
