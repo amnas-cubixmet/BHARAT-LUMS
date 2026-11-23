@@ -11,8 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { countries, origin, type Country } from "@/lib/global-presence";
-import { Action } from "../action";
-import { Reveal, useMotion, type MotionTools } from "../motion";
+import { useMotion, type MotionTools } from "../motion";
 import styles from "./presence.module.css";
 
 const InteractiveGlobe = dynamic(() => import("./interactive-globe"), {
@@ -145,26 +144,6 @@ function RegionalMap({ country }: { country: Country }) {
   );
 }
 
-function GlobalPresenceCTA() {
-  return (
-    <Reveal as="section" className={styles.cta}>
-      <div>
-        <h3>Powering a Brighter Tomorrow</h3>
-        <p>
-          Discover professional LED lighting solutions designed for commercial,
-          industrial and outdoor applications.
-        </p>
-      </div>
-      <div className={styles.actions}>
-        <Action href="/products">Explore Our Products</Action>
-        <Action href="/contact" secondary>
-          Contact Our Team
-        </Action>
-      </div>
-    </Reveal>
-  );
-}
-
 export function GlobalPresenceSection() {
   const [country, setCountry] = useState<Country>(origin);
   const [focusRequest, setFocusRequest] = useState(0);
@@ -273,7 +252,6 @@ export function GlobalPresenceSection() {
             </button>
           </div>
         </div>
-        <GlobalPresenceCTA />
       </div>
     </section>
   );
