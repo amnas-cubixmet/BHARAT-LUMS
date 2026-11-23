@@ -760,7 +760,7 @@ textarea::placeholder {
 }
 @media (max-width: 805px) {
   :root {
-    --header-height: 67px;
+    --header-height: 58px;
   }
   .menu-toggle {
     display: inline-flex;
@@ -770,12 +770,16 @@ textarea::placeholder {
     min-height: 44px;
     padding: 0;
   }
+  .menu-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
   .header-inner {
     display: flex;
     justify-content: space-between;
   }
   .site-header .brand-logo {
-    width: 122px;
+    width: 94px;
   }
   .header-quote {
     display: none;
@@ -809,7 +813,7 @@ textarea::placeholder {
     border: 1px solid var(--text);
   }
   .hero {
-    min-height: clamp(540px, calc(93svh - 67px), 680px);
+    min-height: clamp(540px, calc(93svh - var(--header-height)), 680px);
   }
   .feature-inner a {
     gap: 7px;
@@ -878,7 +882,7 @@ textarea::placeholder {
     overflow-wrap: anywhere;
   }
   .hero {
-    min-height: clamp(540px, calc(90svh - 67px), 650px);
+    min-height: clamp(540px, calc(90svh - var(--header-height)), 650px);
   }
   .hero-art img {
     object-position: 64% center;
