@@ -31,10 +31,7 @@ export default async function CollectionPage({ params }: Params) {
         title={collection.name}
         description={collection.description}
       />
-      <section
-        className="shell section-tight"
-        aria-label="Demonstration fixtures"
-      >
+      <section className="shell section-tight" aria-label="Collection fixtures">
         {matches.length ? (
           <div className="card-grid">
             {matches.map((item) => (

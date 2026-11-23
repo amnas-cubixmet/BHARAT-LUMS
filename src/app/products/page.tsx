@@ -9,8 +9,8 @@ export default function ProductsPage() {
     <>
       <PageIntro
         eyebrow="Product catalogue"
-        title="Find your fixture."
-        description="Browse demonstration fixtures by application, profile and mounting style. Contact us for confirmed product availability and specifications."
+        title="LED lighting catalogue."
+        description="Explore proposed fixtures for commercial, industrial and outdoor projects. Representative imagery illustrates fixture types. Contact our team for confirmed models and specifications."
       />
       <section className="shell section-tight" aria-label="Browse fixtures">
         <ProductsBrowser />

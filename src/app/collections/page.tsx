@@ -10,7 +10,7 @@ export default function CollectionsPage() {
       <PageIntro
         eyebrow="Global catalogue"
         title="Lighting collections."
-        description="Explore 16 lighting families, from straight LED profiles to directional track and outdoor concepts. This catalogue outlines proposed collections."
+        description="Explore proposed lighting collections for commercial, industrial and outdoor spaces, alongside architectural and linear LED concepts."
       />
       <section
         className="shell section-tight card-grid"

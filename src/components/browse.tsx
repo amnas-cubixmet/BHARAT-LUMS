@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { MotionConfig, motion } from "motion/react";
 import {
+  catalogueCategories,
+  catalogueLabel,
   collections,
   products,
   projectCategories,
@@ -13,9 +15,23 @@ import {
 } from "@/lib/catalogue";
 import { Action, ProductCard, ProjectCard } from "./ui";
 
+const architecturalCategories = collections.filter(
+  (category) =>
+    !catalogueCategories.includes(category) &&
+    products.some((product) => product.categories.includes(category.slug)),
+);
+const verifiedWattages = [
+  ...new Set(
+    products.flatMap((product) =>
+      product.status === "verified" ? (product.wattages ?? []) : [],
+    ),
+  ),
+].sort((a, b) => a - b);
+
 export function ProductsBrowser() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
+  const [wattage, setWattage] = useState("");
   const [sort, setSort] = useState("featured");
   const [selected, setSelected] = useState<Product | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -23,6 +39,9 @@ export function ProductsBrowser() {
   const visible = products.filter(
     (item) =>
       (!category || item.categories.includes(category)) &&
+      (!wattage ||
+        (item.status === "verified" &&
+          item.wattages?.includes(Number(wattage)))) &&
       `${item.name} ${item.description} ${item.categories.map((slug) => collections.find((group) => group.slug === slug)?.name).join(" ")}`
         .toLowerCase()
         .includes(search),
@@ -33,7 +52,13 @@ export function ProductsBrowser() {
   }, [selected]);
   return (
     <>
-      <div className="filters">
+      <div
+        className={
+          verifiedWattages.length
+            ? "filters catalogue-filters-with-wattage"
+            : "filters"
+        }
+      >
         <label className="search-field">
           <span className="sr-only">Search products</span>
           <Search size={18} />
@@ -50,13 +75,38 @@ export function ProductsBrowser() {
             onChange={(event) => setCategory(event.target.value)}
           >
             <option value="">All categories</option>
-            {collections.map((item) => (
-              <option value={item.slug} key={item.slug}>
-                {item.name}
-              </option>
-            ))}
+            <optgroup label="LED lighting categories">
+              {catalogueCategories.map((item) => (
+                <option value={item.slug} key={item.slug}>
+                  {item.name}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Architectural concepts">
+              {architecturalCategories.map((item) => (
+                <option value={item.slug} key={item.slug}>
+                  {item.name}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </label>
+        {verifiedWattages.length > 0 && (
+          <label>
+            <span className="sr-only">Wattage</span>
+            <select
+              value={wattage}
+              onChange={(event) => setWattage(event.target.value)}
+            >
+              <option value="">All wattages</option>
+              {verifiedWattages.map((watts) => (
+                <option key={watts} value={watts}>
+                  {watts} W
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label>
           <span className="sr-only">Sort</span>
           <select
@@ -72,7 +122,7 @@ export function ProductsBrowser() {
         {visible.length} {visible.length === 1 ? "fixture" : "fixtures"}
       </p>
       {visible.length ? (
-        <div className="card-grid">
+        <div className="card-grid catalogue-grid-transition" key={category}>
           {visible.map((item) => (
             <ProductCard
               item={item}
@@ -83,12 +133,13 @@ export function ProductsBrowser() {
         </div>
       ) : (
         <div className="empty-state">
-          <p>No demonstration fixtures match your search.</p>
+          <p>No fixtures match your search or filters.</p>
           <button
             className="button button-outline"
             onClick={() => {
               setQuery("");
               setCategory("");
+              setWattage("");
             }}
           >
             Clear filters
@@ -111,7 +162,7 @@ export function ProductsBrowser() {
             >
               <X size={21} />
             </button>
-            <p className="eyebrow">Demonstration fixture</p>
+            <p className="eyebrow">{catalogueLabel(selected)}</p>
             <h2 id="preview-title">{selected.name}</h2>
             <p>{selected.description}</p>
             <ul>

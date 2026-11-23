@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowDown, ArrowUpRight, ArrowRight } from "lucide-react";
 import {
   artwork,
+  catalogueLabel,
   collections,
   type Collection,
   type Product,
@@ -13,6 +14,7 @@ import { BrandMark } from "./nav";
 
 import { Action } from "./action";
 import { Reveal } from "./motion";
+import { CatalogueImage } from "./catalogue-image";
 
 export { Action };
 
@@ -97,17 +99,16 @@ export function ProductCard({
   preview?: () => void;
 }) {
   return (
-    <article className="media-card">
+    <Reveal as="article" className="media-card product-card">
       <Link
         href={`/products/${item.slug}`}
         className="image-link"
         aria-label={`View ${item.name}`}
       >
-        <Image
-          src={artwork(item.image)}
-          alt=""
-          fill
-          sizes="(max-width: 680px) 100vw, 34vw"
+        <CatalogueImage
+          src={item.images[0].src}
+          alt={item.images[0].alt}
+          sizes="(max-width: 560px) 92vw, (max-width: 805px) 46vw, 32vw"
         />
         <span className="card-icon">
           <ArrowUpRight size={19} />
@@ -115,13 +116,30 @@ export function ProductCard({
       </Link>
       <div className="card-body">
         <p className="label">
-          {collections.find(({ slug }) => slug === item.categories[0])?.name} ·
-          Demonstration
+          {collections.find(({ slug }) => slug === item.categories[0])?.name}
+          <span className="catalogue-image-note">
+            {item.images[0].representative
+              ? "Representative image"
+              : catalogueLabel(item)}
+          </span>
         </p>
         <h3>
           <Link href={`/products/${item.slug}`}>{item.name}</Link>
         </h3>
         <p>{item.description}</p>
+        {item.status === "verified" &&
+        (item.wattages?.length || item.specifications?.length) ? (
+          <ul className="product-card-specs">
+            {item.wattages?.length ? (
+              <li>{item.wattages.join(" / ")} W</li>
+            ) : null}
+            {item.specifications?.slice(0, 2).map((spec) => (
+              <li key={spec.name}>
+                {spec.name} {spec.value}
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <div className="card-actions">
           <Link className="text-link" href={`/products/${item.slug}`}>
             View details <ArrowRight size={13} />
@@ -130,7 +148,7 @@ export function ProductCard({
             className="text-link"
             href={`/request-quote?product=${item.slug}`}
           >
-            Request quote <ArrowUpRight size={13} />
+            Enquire now <ArrowUpRight size={13} />
           </Link>
           {preview && (
             <button className="text-link" onClick={preview}>
@@ -139,7 +157,7 @@ export function ProductCard({
           )}
         </div>
       </div>
-    </article>
+    </Reveal>
   );
 }
 
