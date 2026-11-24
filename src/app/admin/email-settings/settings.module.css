@@ -13,3 +13,14 @@
 .actions button:disabled { opacity: .55; cursor: not-allowed; }
 .status { margin-top: 1rem; overflow-wrap: anywhere; }
 @media (max-width: 600px) { .grid { grid-template-columns: minmax(0,1fr); } .actions { flex-direction: column; } }
+
+.legend { font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem; padding-top: 1rem; }
+.grid textarea { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: .45rem; background: var(--bg); color: var(--text); padding: .8rem; font-size: 16px; resize: vertical; }
+.preview { border: 1px solid #777; border-radius: .6rem; overflow: hidden; }
+.previewBrand { padding: 1.2rem; background: #090909; color: #fff; font-weight: 700; letter-spacing: .12em; }
+.previewBrand small { display: block; margin-top: .35rem; font-size: .65rem; color: #ddd; }
+.previewBody { background: #fff; color: #171717; padding: 1rem; overflow-wrap: anywhere; }
+.previewBody h3 { margin: .65rem 0; font-size: 1.35rem; }
+.previewBody small { color: #315b93; }
+.previewBody dl { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); gap: .6rem; margin-top: 1rem; font-size: .85rem; }
+.previewBody dt { color: #555; }

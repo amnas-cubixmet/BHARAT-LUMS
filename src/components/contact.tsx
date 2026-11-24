@@ -1,14 +1,15 @@
 import { ArrowUpRight, Mail, MessageCircle, Phone } from "lucide-react";
 import { brand } from "@/lib/site";
-import { deliveryEnabled } from "@/lib/delivery";
 import { enquiryEmailHref } from "@/lib/enquiry";
 import EnquiryForm from "./enquiry-form";
 import styles from "./contact.module.css";
 
 export function ContactSection({
   defaults,
+  source = "contact",
 }: {
   defaults?: { interest?: string; message?: string };
+  source?: "contact" | "quote";
 }) {
   const whatsappNumber = brand.phoneHref.replace(/\D/g, "");
 
@@ -62,10 +63,11 @@ export function ContactSection({
       </aside>
       <div className={styles.panel}>
         <h2 className={styles.formHeading} id="enquiry-title">
-          Project enquiry
+          {source === "quote" ? "Request a quote" : "Project enquiry"}
         </h2>
         <EnquiryForm
-          online={deliveryEnabled()}
+          online
+          source={source}
           email={brand.email}
           whatsappNumber={whatsappNumber}
           defaults={defaults}

@@ -1,6 +1,7 @@
 import "server-only";
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from "node:crypto";
 import { z } from "zod";
+import { defaultTemplates, templateSettingsSchema } from "./email-template-settings";
 
 const keyName = "bharat-lums:email-settings:v1";
 const aad = Buffer.from(keyName);
@@ -15,6 +16,7 @@ export const settingsSchema = z.object({
   port: z.union([z.literal(465), z.literal(587)]),
   enabled: z.boolean(),
   appPassword: appPassword.or(z.literal("")),
+  templates: templateSettingsSchema.optional(),
 }).strict();
 export type EmailSettings = z.infer<typeof settingsSchema>;
 
@@ -70,6 +72,7 @@ function defaults(): EmailSettings {
     senderEmail, recipientEmail, host, port,
     appPassword: password,
     enabled: Boolean(senderEmail && recipientEmail && password),
+    templates: defaultTemplates,
   };
 }
 export async function getSettings(): Promise<EmailSettings> {
@@ -80,12 +83,12 @@ export async function getSettings(): Promise<EmailSettings> {
 }
 export function publicSettings(settings: EmailSettings) {
   const { appPassword, ...safe } = settings;
-  return { ...safe, hasPassword: Boolean(appPassword), configured: Boolean(settings.enabled && settings.senderEmail && settings.recipientEmail && appPassword) };
+  return { ...safe, templates: settings.templates ?? defaultTemplates, hasPassword: Boolean(appPassword), configured: Boolean(settings.enabled && settings.senderEmail && settings.recipientEmail && appPassword) };
 }
 export async function saveSettings(input: EmailSettings) {
   const previous = await getSettings();
   if (input.senderEmail !== previous.senderEmail && !input.appPassword) throw new Error("A new app password is required when changing the sender.");
-  const settings = settingsSchema.parse({ ...input, appPassword: input.appPassword || previous.appPassword });
+  const settings = settingsSchema.parse({ ...input, templates: input.templates ?? previous.templates ?? defaultTemplates, appPassword: input.appPassword || previous.appPassword });
   if (settings.enabled && !settings.appPassword) throw new Error("Enter a Gmail app password.");
   if (await redis(["SET", keyName, encrypt(settings)]) !== "OK") throw new Error("Settings could not be saved");
   return publicSettings(settings);

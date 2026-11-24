@@ -1,6 +1,8 @@
 import "server-only";
 import nodemailer from "nodemailer";
-import { enquiryText, type Enquiry } from "./enquiry";
+import { type Enquiry, type EnquirySource } from "./enquiry";
+import { buildEnquiryEmail, sampleEnquiry } from "./email-template";
+import { defaultTemplates } from "./email-template-settings";
 import { getSettings, rateLimit, redis, settingsSchema, storageConfigured, type EmailSettings } from "./email-settings";
 
 export function deliveryEnabled() {
@@ -28,25 +30,19 @@ function transport(settings: EmailSettings) {
     disableUrlAccess: true,
   });
 }
-function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] ?? c));
-}
-export async function deliverEnquiry(input: Enquiry, requestId: string) {
+export async function deliverEnquiry(input: Enquiry, requestId: string, source: EnquirySource) {
   const settings = await getSettings();
   const mailer = transport(settings);
   const key = `bharat-lums:enquiry-request:${requestId}`;
   const claimed = await redis(["SET", key, "pending", "NX", "EX", 600]);
   if (claimed !== "OK") return (await redis(["GET", key])) === "sent";
-  const text = enquiryText(input);
-  const subject = (input.subject || "Website enquiry").replace(/[\r\n\x00]+/g, " ");
-  const html = `<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#162136"><h1 style="background:#10223e;color:#fff;padding:24px">BHARAT LUMS</h1><h2>New website enquiry</h2><p style="white-space:pre-wrap;line-height:1.6;overflow-wrap:anywhere">${escapeHtml(text)}</p><p>Reply directly to this email to contact the customer.</p></div>`;
+  const email = buildEnquiryEmail(input, source, settings.templates ?? defaultTemplates, requestId);
   try {
     const result = await mailer.sendMail({
       from: { name: settings.senderName, address: settings.senderEmail },
       to: settings.recipientEmail,
       replyTo: input.email,
-      subject: `Bharat Lums: ${subject}`,
-      text, html,
+      ...email,
     });
     if (!result.accepted.length || result.rejected.length) return false;
     // A storage failure after SMTP acceptance must not report an email failure.
@@ -57,7 +53,7 @@ export async function deliverEnquiry(input: Enquiry, requestId: string) {
   }
 }
 
-export async function sendTestEmail() {
+export async function sendTestEmail(source: EnquirySource = "home") {
   const settings = await getSettings();
   const mailer = transport(settings);
   try {
@@ -65,8 +61,7 @@ export async function sendTestEmail() {
     const result = await mailer.sendMail({
       from: { name: settings.senderName, address: settings.senderEmail },
       to: settings.recipientEmail,
-      subject: "BHARAT LUMS — SMTP test",
-      text: "Gmail SMTP accepted this test message from the Bharat Lums website.",
+      ...buildEnquiryEmail(sampleEnquiry, source, settings.templates ?? defaultTemplates, "TEST", true),
     });
     if (!result.accepted.length || result.rejected.length) throw new Error("Test email rejected");
   } finally {

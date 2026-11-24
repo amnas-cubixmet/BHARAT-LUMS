@@ -32,6 +32,14 @@ export const enquirySchema = z.object({
 });
 
 export type Enquiry = z.infer<typeof enquirySchema>;
+export const enquirySourceSchema = z.enum(["home", "contact", "quote"]);
+export type EnquirySource = z.infer<typeof enquirySourceSchema>;
+
+export const enquirySources = {
+  home: { label: "Homepage", title: "New website enquiry", path: "/" },
+  contact: { label: "Contact page", title: "New contact enquiry", path: "/contact" },
+  quote: { label: "Request a quote", title: "New quotation request", path: "/request-quote" },
+} satisfies Record<EnquirySource, { label: string; title: string; path: string }>;
 
 export function enquiryEmailHref(email: string, draft?: string) {
   const subject = encodeURIComponent("Bharat Lums website enquiry");

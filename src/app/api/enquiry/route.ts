@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { enquirySchema } from "@/lib/enquiry";
+import { enquirySchema, enquirySourceSchema } from "@/lib/enquiry";
 import { allowEnquiry, deliverEnquiry, deliveryEnabled } from "@/lib/delivery";
 
 export const runtime = "nodejs";
-const payloadSchema = enquirySchema.extend({ requestId: z.uuid(), home: z.boolean().optional() });
+const payloadSchema = enquirySchema.extend({ requestId: z.uuid(), home: z.boolean().optional(), source: enquirySourceSchema.optional() });
 const maxBytes = 16_384;
 
 function failure(status: number, message: string) {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     reader.releaseLock();
   }
   const parsed = payloadSchema.safeParse(data);
-  if (!parsed.success || parsed.data.website || (parsed.data.home && (!parsed.data.phone || !parsed.data.subject || parsed.data.subject.length < 2)))
+  if (!parsed.success || parsed.data.website || ((parsed.data.home || parsed.data.source === "home") && (!parsed.data.phone || !parsed.data.subject || parsed.data.subject.length < 2)))
     return failure(
       400,
       "The enquiry could not be validated. Check the form and try again.",
@@ -62,8 +62,8 @@ export async function POST(request: Request) {
   try {
     if (!(await allowEnquiry(address)))
       return failure(429, "Too many enquiries. Try again in a few minutes.");
-    const { requestId, ...input } = parsed.data;
-    if (!(await deliverEnquiry(input, requestId)))
+    const { requestId, source, home, ...input } = parsed.data;
+    if (!(await deliverEnquiry(input, requestId, source ?? (home ? "home" : "contact"))))
       return failure(
         502,
         "Email service did not accept your enquiry. Try again or use the email option.",

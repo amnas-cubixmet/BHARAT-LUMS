@@ -13,3 +13,7 @@ The homepage sends enquiries through the existing /api/enquiry endpoint. The con
 If Upstash, encryption or SMTP is unavailable, the application fails closed. The homepage exposes email/WhatsApp draft fallback after a failed submission. The existing rate limiter permits six attempts per IP per ten minutes and sixty globally; the admin test limit is five per ten minutes. A honeypot rejects filled hidden fields. Repeated request IDs are suppressed for ten minutes while pending and for 24 hours after recorded acceptance; SMTP cannot guarantee exactly-once delivery.
 
 Never paste real passwords into issues, chat, repository files or build logs.
+
+## Form-specific email templates
+
+All three forms (homepage, contact, request a quote) submit to /api/enquiry. In the authenticated admin page, select each form to edit its email subject, heading and introductory text. All templates use the same sender, recipient and encrypted Gmail app password. Save Settings persists all three templates; Send Test Email sends a clearly labeled sample of the selected saved template to the configured recipient. Customer email is Reply-To for real enquiries. All customer details are escaped in HTML and included in a plain-text alternative. If SMTP is unavailable, submissions report an error and offer the email/WhatsApp fallback. Configure Redis and the encryption key locally in .env.local as well as on Vercel.

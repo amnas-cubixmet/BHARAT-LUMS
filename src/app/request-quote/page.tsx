@@ -27,7 +27,7 @@ export default async function QuotePage({
         title="Request a quote."
         description="Share what you are planning and the lighting you need. Include quantities and project location where available."
       />
-      <ContactSection defaults={defaults} />
+      <ContactSection source="quote" defaults={defaults} />
     </>
   );
 }

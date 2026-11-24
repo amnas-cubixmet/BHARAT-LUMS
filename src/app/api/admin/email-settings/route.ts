@@ -1,5 +1,6 @@
 import { authorized, unauthorized } from "@/lib/admin-auth";
 import { getSettings, publicSettings, rateLimit, saveSettings, settingsSchema } from "@/lib/email-settings";
+import { enquirySourceSchema } from "@/lib/enquiry";
 import { sendTestEmail } from "@/lib/delivery";
 
 export const runtime = "nodejs";
@@ -38,7 +39,9 @@ export async function POST(request: Request) {
   try {
     if (payload.action === "test") {
       if (!await rateLimit("admin-test", "global", 5)) return json({ message: "Too many test emails. Try later." }, 429);
-      await sendTestEmail();
+      const source = enquirySourceSchema.safeParse("source" in payload ? payload.source : "home");
+      if (!source.success) return json({ message: "Invalid template selection." }, 400);
+      await sendTestEmail(source.data);
       return json({ message: "SMTP connection verified and test email accepted. Check the recipient inbox." });
     }
     if (payload.action !== "save" || !("settings" in payload)) return json({ message: "Invalid action." }, 400);

@@ -9,6 +9,7 @@ import {
   enquirySchema,
   enquiryText,
   type Enquiry,
+  type EnquirySource,
 } from "@/lib/enquiry";
 
 type Defaults = { interest?: string; message?: string };
@@ -69,12 +70,14 @@ export default function EnquiryForm({
   whatsappNumber,
   defaults,
   home = false,
+  source = home ? "home" : "contact",
 }: {
   online: boolean;
   email: string;
   whatsappNumber: string;
   defaults?: Defaults;
   home?: boolean;
+  source?: EnquirySource;
 }) {
   const formId = useId();
   const {
@@ -121,7 +124,7 @@ export default function EnquiryForm({
       const response = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, home, requestId: attempt.current.id }),
+        body: JSON.stringify({ ...values, home, source, requestId: attempt.current.id }),
       });
       const result = await response.json();
       setStatus({
@@ -240,7 +243,7 @@ export default function EnquiryForm({
         {isSubmitting
           ? "Submitting…"
           : online
-            ? "Send Enquiry"
+            ? source === "quote" ? "Send Quote Request" : "Send Enquiry"
             : "Prepare enquiry draft"}{" "}
         <Send size={16} aria-hidden="true" />
       </button>
