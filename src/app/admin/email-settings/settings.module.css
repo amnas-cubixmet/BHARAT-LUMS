@@ -1,0 +1,15 @@
+.panel { border: 1px solid var(--line); border-radius: 1rem; padding: clamp(1rem, 4vw, 2rem); background: var(--bg); color: var(--text); }
+.form { display: grid; gap: 1.4rem; }
+.grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; min-width: 0; border: 0; padding: 0; margin: 0; }
+.grid label { display: grid; gap: .5rem; min-width: 0; font-weight: 600; }
+.grid input:not([type=checkbox]), .grid select { background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: .45rem; min-width: 0; width: 100%; padding: .8rem; min-height: 48px; font-size: 16px; }
+.full { grid-column: 1 / -1; }
+.password { display: flex; gap: .5rem; }
+.password button { flex: none; min-height: 44px; padding: .6rem; border: 1px solid var(--line); border-radius: .45rem; }
+.grid .toggle { display: flex; flex-direction: row; align-items: center; min-height: 44px; grid-column: 1 / -1; }
+.grid input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--text); }
+.grid small, .connection { color: var(--muted); font-weight: 400; }
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.actions button:disabled { opacity: .55; cursor: not-allowed; }
+.status { margin-top: 1rem; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .grid { grid-template-columns: minmax(0,1fr); } .actions { flex-direction: column; } }

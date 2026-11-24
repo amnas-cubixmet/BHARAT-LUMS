@@ -41,6 +41,11 @@ const fields = [
     auto: "tel",
   },
   {
+    name: "subject",
+    label: "Subject",
+    type: "text",
+  },
+  {
     name: "interest",
     label: "Product interest",
     type: "text",
@@ -63,11 +68,13 @@ export default function EnquiryForm({
   email,
   whatsappNumber,
   defaults,
+  home = false,
 }: {
   online: boolean;
   email: string;
   whatsappNumber: string;
   defaults?: Defaults;
+  home?: boolean;
 }) {
   const formId = useId();
   const {
@@ -81,6 +88,7 @@ export default function EnquiryForm({
       company: "",
       email: "",
       phone: "",
+      subject: "",
       interest: defaults?.interest ?? "",
       projectType: "",
       location: "",
@@ -93,6 +101,10 @@ export default function EnquiryForm({
   const [draft, setDraft] = useState("");
   const attempt = useRef<{ body: string; id: string } | null>(null);
   async function submit(values: Enquiry) {
+    if (home && (!values.subject || values.subject.length < 2 || !values.phone)) {
+      setStatus({ kind: "error", message: "Enter a valid phone number and subject." });
+      return;
+    }
     setDraft(enquiryText(values));
     if (!online) {
       setStatus({
@@ -109,7 +121,7 @@ export default function EnquiryForm({
       const response = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, requestId: attempt.current.id }),
+        body: JSON.stringify({ ...values, home, requestId: attempt.current.id }),
       });
       const result = await response.json();
       setStatus({
@@ -135,13 +147,13 @@ export default function EnquiryForm({
           setDraft("");
         })(event);
       }}
-      noValidate
+      noValidate={!home}
     >
       <p className="form-note full">Fields marked with * are required.</p>
-      {fields.map((field) => {
+      {fields.filter((field) => home ? !["interest", "location", "quantity"].includes(field.name) : field.name !== "subject").map((field) => {
         const id = `${formId}-${field.name}`;
         const error = errors[field.name];
-        const required = "required" in field;
+        const required = "required" in field || (home && (field.name === "phone" || field.name === "subject"));
         return (
           <div className="enquiry-field" key={field.name}>
             <label className="sr-only" htmlFor={id}>
@@ -166,7 +178,7 @@ export default function EnquiryForm({
           </div>
         );
       })}
-      <div className="enquiry-field">
+      {!home && <div className="enquiry-field">
         <label className="sr-only" htmlFor={`${formId}-project-type`}>
           Project type
         </label>
@@ -184,7 +196,7 @@ export default function EnquiryForm({
             <option key={type}>{type}</option>
           ))}
         </select>
-      </div>
+      </div>}
       <div className="enquiry-field full">
         <label className="sr-only" htmlFor={`${formId}-message`}>
           Message
@@ -228,7 +240,7 @@ export default function EnquiryForm({
         {isSubmitting
           ? "Submitting…"
           : online
-            ? "Send enquiry"
+            ? "Send Enquiry"
             : "Prepare enquiry draft"}{" "}
         <Send size={16} aria-hidden="true" />
       </button>

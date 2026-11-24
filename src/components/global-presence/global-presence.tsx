@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { ArrowRight, Globe2, MapPin, RotateCcw } from "lucide-react";
+import { ArrowRight, MapPin, RotateCcw } from "lucide-react";
 import {
   Component,
   useCallback,
@@ -39,19 +39,8 @@ class GlobeBoundary extends Component<
 }
 
 function animatePresence(section: HTMLElement, { gsap, media }: MotionTools) {
-  const intro = section.querySelector("[data-presence-intro]");
   const stage = section.querySelector("[data-presence-stage]");
   media.add("all", () => {
-    if (intro) {
-      gsap.from(Array.from(intro.children), {
-        opacity: 0,
-        y: 24,
-        duration: 0.65,
-        stagger: 0.13,
-        clearProps: "opacity,transform",
-        scrollTrigger: { trigger: intro, start: "top 90%", once: true },
-      });
-    }
     if (stage) {
       gsap.from(stage, {
         opacity: 0,
@@ -191,22 +180,12 @@ export function GlobalPresenceSection() {
   return (
     <section
       id="global-presence"
-      aria-labelledby="presence-title"
+      aria-label="Interactive lighting markets map"
       className={styles.section}
       data-touch-home-motion={touchMotion || undefined}
       ref={section}
     >
       <div className="shell">
-        <div className={styles.intro} data-presence-intro>
-          <p className={styles.kicker}>
-            <Globe2 size={16} aria-hidden="true" /> Global presence
-          </p>
-          <h2 id="presence-title">
-            Lighting Beyond <span>Borders</span>
-          </h2>
-          <p>Connecting Markets. Illuminating Possibilities.</p>
-        </div>
-
         <div className={styles.console}>
           <div ref={stage} className={styles.stage} data-presence-stage>
             {status !== "ready" && <RegionalMap country={country} />}

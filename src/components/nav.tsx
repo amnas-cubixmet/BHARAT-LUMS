@@ -4,34 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { useRef, useState, useSyncExternalStore } from "react";
-
-const globalPresence = "/#global-presence";
+import { useRef, useState } from "react";
 
 const links = [
   ["/", "Home"],
   ["/about", "About"],
   ["/products", "Products"],
-  [globalPresence, "Global Presence"],
   ["/contact", "Contact"],
 ];
-
-function subscribeToHash(onChange: () => void) {
-  window.addEventListener("hashchange", onChange);
-  window.addEventListener("popstate", onChange);
-  return () => {
-    window.removeEventListener("hashchange", onChange);
-    window.removeEventListener("popstate", onChange);
-  };
-}
-
-function getHash() {
-  return window.location.hash;
-}
-
-function getServerHash() {
-  return "";
-}
 
 export function BrandMark({
   variant = "dark",
@@ -55,11 +35,9 @@ export function BrandMark({
 
 export default function Header() {
   const path = usePathname();
-  const hash = useSyncExternalStore(subscribeToHash, getHash, getServerHash);
   const menuToggle = useRef<HTMLButtonElement>(null);
   const [openedAt, setOpenedAt] = useState<string | null>(null);
   const open = openedAt === path;
-  const atGlobalPresence = path === "/" && hash === "#global-presence";
 
   function followLink(href: string, preventDefault: () => void) {
     setOpenedAt(null);
@@ -78,23 +56,7 @@ export default function Header() {
         );
       }
       window.scrollTo({ top: 0, behavior: "instant" });
-    } else if (href === globalPresence) {
-      preventDefault();
-      // Avoid reloading the WebGL scene when navigating within the homepage.
-      const oldURL = window.location.href;
-      window.history.pushState(null, "", href);
-      window.dispatchEvent(
-        new HashChangeEvent("hashchange", {
-          oldURL,
-          newURL: window.location.href,
-        }),
-      );
-      document.getElementById("global-presence")?.scrollIntoView({
-        block: "start",
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "auto"
-          : "smooth",
-      });
+
     }
   }
 
@@ -132,22 +94,13 @@ export default function Header() {
           aria-label="Main navigation"
         >
           {links.map(([href, label]) => {
-            const current =
-              href === globalPresence
-                ? atGlobalPresence
-                : path === href && !atGlobalPresence;
+            const current = path === href;
             const inSection = href !== "/" && path.startsWith(`${href}/`);
             return (
               <Link
                 key={href}
                 href={href}
-                aria-current={
-                  current
-                    ? href === globalPresence
-                      ? "location"
-                      : "page"
-                    : undefined
-                }
+                aria-current={current ? "page" : undefined}
                 className={current || inSection ? "active" : undefined}
                 onNavigate={(event) => followLink(href, event.preventDefault)}
               >

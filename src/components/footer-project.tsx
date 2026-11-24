@@ -5,7 +5,7 @@ import { Action } from "./action";
 
 export function FooterProject() {
   const pathname = usePathname();
-  if (pathname === "/products" || pathname === "/contact") return null;
+  if (pathname === "/" || pathname === "/products" || pathname === "/contact" || pathname.startsWith("/admin")) return null;
 
   return (
     <div className="footer-project">
