@@ -41,9 +41,9 @@
   overflow-y: hidden;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
-  scrollbar-width: thin;
-  scrollbar-color: #555 transparent;
-  padding: 5px 4px 9px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 5px 4px;
   margin-top: 8px;
 }
 .gallery .rail button {
@@ -77,4 +77,10 @@
 @media (prefers-reduced-motion: reduce) {
   .arrow { transition: none; }
   .gallery :global(.gallery-image-transition) { animation: none; }
+}
+
+.gallery .rail::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
