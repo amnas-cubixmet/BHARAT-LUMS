@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { ArrowRight, Globe2, MapPin, RotateCcw } from "lucide-react";
 import {
   Component,
@@ -97,44 +98,52 @@ function RegionalMap({ country }: { country: Country }) {
       role="img"
       aria-label={`Regional map with ${country.name} highlighted`}
     >
-      <svg viewBox="0 0 1000 560" aria-hidden="true">
-        <image href="/maps/region.webp" width="1000" height="560" />
-        {country.code !== origin.code && (
-          <path
-            d={`M ${x} ${y} Q ${(x + destX) / 2} ${Math.min(y, destY) - 42} ${destX} ${destY}`}
-            fill="none"
-            stroke="#ffffff"
-            strokeWidth="3"
-            strokeDasharray="8 6"
-          />
-        )}
-        {countries.map((point) => {
-          const [cx, cy] = position(point);
-          const selected = point.code === country.code;
-          return (
-            <g key={point.code}>
-              {selected && (
+      <div className={styles.fallbackMap}>
+        <Image
+          src="/maps/region.webp"
+          alt=""
+          fill
+          loading="lazy"
+          sizes="(max-width: 980px) 92vw, (max-width: 1450px) 60vw, 870px"
+        />
+        <svg viewBox="0 0 1000 560" aria-hidden="true">
+          {country.code !== origin.code && (
+            <path
+              d={`M ${x} ${y} Q ${(x + destX) / 2} ${Math.min(y, destY) - 42} ${destX} ${destY}`}
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="3"
+              strokeDasharray="8 6"
+            />
+          )}
+          {countries.map((point) => {
+            const [cx, cy] = position(point);
+            const selected = point.code === country.code;
+            return (
+              <g key={point.code}>
+                {selected && (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r="15"
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="2"
+                  />
+                )}
                 <circle
                   cx={cx}
                   cy={cy}
-                  r="15"
-                  fill="none"
-                  stroke="#ffffff"
+                  r={selected ? 8 : 5}
+                  fill={selected ? "#ffffff" : "#b6b6b6"}
+                  stroke="#000000"
                   strokeWidth="2"
                 />
-              )}
-              <circle
-                cx={cx}
-                cy={cy}
-                r={selected ? 8 : 5}
-                fill={selected ? "#ffffff" : "#b6b6b6"}
-                stroke="#000000"
-                strokeWidth="2"
-              />
-            </g>
-          );
-        })}
-      </svg>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
     </div>
   );
 }

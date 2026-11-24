@@ -129,9 +129,11 @@ for (const [width, height] of viewports) {
         await expect(page.locator(".collection-card-link")).toHaveAttribute("href", detailPath);
       } else if (route === detailPath) {
         await page.getByRole("button", { name: "Show detail crop" }).click();
+        await expect(page.locator(".product-lightbox img")).toHaveCount(0);
         await page.getByRole("button", { name: "Open full-size fixture image" }).click();
         const gallery = page.getByRole("dialog", { name: "Detail crop" });
         await expect(gallery).toBeVisible();
+        await expect(gallery.locator("img")).toHaveAttribute("loading", "lazy");
         await expect(gallery.getByRole("button", { name: "Close fixture image" })).toBeInViewport({ ratio: 1 });
         await gallery.getByRole("button", { name: "Magnify fixture" }).click();
         await page.keyboard.press("Escape");
@@ -188,6 +190,11 @@ test("homepage motion and fallback with Android Reduce Motion on", async ({ page
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.addInitScript(() => {
+    const matchMedia = window.matchMedia.bind(window);
+    window.matchMedia = (query) =>
+      query === "(any-pointer: coarse) and (max-width: 1024px)"
+        ? matchMedia("not all")
+        : matchMedia(query);
     const original = HTMLCanvasElement.prototype.getContext;
     Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
       value(this: HTMLCanvasElement, type: string, ...options: unknown[]) {
@@ -203,6 +210,7 @@ test("homepage motion and fallback with Android Reduce Motion on", async ({ page
   await expect(stage.locator('[class*="_heroGlow"]')).toHaveCSS("animation-duration", "1.5s");
   const indiaMap = page.getByRole("img", { name: "Regional map with India highlighted" });
   await expect(indiaMap).toBeVisible();
+  await expect(indiaMap.locator("img")).toHaveAttribute("loading", "lazy");
   await page.getByRole("button", { name: "Oman", exact: true }).click();
   await expect(page.getByRole("img", { name: "Regional map with Oman highlighted" })).toBeVisible();
 });

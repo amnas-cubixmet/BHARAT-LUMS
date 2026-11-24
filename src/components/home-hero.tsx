@@ -194,7 +194,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
             src="/images/streetlight-concept.webp"
             alt=""
             fill
-            priority
+            preload
             sizes="(max-width: 900px) 100vw, 64vw"
           />
           {enabled && (
@@ -205,6 +205,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
                   reduced={reduced}
                   compactLayout={compact}
                   paused={!visible}
+                  renderOnDemand={touchMotion}
                   pointer={pointer}
                   illumination={illumination}
                   onReady={markReady}

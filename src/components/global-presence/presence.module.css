@@ -63,12 +63,18 @@
 .fallback {
   @apply grid place-items-center;
 }
-.fallback svg {
-  display: block;
+.fallbackMap {
+  position: relative;
   width: 100%;
-  height: auto;
+  aspect-ratio: 1000 / 560;
 }
-.fallback image {
+.fallbackMap svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.fallbackMap img {
   filter: grayscale(1);
 }
 .controls {

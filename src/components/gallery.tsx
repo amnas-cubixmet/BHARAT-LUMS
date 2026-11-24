@@ -11,12 +11,14 @@ export function Gallery({
   images: [ProductImage, ...ProductImage[]];
 }) {
   const [index, setIndex] = useState(0);
+  const [opened, setOpened] = useState(false);
   const [zoom, setZoom] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const image = images[index];
 
   function openImage() {
     setZoom(false);
+    setOpened(true);
     dialog.current?.showModal();
   }
 
@@ -32,7 +34,6 @@ export function Gallery({
           <CatalogueImage
             {...image}
             sizes="(max-width: 805px) 94vw, 55vw"
-            eager
           />
         </span>
         <span className="card-icon">
@@ -64,6 +65,7 @@ export function Gallery({
       <dialog
         className="product-lightbox"
         ref={dialog}
+        onClose={() => setOpened(false)}
         aria-labelledby="product-image-title"
       >
         <header>
@@ -85,11 +87,13 @@ export function Gallery({
           onClick={() => setZoom(!zoom)}
         >
           <span className={zoom ? "image-magnified" : undefined}>
-            <CatalogueImage
-              src={image.src}
-              alt={image.alt}
-              sizes="(max-width: 700px) 94vw, 850px"
-            />
+            {opened && (
+              <CatalogueImage
+                src={image.src}
+                alt={image.alt}
+                sizes="(max-width: 700px) 94vw, 850px"
+              />
+            )}
           </span>
         </button>
       </dialog>

@@ -17,6 +17,7 @@ type SceneProps = {
   reduced: boolean;
   compactLayout: boolean;
   paused: boolean;
+  renderOnDemand: boolean;
   pointer: RefObject<{ x: number; y: number }>;
   illumination: RefObject<HTMLDivElement | null>;
   onReady: () => void;
@@ -33,6 +34,7 @@ function Fixture({
   power,
   paused,
   reduced,
+  renderOnDemand,
   compactLayout,
   pointer,
   illumination,
@@ -71,7 +73,7 @@ function Fixture({
 
   useEffect(() => {
     invalidate();
-  }, [invalidate, power, reduced]);
+  }, [invalidate, paused, power, reduced]);
 
   useEffect(() => {
     const canvas = gl.domElement;
@@ -90,7 +92,8 @@ function Fixture({
     readySent.current = true;
     // Three.Clock is deprecated. Cap frame gaps after Safari tab suspension.
     const elapsed = elapsedRef.current;
-    elapsedRef.current += Math.min(delta, 0.05);
+    const frameDelta = Math.min(delta, 0.05);
+    elapsedRef.current += frameDelta;
     const t = MathUtils.smoothstep(elapsed, 0, 1.4);
     fixture.rotation.y = reduced
       ? -0.39
@@ -98,7 +101,7 @@ function Fixture({
           fixture.rotation.y,
           -0.39 + (1 - t) * 0.5 + pointer.current.x * 0.13,
           5,
-          delta,
+          frameDelta,
         );
     fixture.rotation.x = reduced
       ? 0.02
@@ -106,7 +109,7 @@ function Fixture({
           fixture.rotation.x,
           0.02 + pointer.current.y * 0.085,
           5,
-          delta,
+          frameDelta,
         );
     fixture.position.y = reduced
       ? 0
@@ -114,7 +117,7 @@ function Fixture({
           fixture.position.y,
           (1 - t) * 0.16 - pointer.current.y * 0.06,
           5,
-          delta,
+          frameDelta,
         );
     const intensity = reduced
       ? 1
@@ -124,7 +127,7 @@ function Fixture({
     lens.emissiveIntensity =
       reduced || firstFrame || paused
         ? emission
-        : MathUtils.damp(lens.emissiveIntensity, emission, 12, delta);
+        : MathUtils.damp(lens.emissiveIntensity, emission, 12, frameDelta);
     if (spotlight.current) spotlight.current.intensity = 20 * power * intensity;
 
     const overlay = illumination.current;
@@ -136,6 +139,12 @@ function Fixture({
       setLightProperty(overlay, "--light-spread", spread.toFixed(3));
     }
     if (firstFrame) onReady();
+    if (
+      renderOnDemand && !reduced && !paused &&
+      (elapsed < 2.6 || Math.abs(lens.emissiveIntensity - emission) > 0.005)
+    ) {
+      invalidate();
+    }
   });
   return (
     <group ref={group} rotation={[0.02, -0.2, -0.13]}>
@@ -258,7 +267,7 @@ export default function StreetlightScene(props: SceneProps) {
     <Canvas
       aria-hidden
       dpr={[1, props.compactLayout ? 1.2 : 1.5]}
-      frameloop={props.reduced || props.paused ? "demand" : "always"}
+      frameloop={props.reduced || props.paused || props.renderOnDemand ? "demand" : "always"}
       camera={{ position: [-0.18, -1.26, 6.5], fov: 39 }}
       gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
       onCreated={({ camera, gl }) => {

@@ -29,11 +29,11 @@ export function useSiteReducedMotion() {
   return useMediaQuery(reducedMotionQuery);
 }
 
-function isIPhone() {
-  return /\biPhone\b/i.test(window.navigator.userAgent);
+function isAndroidOrIPhone() {
+  return /\b(?:Android|iPhone)\b/i.test(window.navigator.userAgent);
 }
 
 export function useTouchHomepageMotion() {
-  // The pointer media query describes input hardware, so it can miss iPhones.
-  return useMediaQuery("(any-pointer: coarse) and (max-width: 1024px)", isIPhone);
+  // The pointer media query describes input hardware, so fall back to the mobile platform when needed.
+  return useMediaQuery("(any-pointer: coarse) and (max-width: 1024px)", isAndroidOrIPhone);
 }
