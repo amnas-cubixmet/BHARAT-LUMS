@@ -2,7 +2,8 @@ import { z } from "zod";
 import { enquirySchema } from "@/lib/enquiry";
 import { allowEnquiry, deliverEnquiry, deliveryEnabled } from "@/lib/delivery";
 
-const payloadSchema = enquirySchema.extend({ requestId: z.uuid() });
+export const runtime = "nodejs";
+const payloadSchema = enquirySchema.extend({ requestId: z.uuid(), home: z.boolean().optional() });
 const maxBytes = 16_384;
 
 function failure(status: number, message: string) {
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
     reader.releaseLock();
   }
   const parsed = payloadSchema.safeParse(data);
-  if (!parsed.success || parsed.data.website)
+  if (!parsed.success || parsed.data.website || (parsed.data.home && (!parsed.data.phone || !parsed.data.subject || parsed.data.subject.length < 2)))
     return failure(
       400,
       "The enquiry could not be validated. Check the form and try again.",

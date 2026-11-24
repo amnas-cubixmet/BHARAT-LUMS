@@ -3,6 +3,7 @@ import { Action } from "@/components/ui";
 import { GlobalPresenceSection } from "@/components/global-presence/global-presence";
 import { HomeHero } from "@/components/home-hero";
 import { CatalogueSlider } from "@/components/home/catalogue-slider";
+import { HomeEnquiry } from "@/components/home-enquiry";
 import { HomeFaq } from "@/components/home/faq";
 import styles from "@/components/home/home.module.css";
 import { Reveal } from "@/components/motion";
@@ -61,6 +62,7 @@ export default function Home() {
       <GlobalPresenceSection />
 
       <HomeFaq catalogue={catalogueDownload} />
+      <HomeEnquiry />
     </>
   );
 }

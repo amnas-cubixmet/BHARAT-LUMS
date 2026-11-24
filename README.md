@@ -21,7 +21,7 @@ Open http://localhost:3000. The catalogue, portfolio and email-draft fallback wo
 
 ## Enquiries
 
-Create `.env.local` from `.env.example` when credentials are available. Online submission uses Resend and a shared Upstash rate limiter. Without both services configured, the form prepares a draft for the visitor to open and send in their own mail app. An accepted provider request does not guarantee inbox delivery.
+Create `.env.local` from `.env.example` when credentials are available. Online submission uses Gmail SMTP (Nodemailer), encrypted settings in Upstash Redis, and a shared rate limiter. Configure the production variables and admin settings as described in [email setup](docs/email-setup.md). Existing contact and quote forms retain their email/WhatsApp draft fallback. An accepted provider request does not guarantee inbox delivery.
 
 ## Checks
 
@@ -35,4 +35,4 @@ npm test
 
 Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to use an installed Chromium binary. Desktop and mobile tests run against the production server. The CI workflow installs Chromium and runs the same checks.
 
-See [deployment](docs/deployment.md) and [test results](docs/verification.md).
+See [email setup](docs/email-setup.md) and [responsive audit](docs/responsive-audit.md).
