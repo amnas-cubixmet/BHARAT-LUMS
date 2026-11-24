@@ -4,9 +4,7 @@ import { ArrowDown, ArrowUpRight, ArrowRight } from "lucide-react";
 import {
   artwork,
   catalogueLabel,
-  findCatalogueFixture,
   findCollection,
-  type CatalogueCategory,
   type Product,
   type Project,
 } from "@/lib/catalogue";
@@ -61,37 +59,6 @@ export function SectionHead({
           <ArrowUpRight size={17} />
         </Link>
       )}
-    </Reveal>
-  );
-}
-
-export function CatalogueCategoryCard({ item }: { item: CatalogueCategory }) {
-  const enquiryHref = `/request-quote?collection=${item.slug}`;
-  const fixture = findCatalogueFixture(item.slug);
-  return (
-    <Reveal as="article" className="media-card collection-card">
-      <Link
-        className="collection-card-link"
-        href={fixture ? `/products/${fixture.slug}` : enquiryHref}
-      >
-        <div className="image-link">
-          <Image
-            src={artwork(item.image)}
-            alt=""
-            fill
-            loading="lazy"
-            sizes="(max-width: 540px) 92vw, (max-width: 900px) 45vw, (max-width: 1450px) 30vw, 420px"
-          />
-        </div>
-        <div className="card-body">
-          <h3>{item.name}</h3>
-          <p>{item.description}</p>
-          <span className="collection-card-action">
-            {fixture ? "View details" : "Enquire now"}{" "}
-            <ArrowUpRight size={17} aria-hidden="true" />
-          </span>
-        </div>
-      </Link>
     </Reveal>
   );
 }

@@ -13,7 +13,7 @@ import {
   projects,
   type Product,
 } from "@/lib/catalogue";
-import { Action, CatalogueCategoryCard, ProductCard, ProjectCard } from "./ui";
+import { Action, ProductCard, ProjectCard } from "./ui";
 import { useSiteReducedMotion } from "./use-media-query";
 
 const catalogueWattages = [
@@ -46,13 +46,6 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
         .toLowerCase()
         .includes(search),
   );
-  const categoryMatches = catalogueCategories.filter(
-    (item) =>
-      !wattage && (!category || item.slug === category) &&
-      `${item.name} ${item.description}`.toLowerCase().includes(search),
-  );
-  if (sort === "name")
-    categoryMatches.sort((a, b) => a.name.localeCompare(b.name));
   if (sort === "name") visible.sort((a, b) => a.name.localeCompare(b.name));
   useEffect(() => {
     if (selected && !dialog.current?.open) dialog.current?.showModal();
@@ -124,9 +117,6 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
       <div className="catalogue-results">
         <p className="results-count" role="status">
           {`${visible.length} ${visible.length === 1 ? "fixture" : "fixtures"}`}
-          {categoryMatches.length
-            ? ` · ${categoryMatches.length} ${categoryMatches.length === 1 ? "category" : "categories"}`
-            : ""}
         </p>
         {hasFilters && (
           <button type="button" className="text-link" onClick={clearFilters}>
@@ -145,17 +135,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
           ))}
         </div>
       )}
-      {categoryMatches.length > 0 && (
-        <section aria-labelledby="catalogue-categories" className="section-tight">
-          <h2 id="catalogue-categories" className="catalogue-section-title">Lighting categories</h2>
-          <div className="card-grid catalogue-grid-transition" key={category}>
-            {categoryMatches.map((item) => (
-              <CatalogueCategoryCard item={item} key={item.slug} />
-            ))}
-          </div>
-        </section>
-      )}
-      {!visible.length && !categoryMatches.length && (
+      {visible.length === 0 && (
         <div className="empty-state">
           <p>No lighting results match. Try another search or clear the filters.</p>
         </div>

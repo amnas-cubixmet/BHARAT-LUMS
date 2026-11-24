@@ -377,8 +377,7 @@ svg {
     transform 0.55s cubic-bezier(0.2, 0.6, 0.2, 1),
     filter 0.4s;
 }
-.product-card-photographed .image-link img,
-.collection-card .image-link img {
+.product-card-photographed .image-link img {
   object-fit: contain;
 }
 .image-link:hover img {
