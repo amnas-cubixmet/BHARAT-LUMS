@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import type { CatalogueCategory } from "@/lib/catalogue";
+import { useTouchHomepageMotion } from "../use-media-query";
 import styles from "./catalogue-slider.module.css";
 
 const copies = [-1, 0, 1] as const;
@@ -20,6 +21,7 @@ export function CatalogueSlider({
   categories: readonly CatalogueCategory[];
 }) {
   const trackRef = useRef<HTMLUListElement>(null);
+  const touchMotion = useTouchHomepageMotion();
   const canLoop = categories.length > 1;
   const count = categories.length;
 
@@ -106,7 +108,11 @@ export function CatalogueSlider({
   }
 
   return (
-    <section className={`shell ${styles.section}`} aria-labelledby="catalogue-slider-title">
+    <section
+      className={`shell ${styles.section}`}
+      aria-labelledby="catalogue-slider-title"
+      data-touch-home-motion={touchMotion || undefined}
+    >
       <div className={styles.heading}>
         <h2 id="catalogue-slider-title">LED Lighting</h2>
         <Link href="/products" className={styles.allProducts}>

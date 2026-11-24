@@ -183,7 +183,7 @@ test("catalogue routes, gallery assets and enquiry drafts", async ({ page, reque
   await expect(form.getByRole("link", { name: "Open WhatsApp" })).toHaveAttribute("href", /^https:\/\/wa\.me\//);
 });
 
-test("reduced motion and fallback on mobile", async ({ page, browserName }) => {
+test("homepage motion and fallback with Android Reduce Motion on", async ({ page, browserName }) => {
   test.skip(browserName !== "chromium", "Chromium project exercises the forced WebGL fallback.");
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -199,7 +199,8 @@ test("reduced motion and fallback on mobile", async ({ page, browserName }) => {
   const stage = page.getByTestId("streetlight-stage");
   await expect(stage).toHaveAttribute("data-ready", "false");
   await expect(stage.locator("img")).toBeVisible();
-  await expect(page.locator("#catalogue-slider-track")).toHaveCSS("scroll-behavior", "auto");
+  await expect(page.locator("#catalogue-slider-track")).toHaveCSS("scroll-behavior", "smooth");
+  await expect(stage.locator('[class*="_heroGlow"]')).toHaveCSS("animation-duration", "1.5s");
   const indiaMap = page.getByRole("img", { name: "Regional map with India highlighted" });
   await expect(indiaMap).toBeVisible();
   await page.getByRole("button", { name: "Oman", exact: true }).click();

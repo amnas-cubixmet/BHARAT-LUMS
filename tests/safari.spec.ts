@@ -44,9 +44,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
       const track = page.locator("#catalogue-slider-track");
       await track.scrollIntoViewIfNeeded();
-      if (reducedMotion === "reduce") {
-        await expect(track).toHaveCSS("scroll-behavior", "auto");
-      }
+      await expect(track).toHaveCSS("scroll-behavior", "smooth");
       const before = await track.evaluate((element) => element.scrollLeft);
       await page.getByRole("button", { name: "Next category" }).click();
       await expect.poll(() => track.evaluate((element) => element.scrollLeft))

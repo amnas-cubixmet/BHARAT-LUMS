@@ -17,7 +17,7 @@ import {
 import type { OrbitControls as Orbit } from "three-stdlib";
 import { countries, origin, type Country } from "@/lib/global-presence";
 import styles from "./presence.module.css";
-import { compactSceneQuery, useMediaQuery, useSiteReducedMotion } from "../use-media-query";
+import { compactSceneQuery, useMediaQuery } from "../use-media-query";
 
 const start = { latitude: 14, longitude: 65 };
 const initialCamera = pointOnGlobe(start, 4.4).toArray();
@@ -327,7 +327,7 @@ function GlobeScene({
   onReady,
   onFailure,
   reduced,
-}: GlobeProps & { reduced: boolean }) {
+}: GlobeProps) {
   const controls = useRef<Orbit>(null);
   const pose = useRef<gsap.core.Tween | null>(null);
   const { camera, invalidate, gl } = useThree();
@@ -418,13 +418,14 @@ function GlobeScene({
 type GlobeProps = {
   country: Country;
   focusRequest: number;
+  reduced: boolean;
   onSelect: (country: Country) => void;
   onReady: () => void;
   onFailure: () => void;
 };
 
 export default function InteractiveGlobe(props: GlobeProps) {
-  const reduced = useSiteReducedMotion();
+  const { reduced } = props;
   const compact = useMediaQuery(compactSceneQuery);
   const [visible, setVisible] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null);
@@ -450,7 +451,7 @@ export default function InteractiveGlobe(props: GlobeProps) {
         dpr={[1, compact ? 1.2 : 1.4]}
         gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
       >
-        <GlobeScene {...props} reduced={reduced} />
+        <GlobeScene {...props} />
       </Canvas>
     </div>
   );

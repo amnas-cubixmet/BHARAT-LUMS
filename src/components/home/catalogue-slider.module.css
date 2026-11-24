@@ -124,7 +124,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .track {
+  .section:not([data-touch-home-motion]) .track {
     scroll-behavior: auto;
   }
 }

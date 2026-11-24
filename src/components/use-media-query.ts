@@ -25,3 +25,7 @@ export function useMediaQuery(query: string) {
 export function useSiteReducedMotion() {
   return useMediaQuery(reducedMotionQuery);
 }
+
+export function useTouchHomepageMotion() {
+  return useMediaQuery("(any-pointer: coarse) and (max-width: 1024px)");
+}

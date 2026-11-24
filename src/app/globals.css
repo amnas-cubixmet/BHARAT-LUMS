@@ -910,9 +910,10 @@ textarea::placeholder {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  /* Homepage scenes keep their motion on touch devices by design. */
+  :where(:not([data-touch-home-motion], [data-touch-home-motion] *)),
+  :where(:not([data-touch-home-motion], [data-touch-home-motion] *))::before,
+  :where(:not([data-touch-home-motion], [data-touch-home-motion] *))::after {
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;

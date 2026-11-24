@@ -12,6 +12,7 @@ import {
 } from "react";
 import { countries, origin, type Country } from "@/lib/global-presence";
 import { useMotion, type MotionTools } from "../motion";
+import { useSiteReducedMotion, useTouchHomepageMotion } from "../use-media-query";
 import styles from "./presence.module.css";
 
 const InteractiveGlobe = dynamic(() => import("./interactive-globe"), {
@@ -145,7 +146,9 @@ export function GlobalPresenceSection() {
     "waiting" | "loading" | "ready" | "fallback"
   >("waiting");
   const stage = useRef<HTMLDivElement>(null);
-  const section = useMotion<HTMLElement>(animatePresence);
+  const touchMotion = useTouchHomepageMotion();
+  const reduced = useSiteReducedMotion() && !touchMotion;
+  const section = useMotion<HTMLElement>(animatePresence, touchMotion);
 
   useEffect(() => {
     const element = stage.current;
@@ -181,6 +184,7 @@ export function GlobalPresenceSection() {
       id="global-presence"
       aria-labelledby="presence-title"
       className={styles.section}
+      data-touch-home-motion={touchMotion || undefined}
       ref={section}
     >
       <div className="shell">
@@ -202,6 +206,7 @@ export function GlobalPresenceSection() {
                 <InteractiveGlobe
                   country={country}
                   focusRequest={focusRequest}
+                  reduced={reduced}
                   onSelect={select}
                   onReady={ready}
                   onFailure={fallback}

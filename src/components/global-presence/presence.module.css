@@ -215,7 +215,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .countries button {
+  .section:not([data-touch-home-motion]) .countries button {
     transition: none;
   }
 }

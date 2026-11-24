@@ -8,9 +8,10 @@ export type MotionTools = { gsap: typeof gsap; media: gsap.MatchMedia };
 
 export function useMotion<T extends HTMLElement>(
   setup: (element: T, tools: MotionTools) => void,
+  keepMotion = false,
 ) {
   const ref = useRef<T>(null);
-  const reduced = useSiteReducedMotion();
+  const reduced = useSiteReducedMotion() && !keepMotion;
   useEffect(() => {
     const element = ref.current;
     if (!element || reduced) return;

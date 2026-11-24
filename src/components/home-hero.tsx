@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from "react";
 import { useMotion, type MotionTools } from "./motion";
-import { compactSceneQuery, useMediaQuery, useSiteReducedMotion } from "./use-media-query";
+import { compactSceneQuery, useMediaQuery, useSiteReducedMotion, useTouchHomepageMotion } from "./use-media-query";
 import styles from "./home/home.module.css";
 
 const StreetlightScene = dynamic(() => import("./home/streetlight-scene"), {
@@ -86,14 +86,15 @@ function animateHero(root: HTMLElement, { gsap, media }: MotionTools) {
 }
 
 export function HomeHero({ catalogue }: { catalogue?: string }) {
-  const root = useMotion<HTMLElement>(animateHero);
+  const touchMotion = useTouchHomepageMotion();
+  const root = useMotion<HTMLElement>(animateHero, touchMotion);
   const illumination = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const [powered, setPowered] = useState(true);
   const [brightness, setBrightness] = useState(80);
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
-  const reduced = useSiteReducedMotion();
+  const reduced = useSiteReducedMotion() && !touchMotion;
   const compact = useMediaQuery(compactSceneQuery);
   const [visible, setVisible] = useState(false);
   const markReady = useCallback(() => setReady(true), []);
@@ -133,6 +134,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
   return (
     <section
       className={styles.hero}
+      data-touch-home-motion={touchMotion || undefined}
       style={{ "--hero-light-power": power } as CSSProperties}
       ref={root}
       onPointerMove={(event) => {

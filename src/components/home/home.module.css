@@ -578,15 +578,13 @@
   .aboutArt:hover img {
     transform: none;
   }
-  .heroGlow,
-  .heroGlow::after {
+  .hero:not([data-touch-home-motion]) .heroGlow,
+  .hero:not([data-touch-home-motion]) .heroGlow::after {
     animation: none;
   }
-  .heroIllumination,
+  .hero:not([data-touch-home-motion]) :is(.heroIllumination, .heroLink, .heroPrimary),
   .faqRow button svg,
-  .faqAnswer,
-  .heroLink,
-  .heroPrimary {
+  .faqAnswer {
     transition: none;
   }
 }
