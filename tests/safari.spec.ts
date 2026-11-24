@@ -32,6 +32,8 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         }));
         expect(dimensions.content, `horizontal overflow on ${route} at ${width}px`)
           .toBeLessThanOrEqual(dimensions.viewport + 1);
+        // Let Next.js prefetches finish before replacing the WebKit document.
+        await page.waitForLoadState("networkidle");
       }
 
       await page.goto("/", { waitUntil: "domcontentloaded" });
@@ -40,6 +42,8 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
       await expect(nav).toBeVisible();
       await nav.getByRole("link", { name: "Products", exact: true }).click();
       await expect(page).toHaveURL(/\/products$/);
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("LED lighting catalogue.");
+      await page.waitForLoadState("networkidle");
       await page.goto("/", { waitUntil: "domcontentloaded" });
 
       const track = page.locator("#catalogue-slider-track");
@@ -61,3 +65,31 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
     });
   }
 }
+
+test("iPhone homepage motion remains active without a coarse pointer", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.addInitScript(() => {
+    const matchMedia = window.matchMedia.bind(window);
+    window.matchMedia = (query) =>
+      query === "(any-pointer: coarse) and (max-width: 1024px)"
+        ? matchMedia("not all")
+        : matchMedia(query);
+  });
+
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("[data-touch-home-motion]")).toHaveCount(3);
+  const stage = page.getByTestId("streetlight-stage");
+  const spotlight = stage.locator('[class*="_heroIllumination"]');
+  await expect(spotlight).toHaveCSS("transition-duration", "0.35s");
+  await page.getByRole("button", { name: "Streetlight power" }).click();
+  await expect(spotlight).toHaveCSS("opacity", "0");
+
+  await page.evaluate(() => window.scrollTo(0, 240));
+  await expect.poll(() => stage.evaluate((element) =>
+    parseFloat(element.style.getPropertyValue("--hero-scroll-y")) || 0,
+  )).toBeGreaterThan(0);
+  await expect(page.locator("#catalogue-slider-track")).toHaveCSS("scroll-behavior", "smooth");
+
+  await page.getByRole("button", { name: "Oman", exact: true }).click();
+  await expect(page.locator("#presence-country-details h3")).toHaveText("Oman");
+});

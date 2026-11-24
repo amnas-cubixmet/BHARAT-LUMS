@@ -15,17 +15,17 @@ export default defineConfig({
   testDir: "./tests",
   timeout: 45_000,
   workers: 2,
-  use: { baseURL, launchOptions, trace: "retain-on-failure" },
+  use: { baseURL, trace: "retain-on-failure" },
   projects: [
     {
       name: "desktop",
       testIgnore: ["**/mobile.spec.ts", "**/safari.spec.ts"],
-      use: { ...devices["Desktop Chrome"] },
+      use: { ...devices["Desktop Chrome"], launchOptions },
     },
     {
       name: "mobile",
       testMatch: "**/mobile.spec.ts",
-      use: { ...devices["Pixel 7"] },
+      use: { ...devices["Pixel 7"], launchOptions },
     },
     {
       name: "iphone-safari-emulation",

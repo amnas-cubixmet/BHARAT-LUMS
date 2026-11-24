@@ -9,7 +9,7 @@ function serverSnapshot() {
   return false;
 }
 
-export function useMediaQuery(query: string) {
+export function useMediaQuery(query: string, fallback = serverSnapshot) {
   const subscribe = useCallback(
     (update: () => void) => {
       const media = window.matchMedia(query);
@@ -18,7 +18,10 @@ export function useMediaQuery(query: string) {
     },
     [query],
   );
-  const getSnapshot = useCallback(() => window.matchMedia(query).matches, [query]);
+  const getSnapshot = useCallback(
+    () => window.matchMedia(query).matches || fallback(),
+    [query, fallback],
+  );
   return useSyncExternalStore(subscribe, getSnapshot, serverSnapshot);
 }
 
@@ -26,6 +29,11 @@ export function useSiteReducedMotion() {
   return useMediaQuery(reducedMotionQuery);
 }
 
+function isIPhone() {
+  return /\biPhone\b/i.test(window.navigator.userAgent);
+}
+
 export function useTouchHomepageMotion() {
-  return useMediaQuery("(any-pointer: coarse) and (max-width: 1024px)");
+  // The pointer media query describes input hardware, so it can miss iPhones.
+  return useMediaQuery("(any-pointer: coarse) and (max-width: 1024px)", isIPhone);
 }
