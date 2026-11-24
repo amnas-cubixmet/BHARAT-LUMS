@@ -36,16 +36,16 @@ const applications = [
 
 export default function AboutPage() {
   return (
-    <div className="shell">
+    <div className={`shell ${styles.page}`}>
       <section className={styles.hero} aria-labelledby="about-title">
-        <div className={styles.heroCopy}>
+        <Reveal className={styles.heroCopy}>
           <p className="eyebrow">About Bharat Lums</p>
           <h1 id="about-title">Engineering brighter possibilities.</h1>
           <p className={styles.lead}>{intro}</p>
           <Action href="/products" diagonal>
             Explore products
           </Action>
-        </div>
+        </Reveal>
         <figure className={styles.heroFigure}>
           <div className={styles.heroImage}>
             <Image
@@ -64,7 +64,10 @@ export default function AboutPage() {
         className={styles.applications}
         aria-labelledby="applications-title"
       >
-        <h2 id="applications-title">Lighting by application.</h2>
+        <Reveal className={styles.sectionHeading}>
+          <p className="eyebrow">Our lighting solutions</p>
+          <h2 id="applications-title">Lighting by application.</h2>
+        </Reveal>
         <div className={styles.applicationGrid}>
           {applications.map((item) => (
             <Reveal
@@ -81,7 +84,7 @@ export default function AboutPage() {
                     src={artwork(`products/${item.image}`)}
                     alt=""
                     fill
-                    sizes="(max-width: 580px) 92vw, (max-width: 1450px) 30vw, 430px"
+                    sizes="(max-width: 650px) 92vw, (max-width: 1450px) 30vw, 430px"
                   />
                 </div>
                 <div className={styles.applicationCopy}>
@@ -98,13 +101,21 @@ export default function AboutPage() {
       </section>
 
       <section className={styles.approach} aria-labelledby="approach-title">
-        <h2 id="approach-title">Start with the space.</h2>
+        <Reveal className={styles.sectionHeading}>
+          <p className="eyebrow">Our approach</p>
+          <h2 id="approach-title">Start with the space.</h2>
+        </Reveal>
         <Reveal className={styles.approachCopy}>
           <p>
             Tell us how people use the space, what needs to be lit and where the
             fixtures can go. We can then help you explore lighting categories
             that fit your project.
           </p>
+          <ol className={styles.steps}>
+            {["Understand how the space is used", "Identify what needs to be lit", "Explore suitable lighting categories"].map((step, index) => (
+              <li key={step}><span aria-hidden="true">0{index + 1}</span>{step}</li>
+            ))}
+          </ol>
         </Reveal>
       </section>
 
