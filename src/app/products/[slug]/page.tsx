@@ -10,7 +10,7 @@ import {
   products,
   relatedProducts,
 } from "@/lib/catalogue";
-import { fixturePhotoGroups } from "@/lib/fixture-photos";
+import { fixturePhoto, fixturePhotoGroups } from "@/lib/fixture-photos";
 import { brand, metadata as pageMetadata } from "@/lib/site";
 import photoStyles from "./fixture-photos.module.css";
 
@@ -39,9 +39,9 @@ export default async function ProductPage({ params }: Params) {
   const item = products.find((product) => product.slug === slug);
   if (!item) notFound();
 
-  const specs =
-    item.status === "verified" ? [...(item.specifications ?? [])] : [];
-  if (item.status === "verified" && item.wattages?.length) {
+  const photographed = item.status === "photographed";
+  const specs = item.status === "draft" ? [] : [...(item.specifications ?? [])];
+  if (item.status !== "draft" && item.wattages?.length) {
     specs.unshift({ name: "Wattage", value: `${item.wattages.join(" / ")} W` });
   }
   const downloads =
@@ -54,9 +54,9 @@ export default async function ProductPage({ params }: Params) {
   const related = relatedProducts(item);
   const photoGroup = fixturePhotoGroups[slug];
   const enquiryHref =
-    item.status === "verified"
-      ? `/request-quote?product=${slug}`
-      : `/request-quote?collection=${item.categories[0]}`;
+    item.status === "draft"
+      ? `/request-quote?collection=${item.categories[0]}`
+      : `/request-quote?product=${slug}`;
   const whatsappNumber = brand.phoneHref.replace(/\D/g, "");
   const message = encodeURIComponent(
     `Hello Bharat Lums, I would like more information about ${item.name}. Please share the available options and specifications.`,
@@ -78,23 +78,27 @@ export default async function ProductPage({ params }: Params) {
           <Link className="text-link" href="/products">
             ← All products
           </Link>
-          <h2>
-            {item.status === "verified"
-              ? "Fixture features"
-              : "Design features"}
-          </h2>
-          <ul>
-            {item.features.map((feature) => (
-              <li key={feature}>{feature}</li>
-            ))}
-          </ul>
-          <h2>Applications</h2>
-          <p>{item.applications}</p>
+          {item.features.length > 0 && (
+            <>
+              <h2>{item.status === "verified" ? "Fixture features" : "Design features"}</h2>
+              <ul>
+                {item.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {item.applications && (
+            <>
+              <h2>Applications</h2>
+              <p>{item.applications}</p>
+            </>
+          )}
           <h2>Technical information</h2>
           {specs.length > 0 ? (
             <table className="product-spec-table">
-              <caption className="sr-only">
-                Verified fixture specifications
+              <caption className={photographed ? photoStyles.specCaption : "sr-only"}>
+                {photographed ? "As marked on the fixture label" : "Verified fixture specifications"}
               </caption>
               <tbody>
                 {specs.map((spec) => (
@@ -156,15 +160,15 @@ export default async function ProductPage({ params }: Params) {
               const title = wattage ? `${name} · ${wattage}W` : name;
               return (
                 <figure className={photoStyles.figure} key={image}>
-                  <div className={photoStyles.photo}>
+                  <Link href={`/products/${image}`} className={photoStyles.photo} aria-label={`View ${title}`}>
                     <Image
-                      src={`/images/products/fixture-photos/${image}.webp`}
+                      src={fixturePhoto(image)}
                       alt=""
                       fill
                       loading="lazy"
                       sizes="(max-width: 560px) 92vw, (max-width: 805px) 45vw, (max-width: 1450px) 30vw, 430px"
                     />
-                  </div>
+                  </Link>
                   <figcaption className={photoStyles.caption}>
                     <h3>{title}</h3>
                     {rating && <p>{rating} on label</p>}

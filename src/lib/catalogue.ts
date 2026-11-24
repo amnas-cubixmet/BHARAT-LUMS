@@ -1,3 +1,5 @@
+import { fixturePhoto, fixturePhotoGroups } from "./fixture-photos";
+
 const ledFamilies = [
   [
     "floodlights",
@@ -95,7 +97,7 @@ export type Product = {
   description: string;
   features: string[];
   applications: string;
-  status: "draft" | "verified";
+  status: "draft" | "photographed" | "verified";
   wattages?: number[];
   specifications?: { name: string; value: string }[];
   datasheet?: `/${string}.pdf`;
@@ -122,7 +124,7 @@ function representativeImage(file: string, alt: string) {
   };
 }
 
-export const products: Product[] = [
+const representativeProducts: Product[] = [
   {
     slug: "led-flood-light",
     name: "LED Flood Light",
@@ -264,28 +266,68 @@ export const products: Product[] = [
   },
 ];
 
+const photographedProducts: Product[] = representativeProducts.flatMap((family) =>
+  (fixturePhotoGroups[family.slug]?.photos ?? []).map((photo) => {
+    const name = photo.wattage
+      ? `Oreli ${photo.name} · ${photo.wattage} W`
+      : photo.name;
+    const cover = {
+      src: fixturePhoto(photo.image),
+      alt: name,
+      label: "Fixture view",
+      representative: false,
+    };
+    return {
+      slug: photo.image,
+      name,
+      status: "photographed",
+      categories: family.categories,
+      description: photo.wattage
+        ? `Photographed ${family.name.toLowerCase()} with an Oreli model label.`
+        : "Photographed fixture. Ask us for the exact model and specifications.",
+      features: [],
+      applications: "",
+      images: [
+        cover,
+        ...Array.from({ length: photo.photoCount - 1 }, (_, i) => ({
+          ...cover,
+          src: fixturePhoto(`${photo.image}-${i + 2}`),
+          alt: `${name}, photo ${i + 2}`,
+          label: `Photo ${i + 2}`,
+        })),
+      ],
+      wattages: photo.wattage ? [photo.wattage] : undefined,
+      specifications: photo.rating
+        ? [{ name: "IP rating", value: photo.rating }]
+        : undefined,
+    };
+  }),
+);
+
+export const products = [...representativeProducts, ...photographedProducts];
+
 export function findCatalogueFixture(categorySlug: string) {
-  return products.find((item) => item.categories[0] === categorySlug);
+  return representativeProducts.find((item) => item.categories[0] === categorySlug);
 }
 
 export const publishedProducts = products.filter(
-  (product) => product.status === "verified",
+  (product) => product.status !== "draft",
 );
 export const catalogueDownload = publishedProducts.find(
-  (product) => product.catalogue,
+  (product) => product.status === "verified" && product.catalogue,
 )?.catalogue;
 
 export function catalogueLabel(product: Product) {
-  return product.status === "verified"
-    ? "Verified fixture"
-    : "Representative fixture";
+  if (product.status === "verified") return "Verified fixture";
+  if (product.status === "photographed") return "Fixture photo";
+  return "Representative fixture";
 }
 
 export function relatedProducts(product: Product) {
   return products
     .filter((item) => item.slug !== product.slug)
     .filter((item) => score(item) > 0)
-    .sort((a, b) => score(b) - score(a))
+    .sort((a, b) => score(b) - score(a) || Number(a.status === "draft") - Number(b.status === "draft"))
     .slice(0, 3);
 
   function score(item: Product) {

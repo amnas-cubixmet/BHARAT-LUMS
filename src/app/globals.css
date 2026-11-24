@@ -377,6 +377,7 @@ svg {
     transform 0.55s cubic-bezier(0.2, 0.6, 0.2, 1),
     filter 0.4s;
 }
+.product-card-photographed .image-link img,
 .collection-card .image-link img {
   object-fit: contain;
 }
@@ -632,6 +633,7 @@ textarea::placeholder {
 }
 .gallery-controls {
   display: flex;
+  flex-wrap: wrap;
   gap: 9px;
   margin-top: 10px;
 }

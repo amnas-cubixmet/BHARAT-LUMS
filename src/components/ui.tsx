@@ -103,7 +103,10 @@ export function ProductCard({
   preview?: () => void;
 }) {
   return (
-    <Reveal as="article" className="media-card product-card">
+    <Reveal
+      as="article"
+      className={`media-card product-card${item.status === "photographed" ? " product-card-photographed" : ""}`}
+    >
       <Link
         href={`/products/${item.slug}`}
         className="image-link"

@@ -111,6 +111,35 @@
   text-underline-offset: 4px;
 }
 
+.overview {
+  margin-top: clamp(30px, 6vw, 80px);
+}
+
+.overview summary {
+  width: fit-content;
+  cursor: pointer;
+  padding-block: 12px;
+}
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.overviewPhoto {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #111;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.overviewPhoto img {
+  object-fit: contain;
+}
+
 .quote {
   display: flex;
   align-items: center;

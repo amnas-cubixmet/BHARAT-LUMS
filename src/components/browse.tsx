@@ -16,11 +16,9 @@ import {
 import { Action, CatalogueCategoryCard, ProductCard, ProjectCard } from "./ui";
 import { useSiteReducedMotion } from "./use-media-query";
 
-const verifiedWattages = [
+const catalogueWattages = [
   ...new Set(
-    publishedProducts.flatMap((product) =>
-      product.status === "verified" ? (product.wattages ?? []) : [],
-    ),
+    publishedProducts.flatMap((product) => product.wattages ?? []),
   ),
 ].sort((a, b) => a - b);
 
@@ -43,16 +41,14 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
   const visible = publishedProducts.filter(
     (item) =>
       (!category || item.categories.includes(category)) &&
-      (!wattage ||
-        (item.status === "verified" &&
-          item.wattages?.includes(Number(wattage)))) &&
+      (!wattage || item.wattages?.includes(Number(wattage))) &&
       `${item.name} ${item.description} ${item.categories.map((slug) => findCollection(slug)?.name).join(" ")}`
         .toLowerCase()
         .includes(search),
   );
   const categoryMatches = catalogueCategories.filter(
     (item) =>
-      (!category || item.slug === category) &&
+      !wattage && (!category || item.slug === category) &&
       `${item.name} ${item.description}`.toLowerCase().includes(search),
   );
   if (sort === "name")
@@ -65,7 +61,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
     <>
       <div
         className={
-          verifiedWattages.length
+          catalogueWattages.length
             ? "filters catalogue-filters-with-wattage"
             : "filters"
         }
@@ -98,15 +94,15 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
             </optgroup>
           </select>
         </label>
-        {verifiedWattages.length > 0 && (
+        {catalogueWattages.length > 0 && (
           <label>
-            <span>Wattage</span>
+            <span>Wattage on label</span>
             <select
               value={wattage}
               onChange={(event) => setWattage(event.target.value)}
             >
               <option value="">All wattages</option>
-              {verifiedWattages.map((watts) => (
+              {catalogueWattages.map((watts) => (
                 <option key={watts} value={watts}>
                   {watts} W
                 </option>
@@ -127,9 +123,10 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
       </div>
       <div className="catalogue-results">
         <p className="results-count" role="status">
-          {publishedProducts.length
-            ? `${visible.length} ${visible.length === 1 ? "fixture" : "fixtures"}`
-            : `${categoryMatches.length} lighting ${categoryMatches.length === 1 ? "category" : "categories"}`}
+          {`${visible.length} ${visible.length === 1 ? "fixture" : "fixtures"}`}
+          {categoryMatches.length
+            ? ` · ${categoryMatches.length} ${categoryMatches.length === 1 ? "category" : "categories"}`
+            : ""}
         </p>
         {hasFilters && (
           <button type="button" className="text-link" onClick={clearFilters}>
@@ -137,7 +134,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
           </button>
         )}
       </div>
-      {visible.length ? (
+      {visible.length > 0 && (
         <div className="card-grid catalogue-grid-transition" key={category}>
           {visible.map((item) => (
             <ProductCard
@@ -147,13 +144,18 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
             />
           ))}
         </div>
-      ) : !publishedProducts.length && categoryMatches.length ? (
-        <div className="card-grid catalogue-grid-transition" key={category}>
-          {categoryMatches.map((item) => (
-            <CatalogueCategoryCard item={item} key={item.slug} />
-          ))}
-        </div>
-      ) : (
+      )}
+      {categoryMatches.length > 0 && (
+        <section aria-labelledby="catalogue-categories" className="section-tight">
+          <h2 id="catalogue-categories" className="catalogue-section-title">Lighting categories</h2>
+          <div className="card-grid catalogue-grid-transition" key={category}>
+            {categoryMatches.map((item) => (
+              <CatalogueCategoryCard item={item} key={item.slug} />
+            ))}
+          </div>
+        </section>
+      )}
+      {!visible.length && !categoryMatches.length && (
         <div className="empty-state">
           <p>No lighting results match. Try another search or clear the filters.</p>
         </div>

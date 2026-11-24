@@ -18,6 +18,7 @@
 }
 
 .photo {
+  display: block;
   position: relative;
   aspect-ratio: 4 / 5;
   background: #111;
@@ -42,4 +43,10 @@
 .caption p {
   color: var(--muted);
   font-size: 0.875rem;
+}
+
+.specCaption {
+  text-align: left;
+  color: var(--muted);
+  padding-bottom: 8px;
 }

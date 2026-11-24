@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { ProductsBrowser } from "@/components/browse";
 import { Action } from "@/components/ui";
-import { findCollection, publishedProducts } from "@/lib/catalogue";
+import { findCollection } from "@/lib/catalogue";
+import { fixtureOverviewPhotos } from "@/lib/fixture-photos";
 import { metadata as pageMetadata } from "@/lib/site";
 import styles from "./products.module.css";
 
@@ -24,16 +26,29 @@ export default async function ProductsPage({
           <p className="eyebrow">Product catalogue</p>
           <h1 id="products-title">LED lighting catalogue.</h1>
         </div>
-        <p>
-          {publishedProducts.length
-            ? "Browse verified LED fixtures by lighting category."
-            : description}
-        </p>
+        <p>{description}</p>
       </section>
 
       <section className={styles.catalogue} aria-label="Browse LED lighting">
         <ProductsBrowser key={initialCategory} initialCategory={initialCategory} />
       </section>
+
+      <details className={styles.overview}>
+        <summary>More fixture photos</summary>
+        <div className={styles.overviewGrid}>
+          {fixtureOverviewPhotos.map((src, index) => (
+            <div className={styles.overviewPhoto} key={src}>
+              <Image
+                src={src}
+                alt={`Lighting fixture overview, photo ${index + 1}`}
+                fill
+                loading="lazy"
+                sizes="(max-width: 540px) 46vw, (max-width: 900px) 29vw, 22vw"
+              />
+            </div>
+          ))}
+        </div>
+      </details>
 
       <section className={styles.quote} aria-labelledby="products-quote">
         <div>
