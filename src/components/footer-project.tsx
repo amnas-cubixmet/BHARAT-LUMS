@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 import { Action } from "./action";
 
 export function FooterProject() {
-  if (usePathname() === "/products") return null;
+  const pathname = usePathname();
+  if (pathname === "/products" || pathname === "/contact") return null;
 
   return (
     <div className="footer-project">
