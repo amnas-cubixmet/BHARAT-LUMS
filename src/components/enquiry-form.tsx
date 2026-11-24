@@ -139,7 +139,7 @@ export default function EnquiryForm({
 
   return (
     <form
-      className="enquiry-form"
+      className={home ? "enquiry-form homepage-enquiry-form" : "enquiry-form"}
       aria-labelledby="enquiry-title"
       onSubmit={(event) => {
         void handleSubmit(submit, () => {
@@ -155,16 +155,16 @@ export default function EnquiryForm({
         const error = errors[field.name];
         const required = "required" in field || (home && (field.name === "phone" || field.name === "subject"));
         return (
-          <div className="enquiry-field" key={field.name}>
-            <label className="sr-only" htmlFor={id}>
-              {field.label}
+          <div className={`enquiry-field${home && field.name === "subject" ? " full" : ""}`} key={field.name}>
+            <label className={home ? undefined : "sr-only"} htmlFor={id}>
+              {field.label}{home && required && <span aria-hidden="true"> *</span>}
             </label>
             <input
               id={id}
               type={field.type}
               autoComplete={"auto" in field ? field.auto : undefined}
               inputMode={"inputMode" in field ? field.inputMode : undefined}
-              placeholder={required ? `${field.label} *` : field.label}
+              placeholder={home ? ({ name: "Enter your full name", company: "Your company (optional)", email: "you@example.com", phone: "+91 00000 00000", subject: "How can we help?" } as Record<string, string>)[field.name] : required ? `${field.label} *` : field.label}
               aria-invalid={Boolean(error)}
               required={required}
               aria-describedby={error ? `${id}-error` : undefined}
@@ -198,8 +198,8 @@ export default function EnquiryForm({
         </select>
       </div>}
       <div className="enquiry-field full">
-        <label className="sr-only" htmlFor={`${formId}-message`}>
-          Message
+        <label className={home ? undefined : "sr-only"} htmlFor={`${formId}-message`}>
+          Message{home && <span aria-hidden="true"> *</span>}
         </label>
         <p className="sr-only" id={`${formId}-message-hint`}>
           Include the lighting you need, the space, and your timeline.
@@ -207,7 +207,7 @@ export default function EnquiryForm({
         <textarea
           id={`${formId}-message`}
           rows={5}
-          placeholder="Message *"
+          placeholder={home ? "Tell us about your lighting requirements…" : "Message *"}
           required
           aria-invalid={Boolean(errors.message)}
           aria-describedby={
@@ -245,7 +245,7 @@ export default function EnquiryForm({
         <Send size={16} aria-hidden="true" />
       </button>
       <div className="full" aria-live="polite">
-        {status && <p className="form-result">{status.message}</p>}
+        {status && <p className="form-result" data-kind={status.kind}>{status.message}</p>}
       </div>
       {draft && status && status.kind !== "ok" && (
         <div className="full flex flex-wrap gap-3">
