@@ -7,7 +7,7 @@ import { HomeFaq } from "@/components/home/faq";
 import styles from "@/components/home/home.module.css";
 import { Reveal } from "@/components/motion";
 import conferenceRoom from "../../public/images/about-bharat-lums-conference.webp";
-import { catalogueCategories, catalogueDownload } from "@/lib/catalogue";
+import { catalogueCategories, catalogueDownload, findCatalogueFixture } from "@/lib/catalogue";
 import { metadata as pageMetadata } from "@/lib/site";
 
 export const metadata = {
@@ -18,6 +18,16 @@ export const metadata = {
   ),
   title: { absolute: "Bharat Lums | Powering a Brighter Tomorrow" },
 };
+
+const slides = catalogueCategories.map((category) => {
+  const fixture = findCatalogueFixture(category.slug);
+  return {
+    ...category,
+    href: fixture
+      ? `/products/${fixture.slug}`
+      : `/request-quote?collection=${category.slug}`,
+  };
+});
 
 export default function Home() {
   return (
@@ -46,7 +56,7 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <CatalogueSlider categories={catalogueCategories} />
+      <CatalogueSlider slides={slides} />
 
       <GlobalPresenceSection />
 

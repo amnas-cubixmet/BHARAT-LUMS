@@ -130,7 +130,10 @@
   margin-top: 8px;
 }
 
-.quote a {
+.quoteActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   flex-shrink: 0;
 }
 
@@ -141,6 +144,11 @@
 }
 
 @media (max-width: 680px) {
+  .quote {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .intro {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -176,11 +184,6 @@
 
   .catalogue :global(.collection-card) :global(.image-link) {
     aspect-ratio: 1.8;
-  }
-
-  .quote {
-    align-items: flex-start;
-    flex-direction: column;
   }
 }
 

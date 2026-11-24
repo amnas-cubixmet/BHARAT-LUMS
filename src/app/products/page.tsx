@@ -38,11 +38,16 @@ export default async function ProductsPage({
       <section className={styles.quote} aria-labelledby="products-quote">
         <div>
           <h2 id="products-quote">Need help choosing?</h2>
-          <p>Ask our team about fixture availability and specifications.</p>
+          <p>Tell us what you need to light. We can help you compare fixtures and confirm availability and specifications.</p>
         </div>
-        <Action href="/request-quote" diagonal>
-          Request a quote
-        </Action>
+        <div className={styles.quoteActions}>
+          <Action href="/request-quote" diagonal>
+            Request a quote
+          </Action>
+          <Action href="/contact" secondary>
+            Contact our team
+          </Action>
+        </div>
       </section>
     </div>
   );

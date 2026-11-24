@@ -16,14 +16,14 @@ function slideOffset(track: HTMLUListElement, index: number) {
 }
 
 export function CatalogueSlider({
-  categories,
+  slides,
 }: {
-  categories: readonly CatalogueCategory[];
+  slides: readonly (Pick<CatalogueCategory, "slug" | "name" | "image"> & { href: string })[];
 }) {
   const trackRef = useRef<HTMLUListElement>(null);
   const touchMotion = useTouchHomepageMotion();
-  const canLoop = categories.length > 1;
-  const count = categories.length;
+  const canLoop = slides.length > 1;
+  const count = slides.length;
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -134,10 +134,10 @@ export function CatalogueSlider({
         }}
       >
         {(canLoop ? copies : [0]).flatMap((copy) =>
-          categories.map(({ slug, name, image }) => (
+          slides.map(({ slug, name, image, href }) => (
             <li key={`${copy}-${slug}`} aria-hidden={copy !== 0 || undefined}>
               <Link
-                href={{ pathname: "/products", query: { category: slug } }}
+                href={href}
                 prefetch={false}
                 tabIndex={copy === 0 ? undefined : -1}
                 className={styles.card}

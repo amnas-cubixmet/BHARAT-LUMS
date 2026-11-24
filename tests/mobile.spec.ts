@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { catalogueCategories, products } from "../src/lib/catalogue";
+import { catalogueCategories, findCatalogueFixture, products } from "../src/lib/catalogue";
 import { countries } from "../src/lib/global-presence";
 
 const viewports = [
@@ -147,6 +147,33 @@ for (const [width, height] of viewports) {
       }
     }
     expect(errors).toEqual([]);
+  });
+}
+
+for (const width of [320, 1440]) {
+  test(`homepage slider opens fixture details at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 850 });
+    await openPage(page, "/");
+    const slider = page.getByRole("region", { name: "LED Lighting" });
+    const track = slider.getByRole("list", { name: "LED lighting categories" });
+    await expect(track.getByRole("link")).toHaveCount(10);
+    for (const category of catalogueCategories) {
+      const fixture = findCatalogueFixture(category.slug);
+      expect(fixture).toBeDefined();
+      await expect(track.getByRole("link", { name: category.name, exact: true }))
+        .toHaveAttribute("href", `/products/${fixture?.slug}`);
+    }
+    await track.getByRole("link", { name: "LED Flood Lights", exact: true }).click();
+    const floodLight = findCatalogueFixture("floodlights")!;
+    await expect(page).toHaveURL(`/products/${floodLight.slug}`);
+    await expect(page.locator("main h1")).toHaveText(floodLight.name);
+
+    await openPage(page, "/products");
+    const help = page.getByRole("region", { name: "Need help choosing?" });
+    await expect(help.getByRole("link", { name: "Request a quote" })).toHaveAttribute("href", "/request-quote");
+    await help.getByRole("link", { name: "Contact our team" }).click();
+    await expect(page).toHaveURL("/contact");
+    await expectPageFits(page);
   });
 }
 
