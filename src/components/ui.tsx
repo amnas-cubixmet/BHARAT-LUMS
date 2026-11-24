@@ -14,6 +14,7 @@ import { brand } from "@/lib/site";
 import { BrandMark } from "./nav";
 
 import { Action } from "./action";
+import { FooterProject } from "./footer-project";
 import { Reveal } from "./motion";
 import { CatalogueImage } from "./catalogue-image";
 
@@ -221,10 +222,7 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="shell">
-        <div className="footer-project">
-          <h2>Let’s light up your next project.</h2>
-          <Action href="/contact">Contact Us</Action>
-        </div>
+        <FooterProject />
         <div className="footer-main">
           <div className="footer-brand">
             <Link href="/" className="brand-link">
