@@ -21,8 +21,8 @@ import { compactSceneQuery, useMediaQuery } from "../use-media-query";
 
 const start = { latitude: 14, longitude: 65 };
 const initialCamera = pointOnGlobe(start, 4.4).toArray();
-const highlighted = "#ffffff";
-const neutral = "#a8a8a8";
+const highlighted = "#79C6FF";
+const neutral = "#A7BFD5";
 
 function pointOnGlobe(
   point: Pick<Country, "latitude" | "longitude">,
@@ -59,18 +59,16 @@ const earthFragment = `
     vec2 mask = texture2D(geography, vUv).rg;
     vec3 n = normalize(vNormal);
     float limb = max(dot(n, normalize(vEye)), 0.);
-    float diffuse = .47 + .53 * max(dot(n, normalize(vec3(-.55, .65, 1.))), 0.);
     vec2 terrain = vUv * vec2(210., 105.);
-    float dots = 1. - smoothstep(.1, .34, length(fract(terrain) - .5));
-    vec2 gridCell = abs(fract(vUv * vec2(24., 12.) + .5) - .5);
-    float grid = 1. - smoothstep(.018, .045, min(gridCell.x, gridCell.y));
-    vec3 water = vec3(.055) + vec3(.14) * grid * .36;
-    vec3 land = vec3(.25) + vec3(.34) * dots * .62;
-    vec3 base = mix(water, land, smoothstep(.13, .75, mask.r));
-    base += vec3(.23) * mask.g * .67;
-    base *= diffuse;
-    base += vec3(.42) * pow(1. - limb, 3.) * .69;
-    gl_FragColor = vec4(base, 1.);
+    float dots = 1. - smoothstep(.14, .38, length(fract(terrain) - .5));
+    float land = smoothstep(.13, .75, mask.r);
+    vec3 navy = vec3(20., 32., 46.) / 255.;
+    vec3 blue = vec3(31., 115., 189.) / 255.;
+    vec3 sky = vec3(155., 187., 216.) / 255.;
+    vec3 base = mix(navy, blue, .13 * pow(1. - limb, 2.));
+    vec3 led = mix(sky, vec3(1.), mask.g);
+    float visibility = mix(.48, .98, max(limb, mask.g));
+    gl_FragColor = vec4(mix(base, led, dots * land * visibility), 1.);
   }
 `;
 
@@ -90,36 +88,6 @@ function Earth({ onReady }: { onReady: () => void }) {
         uniforms={uniforms}
       />
     </mesh>
-  );
-}
-
-function Stars() {
-  const coordinates = useMemo(() => {
-    const values = new Float32Array(140 * 3);
-    for (let i = 0; i < 140; i++) {
-      const z = 1 - (2 * (i + 0.5)) / 140;
-      const phi = i * 2.399963;
-      const radius = Math.sqrt(1 - z * z);
-      values.set(
-        [3.5 * Math.cos(phi) * radius, 3.5 * z, 3.5 * Math.sin(phi) * radius],
-        i * 3,
-      );
-    }
-    return values;
-  }, []);
-  return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[coordinates, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        color="#d4d4d4"
-        size={0.012}
-        transparent
-        opacity={0.7}
-        depthWrite={false}
-      />
-    </points>
   );
 }
 
@@ -302,7 +270,7 @@ function CountryMarker({
       <mesh>
         <circleGeometry args={[selected ? 0.013 : 0.0085, 18]} />
         <meshBasicMaterial
-          color={selected ? "#ffffff" : neutral}
+          color={selected ? highlighted : neutral}
           toneMapped={false}
         />
       </mesh>
@@ -384,7 +352,6 @@ function GlobeScene({
 
   return (
     <>
-      <Stars />
       <Suspense fallback={null}>
         <Earth onReady={onReady} />
       </Suspense>
