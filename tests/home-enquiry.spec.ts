@@ -18,10 +18,10 @@ test("homepage globe remains and enquiry replaces the old CTA", async ({ page })
   await expect(form.getByText("Online submission is unavailable. Send your enquiry by email.")).toBeVisible();
 });
 
-test("admin and settings API require authentication", async ({ request }) => {
-  expect((await request.get("/admin/email-settings")).status()).toBe(401);
-  expect((await request.get("/api/admin/email-settings")).status()).toBe(401);
-  expect((await request.post("/api/admin/email-settings", { data: { action: "test" } })).status()).toBe(401);
+test("removed admin routes are unavailable", async ({ request }) => {
+  expect((await request.get("/admin/email-settings")).status()).toBe(404);
+  expect((await request.get("/api/admin/email-settings")).status()).toBe(404);
+  expect((await request.post("/api/admin/email-settings", { data: { action: "test" } })).status()).toBe(404);
 });
 
 test("public enquiry rejects malformed and honeypot submissions", async ({ request }) => {

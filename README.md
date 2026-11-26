@@ -21,7 +21,7 @@ Open http://localhost:3000. The catalogue, portfolio and email-draft fallback wo
 
 ## Enquiries
 
-Create `.env.local` from `.env.example` when credentials are available. Online submission uses Gmail SMTP (Nodemailer), encrypted settings in Upstash Redis, and a shared rate limiter. Configure the production variables and admin settings as described in [email setup](docs/email-setup.md). Existing contact and quote forms retain their email/WhatsApp draft fallback. An accepted provider request does not guarantee inbox delivery.
+Create `.env.local` from `.env.example`. All three forms use server-only Gmail SMTP via Nodemailer. No database or admin page is needed. See [email setup](docs/email-setup.md).
 
 ## Checks
 
