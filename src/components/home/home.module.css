@@ -100,37 +100,95 @@
   position: absolute;
   z-index: 2;
   right: calc((100% - 100cqw) / 2);
-  top: -3%;
+  top: 0;
   width: 65cqw;
-  height: 110%;
+  height: auto;
+  aspect-ratio: 6 / 5;
   pointer-events: none;
-  transform-origin: 68% 35%;
   isolation: isolate;
 }
+.heroMotion,
+.heroVisual,
 .heroCanvas,
 .heroFallback,
 .heroIllumination {
   position: absolute;
   inset: 0;
 }
+.heroMotion {
+  --fixture-travel-x: 8px;
+  --fixture-travel-y: 5px;
+  --fixture-tilt: .85deg;
+  isolation: isolate;
+  transform-origin: 68% 28%;
+  animation: streetlight-drift 6s ease-in-out infinite;
+}
+.heroMotion[data-motion-paused="true"] {
+  animation-play-state: paused;
+}
+/* One continuous animation for the poster, live canvas and halo.
+   The outer frame and model scale remain fixed. */
+@keyframes streetlight-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25% { transform: translate3d(var(--fixture-travel-x), calc(-1 * var(--fixture-travel-y)), 0) rotate(var(--fixture-tilt)); }
+  75% { transform: translate3d(calc(-1 * var(--fixture-travel-x)), var(--fixture-travel-y), 0) rotate(calc(-1 * var(--fixture-tilt))); }
+}
+.heroVisual {
+  width: 100%;
+  height: 100%;
+  animation: fixture-power-up 1.65s cubic-bezier(.2,.65,.25,1) both;
+}
+@keyframes fixture-power-up {
+  0% { filter: brightness(.78); }
+  22% { filter: brightness(.86); }
+  64% { filter: brightness(1.06); }
+  100% { filter: brightness(1); }
+}
+.heroLead > [data-hero-enter] {
+  animation: hero-copy-enter .72s cubic-bezier(.2,.75,.25,1) both;
+}
+.heroLead > [data-hero-enter]:nth-child(1) { animation-delay: .04s; }
+.heroLead > [data-hero-enter]:nth-child(2) { animation-delay: .13s; }
+.heroLead > [data-hero-enter]:nth-child(3) { animation-delay: .22s; }
+.heroLead > [data-hero-enter]:nth-child(4) { animation-delay: .31s; }
+.heroPanel[data-hero-panel] { animation: hero-panel-enter .65s .42s ease-out both; }
+@keyframes hero-copy-enter {
+  from { opacity: .55; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-panel-enter {
+  from { opacity: .65; }
+  to { opacity: 1; }
+}
 .heroCanvas {
   width: 100%;
   height: 100%;
   opacity: 0;
+  transition: opacity 260ms ease;
 }
 .heroStage[data-ready="true"] .heroCanvas {
   opacity: 1;
 }
 .heroStage[data-ready="true"] .heroFallback {
   opacity: 0;
+  transition-delay: 80ms;
 }
 .heroFallback {
+  opacity: 1;
+  transition: opacity 240ms ease;
+  display: block;
+}
+.heroFallback img {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: grayscale(1);
+  filter: brightness(calc(.6 + .5 * var(--hero-light-power)));
+  transition: filter .35s ease;
 }
 .heroIllumination {
-  --lens-x: 44%;
-  --lens-y: 18%;
+  --lens-x: 43.2%;
+  --lens-y: 33.5%;
   z-index: -1;
   opacity: var(--hero-light-power);
   transition: opacity 0.35s ease;
@@ -148,7 +206,7 @@
     #ffffff17 56%,
     transparent 100%
   );
-  animation: lens-halo 1.5s ease-out both;
+  animation: lens-halo 1.65s ease-out both;
 }
 .heroGlow::after {
   content: "";
@@ -165,16 +223,7 @@
     transparent 105deg
   );
   transform-origin: 50% 0;
-  animation: light-spread 1s 1.5s ease-out both;
-}
-.heroStage[data-ready="true"] .heroGlow {
-  animation: none;
-  opacity: var(--lens-halo, 1);
-}
-.heroStage[data-ready="true"] .heroGlow::after {
-  animation: none;
-  opacity: var(--light-spread, 1);
-  transform: scaleY(calc(0.45 + 0.55 * var(--light-spread, 1)));
+  animation: light-spread 1.15s .55s ease-out both;
 }
 @keyframes lens-halo {
   0%,
@@ -378,9 +427,9 @@
     position: relative;
     inset: auto;
     width: 100%;
-    height: clamp(250px, 74vw, 455px);
+    height: auto;
+    aspect-ratio: 6 / 5;
     justify-self: center;
-    translate: 0 var(--hero-scroll-y, 0px);
     margin-top: 8px;
     overflow: clip;
   }
@@ -406,15 +455,21 @@
   }
   .heroStage {
     position: absolute;
-    inset: 0 auto 0 50%;
+    inset: 0 auto auto 50%;
     z-index: 0;
     width: 100cqw;
     height: auto;
+    aspect-ratio: 31 / 50;
     margin: 0;
     transform: translateX(-50%);
   }
   .heroLead {
     z-index: 1;
+  }
+  .heroMotion {
+    --fixture-travel-x: 3px;
+    --fixture-travel-y: 2px;
+    --fixture-tilt: .45deg;
   }
   .heroCanvas,
   .heroFallback {
@@ -424,13 +479,9 @@
       transparent 83%
     );
   }
-  .heroFallback {
-    object-position: right -45px top 18px;
-    filter: grayscale(1) brightness(calc(1 + 0.28 * var(--hero-light-power)));
-  }
   .heroIllumination {
-    --lens-x: 61%;
-    --lens-y: 17%;
+    --lens-x: 52.8%;
+    --lens-y: 12.5%;
   }
   .heroGlow {
     background: radial-gradient(
@@ -539,7 +590,8 @@
     position: relative;
     inset: auto;
     width: 100%;
-    height: clamp(125px, 44svh, 225px);
+    height: auto;
+    aspect-ratio: 6 / 5;
     margin: 0;
     transform: none;
     translate: none;
@@ -549,8 +601,9 @@
   .heroFallback {
     mask-image: none;
   }
-  .heroFallback {
-    object-position: center;
+  .heroIllumination {
+    --lens-x: 43.2%;
+    --lens-y: 33.5%;
   }
   .heroPanel {
     grid-area: 2 / 2 / 3 / 3;
@@ -578,11 +631,15 @@
   .aboutArt:hover img {
     transform: none;
   }
-  .hero:not([data-touch-home-motion]) .heroGlow,
-  .hero:not([data-touch-home-motion]) .heroGlow::after {
+  .heroGlow,
+  .heroGlow::after,
+  .heroMotion,
+  .heroVisual,
+  .heroLead > [data-hero-enter],
+  .heroPanel[data-hero-panel] {
     animation: none;
   }
-  .hero:not([data-touch-home-motion]) :is(.heroIllumination, .heroLink, .heroPrimary),
+  .hero :is(.heroIllumination, .heroLink, .heroPrimary, .heroCanvas, .heroFallback, .heroFallback img),
   .faqRow button svg,
   .faqAnswer {
     transition: none;
