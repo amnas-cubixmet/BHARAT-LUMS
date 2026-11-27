@@ -1,7 +1,7 @@
 import { ArrowUpRight, Globe2, Mail, MessageCircle, Phone } from "lucide-react";
 import { brand } from "@/lib/site";
 import { enquiryEmailHref } from "@/lib/enquiry";
-import EnquiryForm from "./enquiry-form";
+import { DirectEnquiry } from "./direct-enquiry";
 import styles from "./contact.module.css";
 
 export function ContactSection({
@@ -35,16 +35,18 @@ export function ContactSection({
               <ArrowUpRight size={17} aria-hidden="true" />
             </a>
           </li>
-          <li>
-            <a href={brand.website}>
-              <Globe2 size={19} aria-hidden="true" />
-              <span>
-                <strong>Website</strong>
-                bharatlums.com
-              </span>
-              <ArrowUpRight size={17} aria-hidden="true" />
-            </a>
-          </li>
+          {source === "quote" && (
+            <li>
+              <a href={brand.website}>
+                <Globe2 size={19} aria-hidden="true" />
+                <span>
+                  <strong>Website</strong>
+                  bharatlums.com
+                </span>
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </a>
+            </li>
+          )}
           <li>
             <a href={brand.phoneHref}>
               <Phone size={19} aria-hidden="true" />
@@ -75,13 +77,7 @@ export function ContactSection({
         <h2 className={styles.formHeading} id="enquiry-title">
           {source === "quote" ? "Request a quote" : "Project enquiry"}
         </h2>
-        <EnquiryForm
-          online
-          source={source}
-          email={brand.email}
-          whatsappNumber={whatsappNumber}
-          defaults={defaults}
-        />
+        <DirectEnquiry defaults={defaults} />
       </div>
     </section>
   );

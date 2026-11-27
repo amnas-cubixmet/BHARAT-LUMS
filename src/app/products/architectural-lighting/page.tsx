@@ -1,10 +1,26 @@
-import { LightingDivisionPage } from "@/components/lighting-division-page";
+import { ArchitecturalCards } from "./architectural-cards";
+import { Action } from "@/components/ui";
+import { architecturalProducts } from "@/lib/architectural-products";
 import { lightingDivisions } from "@/lib/lighting-divisions";
 import { metadata as pageMetadata } from "@/lib/site";
+import styles from "../products.module.css";
+import catalogueStyles from "./architectural.module.css";
 
 const division = lightingDivisions.architectural;
 export const metadata = pageMetadata(division.title, division.href, division.description);
 
-export default function Page({ searchParams }: { searchParams: Promise<{ category?: string | string[] }> }) {
-  return <LightingDivisionPage division="architectural" searchParams={searchParams} />;
+export default function Page() {
+  return (
+    <div className={`shell ${styles.page} ${styles.compactPage}`}>
+      <section className={styles.catalogue} aria-labelledby="architectural-products">
+        <h1 id="architectural-products">Explore products</h1>
+        <p className={catalogueStyles.notice}>Suggested catalogue. Contact our team to confirm availability and specifications. Product images are for reference only.</p>
+        <ArchitecturalCards items={architecturalProducts} />
+      </section>
+      <section className={styles.quote}>
+        <div><h2>Planning a lighting project?</h2><p>Contact our team to confirm available fixtures, specifications and suitable lighting for your space.</p></div>
+        <Action href="/request-quote">Request a quote</Action>
+      </section>
+    </div>
+  );
 }

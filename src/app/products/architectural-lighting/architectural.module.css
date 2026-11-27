@@ -1,0 +1,5 @@
+.notice { color: var(--muted); font-size: .875rem; margin-block: 8px 18px; line-height: 1.6; }
+.grid { list-style: none; padding: 0; margin: 0; }
+.card { min-width: 0; }
+.credit { font-size: .75rem; }
+.credit a { text-decoration: underline; }
