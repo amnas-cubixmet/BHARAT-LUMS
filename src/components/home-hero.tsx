@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import LoadingScreen from "./loading-screen";
+import { useHomeIntro } from "./home-intro-context";
 import { ArrowDown, ArrowDownRight, ArrowUpRight, Power } from "lucide-react";
 import {
   Component,
@@ -12,7 +14,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { useSiteReducedMotion, useTouchHomepageMotion } from "./use-media-query";
+import { useSiteReducedMotion } from "./use-media-query";
 import styles from "./home/home.module.css";
 
 const StreetlightScene = dynamic(() => import("./home/streetlight-scene"), {
@@ -39,16 +41,17 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
   const root = useRef<HTMLElement>(null);
   const illumination = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [powered, setPowered] = useState(true);
-  const [brightness, setBrightness] = useState(80);
-  const [enabled, setEnabled] = useState(false);
+  const [brightness, setBrightness] = useState(0);
+  const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
-  const touchMotion = useTouchHomepageMotion();
-  const reduced = (useSiteReducedMotion() && !touchMotion);
+  const [introTimedOut, setIntroTimedOut] = useState(false);
+  const wake = useRef<(() => void) | null>(null);
+  const reduced = useSiteReducedMotion();
   const markReady = useCallback(() => setReady(true), []);
-  const useFallback = useCallback(() => {
-    setEnabled(false);
+  const handleSceneFailure = useCallback(() => {
+    setFailed(true);
     setReady(false);
     illumination.current?.style.removeProperty("--lens-x");
     illumination.current?.style.removeProperty("--lens-y");
@@ -57,39 +60,49 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
   useEffect(() => {
     const element = root.current;
     if (!element) return;
-    const loader = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      loader.disconnect();
-      try {
-        const context = document.createElement("canvas").getContext("webgl2");
-        setEnabled(Boolean(context));
-        context?.getExtension("WEBGL_lose_context")?.loseContext();
-      } catch {
-        setEnabled(false);
-      }
-    }, { rootMargin: "120px" });
+    if (typeof IntersectionObserver === "undefined") return;
     const visibility = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
-    loader.observe(element);
     visibility.observe(element);
-    return () => {
-      loader.disconnect();
-      visibility.disconnect();
-    };
+    return () => visibility.disconnect();
   }, [root]);
+
+  // Reveal immediately after the first rendered frames, or if rendering fails.
+  // The watchdog is only a recovery path for a stalled renderer.
+  const allowIntro = useHomeIntro();
+  const introDismissed = !allowIntro || ready || failed || introTimedOut;
+
+  useEffect(() => {
+    if (introDismissed) return;
+    const watchdog = window.setTimeout(() => setIntroTimedOut(true), 6500);
+    return () => window.clearTimeout(watchdog);
+  }, [introDismissed]);
+
+  useEffect(() => {
+    if (introDismissed) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previous; };
+  }, [introDismissed]);
 
   const power = powered ? brightness / 100 : 0;
   return (
+    <>
+    {allowIntro && <LoadingScreen dismissed={introDismissed} />}
     <section
       className={styles.hero}
-      data-touch-home-motion={touchMotion || undefined}
-      style={{ "--hero-light-power": power } as CSSProperties}
+      style={{
+        "--hero-light-power": power,
+        "--bg": `color-mix(in srgb, #1F73BD, #14202E ${power * 100}%)`,
+        transition: reduced ? "none" : "background-color 250ms ease",
+      } as CSSProperties}
       ref={root}
       onPointerMove={(event) => {
         if (reduced || event.pointerType !== "mouse") return;
         const rect = event.currentTarget.getBoundingClientRect();
         pointer.current = { x: (event.clientX - rect.left) / rect.width - 0.5, y: (event.clientY - rect.top) / rect.height - 0.5 };
+        wake.current?.();
       }}
-      onPointerLeave={() => { pointer.current = { x: 0, y: 0 }; }}
+      onPointerLeave={() => { pointer.current = { x: 0, y: 0 }; wake.current?.(); }}
     >
       <div className={`shell ${styles.heroInner}`}>
         <div className={styles.heroLead}>
@@ -134,34 +147,18 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
               <div className={styles.heroGlow} />
             </div>
             <div className={styles.heroVisual} data-testid="streetlight-visual">
-              <picture className={styles.heroFallback}>
-                <source
-                  media="(max-width: 650px) and (orientation: portrait), (max-width: 650px) and (min-height: 501px)"
-                  srcSet="/images/streetlight-fixed-mobile.webp"
-                />
-                {/* Captured directly from the fixed camera; no optimizer resizing or cropping. */}
-                <img
-                  src="/images/streetlight-fixed-wide.webp"
-                  alt=""
-                  width={936}
-                  height={780}
-                  fetchPriority="high"
-                  loading="eager"
-                  decoding="sync"
-                  data-testid="streetlight-poster"
-                />
-              </picture>
-              {enabled && (
+              {!failed && (
                 <div className={styles.heroCanvas}>
-                  <SceneBoundary fallback={useFallback}>
+                  <SceneBoundary fallback={handleSceneFailure}>
                     <StreetlightScene
                       power={power}
                       reduced={reduced}
                       active={visible}
+                      wakeRef={wake}
                       pointer={pointer}
                       illumination={illumination}
                       onReady={markReady}
-                      onFailure={useFallback}
+                      onFailure={handleSceneFailure}
                     />
                   </SceneBoundary>
                 </div>
@@ -196,5 +193,6 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
         </div>
       </div>
     </section>
+    </>
   );
 }

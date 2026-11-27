@@ -17,7 +17,7 @@ const catalogueWattages = [
   ),
 ].sort((a, b) => a - b);
 
-export function ProductsBrowser({ initialCategory }: { initialCategory: string }) {
+export function ProductsBrowser({ initialCategory, allowedCategories }: { initialCategory: string; allowedCategories?: readonly string[] }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(initialCategory);
   const [wattage, setWattage] = useState("");
@@ -27,13 +27,25 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
   const search = query.trim().toLowerCase();
   const hasFilters = Boolean(query || category || wattage);
 
+  function changeCategory(nextCategory: string) {
+    setCategory(nextCategory);
+    const url = new URL(window.location.href);
+    if (nextCategory) url.searchParams.set("category", nextCategory);
+    else url.searchParams.delete("category");
+    window.history.replaceState(null, "", url);
+  }
+
   function clearFilters() {
     setQuery("");
-    setCategory("");
+    changeCategory("");
     setWattage("");
   }
 
-  const visible = publishedProducts.filter(
+  const scope = publishedProducts;
+  const scopedProducts = scope.filter(item => !allowedCategories || item.categories.some(slug => allowedCategories.includes(slug)));
+  const categories = catalogueCategories.filter(item => !allowedCategories || allowedCategories.includes(item.slug));
+  const wattages = allowedCategories ? catalogueWattages.filter(watts => scopedProducts.some(item => item.wattages?.includes(watts))) : catalogueWattages;
+  const visible = scopedProducts.filter(
     (item) =>
       (!category || item.categories.includes(category)) &&
       (!wattage || item.wattages?.includes(Number(wattage))) &&
@@ -49,7 +61,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
     <>
       <div
         className={
-          catalogueWattages.length
+          wattages.length
             ? "filters catalogue-filters-with-wattage"
             : "filters"
         }
@@ -70,11 +82,11 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
           <span>Category</span>
           <select
             value={category}
-            onChange={(event) => setCategory(event.target.value)}
+            onChange={(event) => changeCategory(event.target.value)}
           >
             <option value="">All categories</option>
             <optgroup label="LED lighting categories">
-              {catalogueCategories.map((item) => (
+              {categories.map((item) => (
                 <option value={item.slug} key={item.slug}>
                   {item.name}
                 </option>
@@ -82,7 +94,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
             </optgroup>
           </select>
         </label>
-        {catalogueWattages.length > 0 && (
+        {wattages.length > 0 && (
           <label>
             <span>Wattage on label</span>
             <select
@@ -90,7 +102,7 @@ export function ProductsBrowser({ initialCategory }: { initialCategory: string }
               onChange={(event) => setWattage(event.target.value)}
             >
               <option value="">All wattages</option>
-              {catalogueWattages.map((watts) => (
+              {wattages.map((watts) => (
                 <option key={watts} value={watts}>
                   {watts} W
                 </option>

@@ -1,258 +1,159 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { RoundedBox } from "@react-three/drei";
-import { useEffect, useLayoutEffect, useMemo, useRef, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, type RefObject } from "react";
 import {
+  Group,
+  Color,
   MathUtils,
-  PerspectiveCamera,
-  Object3D,
+  OrthographicCamera,
+  PMREMGenerator,
   Vector3,
-  type Group,
-  type DirectionalLight,
-  type MeshStandardMaterial,
-  type SpotLight,
 } from "three";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { buildStreetlight } from "./streetlight-model";
 
 type SceneProps = {
   power: number;
   reduced: boolean;
   active: boolean;
   pointer: RefObject<{ x: number; y: number }>;
+  wakeRef: RefObject<(() => void) | null>;
   illumination: RefObject<HTMLDivElement | null>;
   onReady: () => void;
   onFailure: () => void;
 };
 
-function setLightProperty(overlay: HTMLDivElement, name: string, value: string) {
-  if (overlay.style.getPropertyValue(name) !== value) {
-    overlay.style.setProperty(name, value);
-  }
-}
+const ledOff = new Color("#14171c");
+const ledOn = new Color("#f1f3f6");
 
-// Both canvas and poster use these fixed aspect ratios and camera poses.
-function configureCamera(camera: PerspectiveCamera, aspect: number) {
-  camera.aspect = aspect;
-  camera.fov = 39;
-  if (aspect < 0.8) {
-    camera.position.set(-0.62, -2.7, 8.4);
-    camera.lookAt(-0.62, -1.8, 0);
-  } else {
-    camera.position.set(-0.18, -1.26, 6.5);
-    camera.lookAt(-0.12, -0.26, 0);
-  }
-  camera.updateProjectionMatrix();
-  camera.updateMatrixWorld(true);
-}
-
-function Fixture({ power, reduced, pointer, illumination, onReady, onFailure }: SceneProps) {
-  const group = useRef<Group>(null);
-  const diffuser = useRef<MeshStandardMaterial>(null);
-  const lensCenter = useRef<Object3D>(null);
-  const spotlight = useRef<SpotLight>(null);
-  const reflection = useRef<DirectionalLight>(null);
-  const target = useMemo(() => new Object3D(), []);
-  const projected = useMemo(() => new Vector3(), []);
-  const gl = useThree(state => state.gl);
-  const camera = useThree(state => state.camera);
-  const width = useThree(state => state.size.width);
-  const height = useThree(state => state.size.height);
-  const invalidate = useThree(state => state.invalidate);
+function Fixture({
+  power,
+  reduced,
+  active,
+  pointer,
+  wakeRef,
+  illumination,
+  onReady,
+  onFailure,
+}: SceneProps) {
+  const { camera, gl, get, size, invalidate } = useThree();
+  const mount = useRef<Group>(null);
+  const fixture = useRef<ReturnType<typeof buildStreetlight> | null>(null);
   const frames = useRef(0);
-  const readySent = useRef(false);
-  const revealFrame = useRef<number | null>(null);
-  useLayoutEffect(() => {
-    if (!width || !height || !(camera instanceof PerspectiveCamera)) return;
-    configureCamera(camera, width / height);
-    if (!readySent.current) frames.current = 0;
-    invalidate();
-  }, [camera, width, height, invalidate]);
+  const reveal = useRef(0);
+  const projected = useRef(new Vector3());
 
-  useEffect(() => { invalidate(); }, [power, reduced, invalidate]);
+  useLayoutEffect(() => {
+    const root = mount.current!;
+    const { scene } = get();
+    const product = buildStreetlight();
+    const studio = new RoomEnvironment();
+    const generator = new PMREMGenerator(gl);
+    const reflections = generator.fromScene(studio, 0, 0.1, 100, { size: 64 });
+    studio.dispose();
+    generator.dispose();
+    scene.environment = reflections.texture;
+    root.add(product.model);
+    fixture.current = product;
+    invalidate();
+    return () => {
+      root.remove(product.model);
+      fixture.current = null;
+      product.dispose();
+      scene.environment = null;
+      reflections.dispose();
+      cancelAnimationFrame(reveal.current);
+      frames.current = 0;
+    };
+  }, [gl, get, invalidate]);
+
+  useLayoutEffect(() => {
+    const { camera } = get();
+    if (!(camera instanceof OrthographicCamera)) return;
+    camera.zoom = Math.min(size.width / 4.45, size.height / 3.65);
+    camera.updateProjectionMatrix();
+    invalidate();
+  }, [get, size, invalidate]);
+
   useEffect(() => {
     const canvas = gl.domElement;
-    const fail = (event: Event) => { event.preventDefault(); onFailure(); };
-    canvas.addEventListener("webglcontextlost", fail);
-    return () => {
-      canvas.removeEventListener("webglcontextlost", fail);
-      if (revealFrame.current !== null) {
-        cancelAnimationFrame(revealFrame.current);
-        revealFrame.current = null;
-        if (!readySent.current) frames.current = 0;
-      }
+    const lost = (event: Event) => {
+      event.preventDefault();
+      onFailure();
     };
+    canvas.addEventListener("webglcontextlost", lost);
+    return () => canvas.removeEventListener("webglcontextlost", lost);
   }, [gl, onFailure]);
 
+  useEffect(() => {
+    wakeRef.current = active ? invalidate : null;
+    if (active) invalidate();
+    return () => {
+      wakeRef.current = null;
+    };
+  }, [wakeRef, active, power, reduced, invalidate]);
+
   useFrame((_, delta) => {
-    const fixture = group.current;
-    const lens = diffuser.current;
-    if (!fixture || !lens || !width || !height || !(camera instanceof PerspectiveCamera)) return;
-    configureCamera(camera, width / height);
-    fixture.updateWorldMatrix(true, true);
-    const emission = power * 3;
-    lens.emissiveIntensity = !readySent.current || reduced
-      ? emission : MathUtils.damp(lens.emissiveIntensity, emission, 12, Math.min(delta, 0.05));
-    if (spotlight.current) spotlight.current.intensity = lens.emissiveIntensity * (20 / 3);
-    // Move the reflection, not the fixture: no camera or geometry movement on pointer input.
-    if (reflection.current) {
-      const x = -3 + (readySent.current && !reduced ? pointer.current.x * 0.8 : 0);
-      const y = 5 + (readySent.current && !reduced ? pointer.current.y * 0.6 : 0);
-      reflection.current.position.x = reduced ? x : MathUtils.damp(reflection.current.position.x, x, 5, Math.min(delta, 0.05));
-      reflection.current.position.y = reduced ? y : MathUtils.damp(reflection.current.position.y, y, 5, Math.min(delta, 0.05));
+    const product = fixture.current;
+    const root = mount.current;
+    if (!root || !product || (!active && frames.current >= 2)) return;
+    const yaw = reduced ? 0 : pointer.current.x * 0.32;
+    const tilt = reduced ? 0 : pointer.current.y * 0.14;
+    const emission = power * 6;
+    const blend = reduced ? 1 : 1 - Math.exp(-12 * Math.min(delta, 0.06));
+    root.rotation.y = MathUtils.lerp(root.rotation.y, yaw, blend);
+    root.rotation.x = MathUtils.lerp(root.rotation.x, tilt, blend);
+    product.opal.emissiveIntensity = MathUtils.lerp(
+      product.opal.emissiveIntensity,
+      emission,
+      blend,
+    );
+    // The lens itself brightens smoothly from dark graphite to neutral white.
+    product.opal.color.copy(ledOff).lerp(ledOn, MathUtils.clamp(product.opal.emissiveIntensity / 6, 0, 1));
+    if (illumination.current) {
+      const lens = root
+        .localToWorld(projected.current.set(-0.62, 0.68, 0.08))
+        .project(camera);
+      illumination.current.style.setProperty(
+        "--lens-x",
+        ((lens.x + 1) * 50).toFixed(1) + "%",
+      );
+      illumination.current.style.setProperty(
+        "--lens-y",
+        ((1 - lens.y) * 50).toFixed(1) + "%",
+      );
     }
-    const overlay = illumination.current;
-    if (overlay && lensCenter.current) {
-      lensCenter.current.getWorldPosition(projected).project(camera);
-      setLightProperty(overlay, "--lens-x", `${((projected.x + 1) * 50).toFixed(1)}%`);
-      setLightProperty(overlay, "--lens-y", `${((1 - projected.y) * 50).toFixed(1)}%`);
+    if (frames.current < 2) {
+      frames.current++;
+      if (frames.current === 2) reveal.current = requestAnimationFrame(onReady);
+      else invalidate();
     }
-    if (!readySent.current && revealFrame.current === null) {
-      frames.current += 1;
-      if (frames.current < 2) invalidate();
-      else revealFrame.current = requestAnimationFrame(() => {
-        revealFrame.current = null;
-        readySent.current = true;
-        onReady();
-      });
-    }
-    if (!reduced && Math.abs(lens.emissiveIntensity - emission) > 0.005) invalidate();
+    if (
+      Math.abs(root.rotation.y - yaw) +
+        Math.abs(root.rotation.x - tilt) +
+        Math.abs(product.opal.emissiveIntensity - emission) >
+      0.0005
+    )
+      invalidate();
   });
-  return (
-    <>
-    <directionalLight ref={reflection} position={[-3, 5, 3]} intensity={3.1} color="#ffffff" />
-    <group ref={group} rotation={[0.02, -0.39, -0.13]}>
-      <RoundedBox
-        args={[0.25, 4.2, 0.32]}
-        radius={0.055}
-        smoothness={3}
-        position={[1.12, -1.35, 0.02]}
-      >
-        <meshStandardMaterial
-          color="#282828"
-          roughness={0.49}
-          metalness={0.42}
-        />
-      </RoundedBox>
-      <group position={[0.7, 0.57, 0]} rotation={[0, 0, -0.18]}>
-        <RoundedBox args={[1.1, 0.22, 0.24]} radius={0.09} smoothness={3}>
-          <meshStandardMaterial
-            color="#383838"
-            roughness={0.42}
-            metalness={0.55}
-          />
-        </RoundedBox>
-        <RoundedBox
-          args={[0.3, 0.32, 0.32]}
-          radius={0.055}
-          smoothness={3}
-          position={[0.45, -0.045, 0]}
-        >
-          <meshStandardMaterial color="#292929" roughness={0.52} />
-        </RoundedBox>
-      </group>
-      <group position={[-0.53, 0.69, 0.02]} rotation={[-0.34, 0.01, -0.23]}>
-        <object3D ref={lensCenter} position={[0, -0.225, 0]} />
-        <primitive object={target} position={[0, -3.8, 0.7]} />
-        <spotLight
-          ref={spotlight}
-          target={target}
-          position={[0, -0.24, 0]}
-          intensity={0}
-          distance={6}
-          decay={2}
-          angle={Math.PI / 3}
-          penumbra={0.9}
-          color="#ffffff"
-        />
-        <RoundedBox
-          args={[2.58, 0.37, 1.14]}
-          radius={0.18}
-          smoothness={5}
-          position={[0, 0.034, 0]}
-        >
-          <meshStandardMaterial
-            color="#41464e"
-            roughness={0.35}
-            metalness={0.5}
-          />
-        </RoundedBox>
-        <RoundedBox
-          args={[2.44, 0.1, 1.05]}
-          radius={0.043}
-          smoothness={3}
-          position={[0, -0.13, 0]}
-        >
-          <meshStandardMaterial
-            color="#1b1e23"
-            roughness={0.56}
-            metalness={0.32}
-          />
-        </RoundedBox>
-        <RoundedBox
-          args={[2.24, 0.09, 0.9]}
-          radius={0.043}
-          smoothness={4}
-          position={[0, -0.174, 0]}
-        >
-          <meshStandardMaterial
-            ref={diffuser}
-            color="#8c929a"
-            emissive="#ffffff"
-            emissiveIntensity={0}
-            roughness={0.37}
-            metalness={0.06}
-          />
-        </RoundedBox>
-        <RoundedBox
-          args={[1.95, 0.02, 0.055]}
-          radius={0.008}
-          smoothness={2}
-          position={[0, -0.225, 0]}
-        >
-          <meshStandardMaterial
-            color="#14171c"
-            roughness={0.53}
-            metalness={0.1}
-          />
-        </RoundedBox>
-        {Array.from({ length: 11 }, (_, index) => -1 + index * 0.19).map((x) => (
-          <RoundedBox
-            key={x}
-            args={[0.064, 0.16, 0.72 - Math.abs(x) * 0.16]}
-            radius={0.026}
-            smoothness={2}
-            position={[x, 0.25, 0]}
-          >
-            <meshStandardMaterial color="#30343a" roughness={0.42} metalness={0.62} />
-          </RoundedBox>
-        ))}
-        {[-0.9, 0, 0.9].flatMap((x) => [-0.48, 0.48].map((z) => (
-          <mesh key={`${x}:${z}`} position={[x, -0.183, z]}>
-            <cylinderGeometry args={[0.024, 0.024, 0.018, 12]} />
-            <meshStandardMaterial color="#b5ac9c" roughness={0.35} metalness={0.75} />
-          </mesh>
-        )))}
-      </group>
-    </group>
-    </>
-  );
+  return <group ref={mount} />;
 }
 
 export default function StreetlightScene(props: SceneProps) {
   return (
     <Canvas
       aria-hidden
+      orthographic
+      frameloop="demand"
       dpr={[1, 1.5]}
-      frameloop={props.active && !props.reduced ? "always" : "demand"}
-      camera={{ position: [-0.18, -1.26, 6.5], fov: 39 }}
+      camera={{ position: [0, -0.1, 8], near: 0.1, far: 20 }}
       gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
-      onCreated={({ camera, gl, size }) => {
-        if (camera instanceof PerspectiveCamera && size.height > 0) configureCamera(camera, size.width / size.height);
-        gl.setClearAlpha(0);
-      }}
+      onCreated={({ gl }) => gl.setClearAlpha(0)}
     >
-      <hemisphereLight intensity={1.55} color="#ffffff" groundColor="#686868" />
-      <directionalLight position={[3, 3, -4]} intensity={2} color="#d4d4d4" />
+      <hemisphereLight color="#ffffff" groundColor="#b2bed1" intensity={1.15} />
+      <directionalLight position={[-3, 4, 5]} intensity={2.4} />
+      <directionalLight position={[1, -3, 3]} intensity={1.1} />
       <Fixture {...props} />
     </Canvas>
   );

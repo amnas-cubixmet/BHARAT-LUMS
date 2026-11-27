@@ -3,30 +3,65 @@
 }
 
 .intro {
-  display: grid;
-  grid-template-columns: minmax(0, 1.65fr) minmax(0, 0.8fr);
-  align-items: end;
-  gap: clamp(16px, 5vw, 68px);
-  margin-bottom: clamp(24px, 4vw, 52px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-block: 4px 0;
+  margin-bottom: 12px;
 }
 
 .intro h1 {
-  margin-top: 10px;
-  font-size: clamp(2.65rem, 6.5vw, 6.2rem);
-  text-wrap: balance;
+  margin-top: 6px;
+  color: var(--deep-navy);
+  font-size: clamp(1.9rem, 3.5vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -.035em;
+  font-weight: 700;
 }
 
-.intro > p,
+.intro > p {
+  max-width: 70ch;
+  color: var(--muted);
+  font-size: clamp(.95rem, 1.2vw, 1.05rem);
+  line-height: 1.55;
+}
+
+.divisions > section {
+  padding-block: 8px 22px;
+}
+
+.divisions > section > h2 {
+  margin-block: 0 14px;
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+
 .quote p {
   max-width: 34ch;
   color: var(--muted);
   font-size: clamp(0.95rem, 1.4vw, 1.13rem);
 }
 
+.compactPage {
+  padding-block: clamp(16px, 2.2vw, 30px) clamp(32px, 5vw, 64px);
+}
+
+.catalogue > h1,
+.catalogue > h2 {
+  margin: 0 0 18px;
+  color: var(--deep-navy);
+  font-size: clamp(1.7rem, 2.7vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+
 .catalogue :global(.filters) {
   gap: 12px;
-  padding: clamp(14px, 2vw, 23px);
+  padding: clamp(12px, 1.5vw, 18px);
   background: var(--cloud);
+  border: 1px solid var(--line);
   border-radius: 8px;
 }
 
@@ -35,14 +70,24 @@
   min-width: 0;
   align-content: end;
   gap: 6px;
+  color: var(--deep-navy);
   font-size: 0.82rem;
   font-weight: 650;
 }
 
 .catalogue :global(.filters) :is(input, select) {
   min-width: 0;
+  min-height: 44px;
+  height: 44px;
+  border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
+  background: var(--white);
+}
+
+.catalogue :global(.filters) :is(input, select):focus-visible {
+  outline: 2px solid var(--bharat-blue);
+  outline-offset: 2px;
 }
 
 .catalogue :global(.catalogue-results) {
@@ -50,8 +95,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 55px;
+  min-height: 48px;
   padding-inline: 2px;
+  font-size: .875rem;
+}
+
+.catalogue :global(.results-count) {
+  margin-block: 0;
+  font-weight: 550;
 }
 
 .catalogue :global(.catalogue-results) button {
@@ -131,7 +182,12 @@
   }
 
   .intro {
-    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .divisions > section {
+    padding-block: 8px 18px;
   }
 
   .catalogue :global(.filters) {
@@ -156,7 +212,17 @@
 
 @media (max-width: 540px) {
   .catalogue :global(.filters) {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .catalogue :global(.filters):not(:global(.catalogue-filters-with-wattage)) > label:last-child {
+    grid-column: auto;
+  }
+
+  .catalogue > h1,
+  .catalogue > h2 {
+    margin-bottom: 12px;
   }
 
   .catalogue :global(.card-grid) {
