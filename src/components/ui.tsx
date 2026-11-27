@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight, ArrowRight } from "lucide-react";
 import {
-  catalogueLabel,
   findCollection,
   type Product,
 } from "@/lib/catalogue";
@@ -87,16 +86,12 @@ export function ProductCard({
         </span>
       </Link>
       <div className="card-body">
-        <p className="label">
-          {item.categories.map(findCollection).find(Boolean)?.name}
-          <span className="catalogue-image-note">
-            {item.images[0].representative
-              ? "Representative image"
-              : catalogueLabel(item)}
-          </span>
-        </p>
         <h3>
-          <Link href={`/products/${item.slug}`}>{item.name}</Link>
+          <Link href={`/products/${item.slug}`}>
+            {item.categories.map(findCollection).find(Boolean)?.name
+              ? `${item.categories.map(findCollection).find(Boolean)?.name} (${item.name})`
+              : item.name}
+          </Link>
         </h3>
         <p>{item.description}</p>
         {item.status === "verified" &&
