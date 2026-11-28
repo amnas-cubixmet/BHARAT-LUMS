@@ -42,7 +42,7 @@ html::-webkit-scrollbar {
 body {
   color: var(--text);
   font:
-    400 15px/1.55 var(--font-hanken),
+    400 15px/1.55 var(--font-hanken, "Hanken Grotesk"),
     Arial,
     Helvetica,
     sans-serif;
@@ -1270,3 +1270,249 @@ textarea::placeholder {
   letter-spacing: -.02em;
   overflow-wrap: anywhere;
 }
+
+/* Catalogue motion: separate the layout animation wrapper from the hover surface. */
+.catalogue-motion-item {
+  min-width: 0;
+  display: flex;
+  transform-origin: center;
+}
+.catalogue-motion-item > .product-card {
+  width: 100%;
+  height: 100%;
+}
+.catalogue-motion-item > .product-card {
+  transition: transform 300ms ease-out, border-color 300ms ease-out, box-shadow 300ms ease-out;
+}
+.product-card .card-icon {
+  transition: background-color 300ms ease-out, color 300ms ease-out, transform 300ms ease-out;
+}
+.product-card:focus-within {
+  border-color: var(--deep-navy);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .catalogue-motion-item > .product-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--deep-navy);
+    box-shadow: 0 8px 24px rgb(11 46 87 / 12%);
+  }
+  .product-card:hover .card-icon {
+    transform: translate(2px, -2px);
+    background: var(--deep-navy);
+    color: var(--white);
+  }
+}
+@keyframes catalogue-detail-enter {
+  from { opacity: .65; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .catalogue-detail-motion > .product-gallery,
+  .catalogue-detail-motion > .detail-copy {
+    animation: catalogue-detail-enter 500ms cubic-bezier(.2,.65,.3,1) backwards;
+  }
+  .catalogue-detail-motion > .detail-copy { animation-delay: 80ms; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-card, .product-card .card-icon { transition: none; }
+}
+
+/* Additional lighting-inspired micro-interactions. Images remain stationary. */
+@keyframes catalogue-light-sweep {
+  from { transform: translateX(-110%); opacity: 0; }
+  22% { opacity: 1; }
+  78% { opacity: 1; }
+  to { transform: translateX(110%); opacity: 0; }
+}
+@keyframes catalogue-gallery-reveal {
+  from { opacity: .35; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .catalogue-detail-motion .product-gallery-image .gallery-image-transition {
+    animation: catalogue-gallery-reveal 480ms cubic-bezier(.2,.65,.25,1) both;
+  }
+  .catalogue-detail-motion .gallery-controls button {
+    transition: border-color 250ms ease, box-shadow 250ms ease;
+  }
+  .catalogue-detail-motion .gallery-controls button[aria-pressed="true"] {
+    box-shadow: 0 0 0 2px var(--bharat-blue);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .catalogue-motion-item .product-card .image-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(112deg, transparent 33%, rgb(255 255 255 / 7%) 44%, rgb(255 255 255 / 19%) 50%, rgb(255 255 255 / 7%) 56%, transparent 67%);
+    transform: translateX(-110%);
+    opacity: 0;
+  }
+  .catalogue-motion-item .product-card:is(:hover, :focus-within) .image-link::after {
+    animation: catalogue-light-sweep 720ms ease-in-out both;
+  }
+  .catalogue-motion-item .product-card .card-icon svg,
+  .catalogue-motion-item .product-card .card-actions .text-link svg {
+    transition: transform 280ms cubic-bezier(.2,.65,.25,1);
+  }
+  .catalogue-motion-item .product-card .image-link:is(:hover, :focus-visible) .card-icon svg {
+    transform: translate(2px, -2px);
+  }
+  .catalogue-motion-item .product-card .card-actions .text-link:first-child:is(:hover, :focus-visible) svg {
+    transform: translateX(4px);
+  }
+  .catalogue-motion-item .product-card .card-actions .text-link:last-child:is(:hover, :focus-visible) svg {
+    transform: translate(3px, -3px);
+  }
+}
+
+/* Keep the contact number readable in the existing header action slot. */
+.site-header .header-quote,
+.main-nav .mobile-quote {
+  font-variant-numeric: tabular-nums;
+  gap: 8px;
+  white-space: nowrap;
+}
+.site-header .header-quote svg,
+.main-nav .mobile-quote svg { flex-shrink: 0; }
+
+/* Fixed WhatsApp shortcut while the homepage hero is visible. */
+.floating-whatsapp {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #1F73BD;
+  color: #fff;
+  border: 1px solid #fff;
+  box-shadow: 0 5px 18px #0b2e5730;
+  text-decoration: none;
+  isolation: isolate;
+  transition: background-color .2s ease, transform .2s ease;
+}
+.floating-whatsapp:focus-visible {
+  outline: 3px solid #1f73bd;
+  outline-offset: 4px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .floating-whatsapp:hover { background: #0B2E57; color: #fff; transform: translateY(-3px); }
+}
+@media (max-width: 600px) {
+  .floating-whatsapp {
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: 50px;
+    height: 50px;
+  }
+  .floating-whatsapp svg { width: 26px; height: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-whatsapp { transition: none; }
+  .floating-whatsapp:hover { transform: none; }
+}
+
+/* Continuous pulse with a quiet interval between waves. */
+.floating-whatsapp::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #1F73BD;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+@keyframes whatsapp-ring {
+  0% { transform: scale(1); opacity: .55; }
+  45%, 100% { transform: scale(1.38); opacity: 0; }
+}
+@keyframes whatsapp-icon-wave {
+  0%, 25%, 100% { transform: rotate(0); }
+  7% { transform: rotate(-10deg); }
+  13% { transform: rotate(10deg); }
+  19% { transform: rotate(-5deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .floating-whatsapp::after { animation: whatsapp-ring 3.2s ease-out .4s infinite; }
+  .floating-whatsapp svg { animation: whatsapp-icon-wave 3.2s ease-in-out .4s infinite; transform-origin: center; }
+}
+
+/* Mobile header: keep the phone number visible beside the borderless menu. */
+@media (max-width: 805px) {
+  .site-header .header-inner {
+    width: calc(100% - 20px);
+    gap: 6px;
+    padding-block: 2px;
+    min-height: 48px;
+  }
+  .site-header .brand-logo { width: 68px; }
+  .site-header .header-quote {
+    display: inline-flex;
+    order: 1;
+    margin-inline-start: auto;
+    min-height: 44px;
+    padding: 0;
+    gap: 5px;
+    font-size: .75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    background: transparent;
+    color: var(--bharat-blue);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .site-header .header-quote:hover {
+    background: transparent;
+    color: var(--deep-navy);
+  }
+  .site-header .header-quote svg { width: 13px; height: 13px; }
+  .site-header .menu-toggle {
+    order: 2;
+    flex: 0 0 44px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--deep-navy);
+    box-shadow: none;
+  }
+  .site-header .menu-toggle:hover { background: transparent; color: var(--bharat-blue); }
+  .site-header .menu-toggle svg { width: 20px; height: 20px; }
+  .main-nav .mobile-quote { display: none; }
+  .site-header :is(.menu-toggle, .header-quote):focus-visible {
+    outline: 2px solid var(--bharat-blue);
+    outline-offset: 1px;
+  }
+}
+
+@media (max-width: 340px) {
+  .site-header .header-inner { gap: 4px; }
+  .site-header .header-quote { font-size: .72rem; gap: 4px; }
+}
+
+/* Homepage-only mobile shell, footer and fixed chat alignment. */
+@media (max-width: 650px) {
+  .home-header ~ main .shell,
+  .home-header ~ .site-footer .shell { width: calc(100% - 32px); }
+  .home-header ~ .site-footer .footer-main { gap: 16px 12px; padding-block: 24px; }
+  .home-header ~ .site-footer .footer-brand,
+  .home-header ~ .site-footer .footer-links { min-width: 0; }
+  .home-header ~ .site-footer .footer-main p { overflow-wrap: anywhere; }
+  .home-header ~ .site-footer .footer-links a { min-height: 44px; padding-block: 7px; font-size: .8rem; }
+  .home-header ~ .site-footer .footer-bottom { padding-bottom: calc(68px + env(safe-area-inset-bottom)); font-size: .76rem; }
+  .home-header ~ .floating-whatsapp {
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Brand typography: native controls inherit the primary site typeface. */
+button, input, select, textarea { font-family: inherit; }

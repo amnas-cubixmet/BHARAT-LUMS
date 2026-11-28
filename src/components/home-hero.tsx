@@ -73,7 +73,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
 
   useEffect(() => {
     if (introDismissed) return;
-    const watchdog = window.setTimeout(() => setIntroTimedOut(true), 6500);
+    const watchdog = window.setTimeout(() => setIntroTimedOut(true), 1800);
     return () => window.clearTimeout(watchdog);
   }, [introDismissed]);
 
@@ -90,6 +90,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
     {allowIntro && <LoadingScreen dismissed={introDismissed} />}
     <section
       className={styles.hero}
+      data-home-hero
       style={{
         "--hero-light-power": power,
         "--bg": `color-mix(in srgb, #1F73BD, #14202E ${power * 100}%)`,
@@ -112,14 +113,12 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
             Powering a Brighter Tomorrow
           </p>
           <h1 data-hero-enter>
-            <span>Light up</span>
-            <span>
-              the future<span className={styles.heroDot}>.</span>
-            </span>
+            <span>LED lighting</span>{" "}
+            <span>solutions<span className={styles.heroDot}>.</span></span>
           </h1>
           <p className={styles.heroSummary} data-hero-enter>
-            Advanced LED lighting solutions for commercial, industrial and
-            outdoor environments.
+            Compare lighting for roads, industrial facilities and commercial
+            interiors. Browse the catalogue or discuss your project with Bharat Lums.
           </p>
           <div className={styles.heroActions} data-hero-enter>
             <Link className={styles.heroPrimary} href="/products">
@@ -130,7 +129,7 @@ export function HomeHero({ catalogue }: { catalogue?: string }) {
                 Download Catalogue <ArrowDown size={17} aria-hidden="true" />
               </a>
             ) : (
-              <a className={styles.heroLink} href="/request-quote?catalogue=1">
+              <a className={styles.heroLink} href="/contact?catalogue=1">
                 Request Catalogue <ArrowUpRight size={17} aria-hidden="true" />
               </a>
             )}

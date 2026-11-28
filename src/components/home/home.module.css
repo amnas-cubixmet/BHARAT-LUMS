@@ -10,7 +10,7 @@
   width: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: Manrope, var(--font-hanken), Arial, sans-serif;
+  font-family: var(--font-hanken, "Hanken Grotesk"), Arial, sans-serif;
 }
 
 .heroInner {
@@ -40,7 +40,7 @@
 }
 .hero h1 {
   margin: 21px 0 0;
-  font-size: clamp(5.4rem, 11.2vw, 13.25rem);
+  font-size: clamp(4rem, 8.4vw, 10.5rem);
   line-height: 0.8;
   font-weight: 800;
   letter-spacing: -0.087em;
@@ -383,7 +383,7 @@
   text-underline-offset: 3px;
 }
 @media (max-width: 1050px) {
-  .hero h1 { font-size: clamp(4rem, 10.5vw, 8.4rem); }
+  .hero h1 { font-size: clamp(4rem, 7.8vw, 6rem); }
 }
 @media (max-width: 900px) {
   .heroInner {
@@ -401,7 +401,7 @@
   }
   .hero h1 {
     margin-top: 13px;
-    font-size: clamp(2.4rem, 12.3vw, 5rem);
+    font-size: clamp(2.4rem, 9.6vw, 5rem);
   }
   .heroSummary {
     max-width: 30ch;
@@ -421,7 +421,7 @@
 @media (orientation: landscape) and (max-height: 500px) and (min-width: 651px) and (max-width: 900px) {
   .heroInner { padding-block: 20px 90px; min-height: 350px; }
   .heroStage { width: 48%; height: 100%; }
-  .hero h1 { font-size: clamp(2rem, 7vw, 4rem); }
+  .hero h1 { font-size: clamp(2rem, 5.1vw, 3.6rem); }
   .heroPanel { position: absolute; right: var(--hero-gutter); bottom: 12px; margin: 0; }
 }
 @media (max-width: 650px) {
@@ -559,3 +559,276 @@
   background: var(--cloud);
   color: var(--deep-navy);
 }
+
+/* Keep the fixed hero chat shortcut clear of the desktop light controls. */
+@media (min-width: 901px), (orientation: landscape) and (max-height: 500px) and (min-width: 651px) {
+  .heroPanel { right: max(96px, var(--hero-gutter), env(safe-area-inset-right)); }
+}
+
+/* Compact homepage About section on mobile, with readable typography. */
+@media (max-width: 650px) {
+  .about { padding-block: 18px 24px; }
+  .aboutInner { gap: 16px; grid-template-columns: minmax(0, 1fr); }
+  .aboutArt { border-radius: 8px; }
+  .aboutArt img { aspect-ratio: 16 / 9; object-fit: cover; object-position: center; }
+  .aboutCopy { min-width: 0; }
+  .aboutCopy .sectionKicker {
+    margin: 0 0 8px;
+    color: var(--accent);
+    font-size: .68rem;
+    line-height: 1.3;
+    letter-spacing: .12em;
+  }
+  .aboutCopy h2 {
+    margin: 0;
+    font-size: clamp(1.85rem, 7.2vw, 2.65rem);
+    line-height: 1.04;
+    letter-spacing: -.045em;
+    overflow-wrap: normal;
+    text-wrap: balance;
+  }
+  .aboutCopy p:not(.sectionKicker) {
+    margin: 12px 0 16px;
+    font-size: .875rem;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .aboutCopy :global(.button) {
+    min-height: 44px;
+    padding-inline: 14px;
+    font-size: .83rem;
+  }
+}
+
+/* One compact image-led lighting application section. */
+.applicationBand {
+  background: rgb(11, 46, 87);
+  color: #fff;
+}
+.applicationFeature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: stretch;
+  gap: clamp(24px, 5vw, 64px);
+  padding-block: clamp(24px, 4vw, 48px);
+}
+.applicationFeatureImage {
+  position: relative;
+  min-width: 0;
+  min-height: clamp(240px, 25vw, 360px);
+  align-self: stretch;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #0b2e57;
+}
+.applicationFeatureImage img { object-fit: cover; object-position: center; }
+.applicationFeatureCopy { min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+.applicationKicker {
+  font-size: .7rem;
+  font-weight: 750;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+.applicationFeatureCopy h2 {
+  color: #fff;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -.045em;
+  margin: 0;
+}
+.applicationFeatureCopy > p:not(.applicationKicker) {
+  color: #fff;
+  font-size: clamp(.88rem, 1.3vw, 1rem);
+  line-height: 1.6;
+  margin: 12px 0 16px;
+  max-width: 62ch;
+}
+.applicationFeatureLinks { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
+.applicationAll, .applicationSecondary, .applicationGuide {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  font-size: .83rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.applicationAll {
+  background: #fff;
+  color: #0b2e57;
+  border: 1px solid #fff;
+  border-radius: 999px;
+  padding: 8px 15px;
+}
+.applicationSecondary, .applicationGuide { color: #fff; }
+.applicationGuide { font-size: .76rem; margin-top: 4px; align-self: flex-start; }
+.applicationAll:focus-visible, .applicationSecondary:focus-visible, .applicationGuide:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .applicationAll:hover { background: var(--bharat-blue); color: #fff; }
+  .applicationSecondary:hover, .applicationGuide:hover { text-decoration: underline; }
+}
+@media (max-width: 700px) {
+  .applicationFeature {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+    padding-block: 22px;
+  }
+  .applicationFeatureImage { min-height: 0; aspect-ratio: 16 / 9; }
+  .applicationFeatureCopy h2 { font-size: clamp(1.55rem, 6vw, 2rem); }
+  .applicationFeatureCopy > p:not(.applicationKicker) { font-size: .85rem; margin: 8px 0 12px; }
+}
+
+/* Mobile hero: dedicated product area and compact, readable controls. */
+@media (max-width: 650px) {
+  .heroInner {
+    --hero-gutter: clamp(16px, 4.5vw, 24px);
+    --stage-height: clamp(174px, 54vw, 290px);
+    grid-template-columns: minmax(0, 1fr);
+    padding: calc(var(--stage-height) + 10px) max(var(--hero-gutter), env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(var(--hero-gutter), env(safe-area-inset-left));
+  }
+  .heroStage {
+    width: 100%;
+    height: var(--stage-height);
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 84%, transparent 100%);
+  }
+  .heroLead { width: 100%; }
+  .heroKicker {
+    font-size: .65rem;
+    line-height: 1.4;
+    letter-spacing: .11em;
+  }
+  .hero h1 {
+    margin-top: 10px;
+    font-size: clamp(2.4rem, 9.6vw, 3.8rem);
+    line-height: .94;
+    letter-spacing: -.065em;
+    word-spacing: .02em;
+  }
+  .heroSummary {
+    max-width: 46ch;
+    margin-top: 12px;
+    font-size: .875rem;
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .heroActions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .heroPrimary, .heroLink {
+    min-width: 0;
+    min-height: 44px;
+    padding: 7px 6px;
+    gap: 5px;
+    font-size: clamp(.66rem, 2.5vw, .78rem);
+    line-height: 1.2;
+    text-align: center;
+  }
+  .heroPrimary svg, .heroLink svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .heroPanel {
+    width: 100%;
+    margin-top: 14px;
+    padding: 9px 58px 8px 10px;
+    border-radius: 9px;
+  }
+  .modelCaption { font-size: .59rem; letter-spacing: .08em; }
+  .lightControls { gap: 8px; }
+  .lightControls button { min-width: 70px; font-size: .73rem; gap: 4px; }
+  .lightControls label { font-size: .65rem; }
+  .lightControls input { min-height: 28px; }
+}
+
+/* Homepage mobile rhythm: readable typography, compact sections and safe grid sizing. */
+@media (max-width: 650px) {
+  .heroInner { min-width: 0; }
+  .hero h1 > span { max-width: 100%; }
+  .heroLead { min-width: 0; }
+  .heroSummary { max-width: 100%; }
+  .heroPanel { min-width: 0; }
+  .about, .mission, .strengths, .faq { padding-block: 26px; }
+  .aboutInner, .faqInner { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .aboutCopy h2 { font-size: clamp(1.65rem, 7vw, 2.3rem); line-height: 1.08; }
+  .aboutCopy p:not(.sectionKicker) { max-width: 100%; }
+  .mission :global(.shell) { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .mission :global(.shell) > div + div { border-top: 1px solid #ffffff40; padding-top: 18px; }
+  .mission h2 { font-size: clamp(1.4rem, 5.8vw, 1.85rem); line-height: 1.15; letter-spacing: -.035em; }
+  .mission p { font-size: .875rem; line-height: 1.6; margin-top: 7px; max-width: 100%; }
+  .strengths h2 { font-size: clamp(1.45rem, 6vw, 2rem); line-height: 1.15; max-width: 100%; }
+  .strengths ul { margin-top: 14px; gap: 10px; }
+  .strengths li {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    align-items: start;
+    gap: 5px 10px;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  .strengthIcon { width: 36px; height: 36px; grid-row: 1 / 3; margin: 0; border-radius: 7px; }
+  .strengthIcon svg { width: 19px; height: 19px; }
+  .strengths h3 { font-size: 1rem; line-height: 1.3; }
+  .strengths li p { grid-column: 2; font-size: .82rem; line-height: 1.5; }
+  .faq h2 { font-size: clamp(2.5rem, 11vw, 3.6rem); line-height: 1; letter-spacing: -.06em; }
+  .faqRow h3 { font-size: .9rem; }
+  .faqRow button { min-height: 48px; padding-block: 12px; gap: 12px; overflow-wrap: anywhere; }
+  .faqRow button svg { width: 18px; height: 18px; }
+  .faqAnswer p { padding: 0 8px 14px 0; font-size: .85rem; line-height: 1.6; overflow-wrap: anywhere; }
+  .applicationFeature { padding-block: 26px; }
+  .applicationFeatureCopy h2 { font-size: clamp(1.5rem, 6.5vw, 2rem); }
+  .applicationFeatureLinks { gap: 6px 12px; }
+  .applicationAll { padding-inline: 11px; font-size: .76rem; }
+  .applicationSecondary { font-size: .76rem; }
+}
+
+/* Match the About page mission and vision layout on the homepage. */
+.mission {
+  padding-block: clamp(36px, 6vw, 88px);
+}
+.mission :global(.shell) {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+.mission h2 {
+  color: #fff;
+  font-size: clamp(1.75rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -.055em;
+}
+.mission p {
+  color: #E5EFF8;
+  max-width: 65ch;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+.mission :global(.shell) > div + div {
+  border-top: 1px solid #527899;
+  padding-top: 24px;
+}
+@media (min-width: 768px) {
+  .mission :global(.shell) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(28px, 3.2vw, 44px);
+  }
+  .mission :global(.shell) > div + div {
+    border-top: 0;
+    border-left: 1px solid #527899;
+    padding: 0 0 0 clamp(28px, 3.2vw, 44px);
+  }
+}
+@media (max-width: 767px) {
+  .mission { padding-block: 28px; }
+  .mission :global(.shell) { gap: 20px; }
+  .mission :global(.shell) > div + div { padding-top: 20px; }
+  .mission h2 { font-size: clamp(1.5rem, 6.5vw, 2.25rem); }
+  .mission p { font-size: .875rem; line-height: 1.6; margin-top: 9px; }
+}
+
+/* Brand Guideline 12: Montserrat is reserved for the brand tagline. */
+.heroKicker { font-family: var(--font-montserrat, "Montserrat"), Arial, sans-serif; }

@@ -3,13 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { Phone, X } from "lucide-react";
+import { brand } from "@/lib/site";
 import { useRef, useState } from "react";
 
 const links = [
   ["/", "Home"],
   ["/about", "About"],
   ["/products", "Products"],
+  ["/applications", "Applications"],
+  ["/lighting-guides", "Guides"],
   ["/contact", "Contact"],
 ];
 
@@ -86,7 +89,11 @@ export default function Header() {
           aria-label={open ? "Close menu" : "Open menu"}
           onClick={() => setOpenedAt(open ? null : path)}
         >
-          {open ? <X /> : <Menu />}
+          {open ? <X aria-hidden="true" /> : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true" focusable="false">
+              <path d="M5 9h14M5 15h8" />
+            </svg>
+          )}
         </button>
         <nav
           id="site-navigation"
@@ -108,20 +115,13 @@ export default function Header() {
               </Link>
             );
           })}
-          <Link
-            className="button button-outline mobile-quote"
-            href="/request-quote"
-            onClick={() => setOpenedAt(null)}
-          >
-            Request a quote <ArrowUpRight size={15} />
-          </Link>
+          <a className="button button-outline mobile-quote" href={brand.phoneHref} onClick={() => setOpenedAt(null)} aria-label={`Call Bharat Lums at ${brand.phone}`}>
+            <Phone size={16} aria-hidden="true" /> {brand.phone}
+          </a>
         </nav>
-        <Link
-          className="button button-outline header-quote"
-          href="/request-quote"
-        >
-          Request a quote <ArrowUpRight size={15} />
-        </Link>
+        <a className="button button-outline header-quote" href={brand.phoneHref} aria-label={`Call Bharat Lums at ${brand.phone}`}>
+          <Phone size={16} aria-hidden="true" /> {brand.phone}
+        </a>
       </div>
     </header>
   );

@@ -61,14 +61,14 @@ export function SectionHead({
 
 export function ProductCard({
   item,
+  managedMotion = false,
 }: {
   item: Product;
+  managedMotion?: boolean;
 }) {
-  return (
-    <Reveal
-      as="article"
-      className={`media-card product-card${item.status === "photographed" ? " product-card-photographed" : ""}`}
-    >
+  const className = `media-card product-card${item.status === "photographed" ? " product-card-photographed" : ""}`;
+  const content = (
+    <>
       <Link
         href={`/products/${item.slug}`}
         className="image-link"
@@ -111,14 +111,17 @@ export function ProductCard({
           </Link>
           <Link
             className="text-link"
-            href={`/request-quote?product=${item.slug}`}
+            href={`/contact?product=${item.slug}`}
           >
             Enquire now <ArrowUpRight size={13} />
           </Link>
         </div>
       </div>
-    </Reveal>
+    </>
   );
+  return managedMotion
+    ? <article className={className}>{content}</article>
+    : <Reveal as="article" className={className}>{content}</Reveal>;
 }
 
 export function QuoteBanner() {
@@ -133,7 +136,7 @@ export function QuoteBanner() {
             options.
           </p>
         </div>
-        <Action href="/request-quote" diagonal>
+        <Action href="/contact" diagonal>
           Request a quote
         </Action>
       </div>
@@ -157,7 +160,9 @@ export function Footer() {
             <h2 id="footer-explore">Explore</h2>
             <Link href="/products">Product Catalogue</Link>
             <Link href="/about">Company Information</Link>
-            <Link href="/#global-presence">Global presence</Link>
+            <Link href="/applications">Lighting Applications</Link>
+            <Link href="/lighting-guides">Lighting Guides</Link>
+            <Link href="/#global-presence">Explore the regional map</Link>
             <Link href="/contact">Contact</Link>
           </nav>
           <div className="footer-links">

@@ -1,0 +1,153 @@
+/* Shared product detail layout for both catalogue divisions. */
+.detail:global(.detail-grid) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+  margin-block: 16px clamp(20px, 2.5vw, 34px);
+}
+.detail > * { min-width: 0; }
+.detail :global(.product-gallery .product-gallery-image) { aspect-ratio: 4 / 3; border-radius: 10px; background: var(--cloud); }
+.detail :global(.product-gallery .product-gallery-image img), .detail :global(.product-gallery .gallery-controls img) { object-fit: cover; }
+.summary { min-width: 0; display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+.summary h1 { font-size: clamp(1.8rem, 3vw, 2.8rem); color: var(--deep-navy); line-height: 1.15; letter-spacing: -.035em; overflow-wrap: anywhere; }
+.summary p, .summary ul { margin: 0; }
+.summary .eyebrow { color: var(--accent); font-size: .72rem; letter-spacing: .09em; font-weight: 700; text-transform: uppercase; }
+.summary .lead { font-size: 1rem; line-height: 1.6; color: var(--muted); }
+.summary .note { font-size: .84rem; line-height: 1.5; }
+.summary .highlights { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; list-style: none; padding: 0; }
+.highlights li { display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--line); border-radius: 7px; padding: 11px 13px; min-width: 0; overflow-wrap: anywhere; }
+.highlights span { font-size: .72rem; color: var(--muted); }
+.highlights strong { color: var(--deep-navy); font-size: .95rem; font-weight: 700; }
+.cta { display: grid; gap: 12px; border-top: 1px solid var(--line); padding-top: 16px; margin-top: 4px; }
+.cta p { font-size: .875rem; line-height: 1.5; }
+.cta :global(.product-detail-actions) { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; min-width: 0; }
+.cta :global(.button) { width: 100%; min-height: 46px; max-width: 100%; white-space: normal; text-align: center; justify-content: center; padding: 9px 12px; font-size: .85rem; }
+.categoryLink, .resourceLink { color: var(--accent); font-size: .875rem; font-weight: 700; text-underline-offset: 3px; display: inline-flex; gap: 5px; align-items: center; min-height: 44px; width: fit-content; max-width: 100%; overflow-wrap: anywhere; }
+.categoryLink:hover, .resourceLink:hover { text-decoration: underline; }
+.specLayout { display: grid; grid-template-columns: minmax(0, 2.05fr) minmax(0, 1fr); align-items: start; gap: clamp(20px, 3vw, 40px); margin-bottom: clamp(28px, 5vw, 60px); }
+.specLayout > * { min-width: 0; }
+.specifications h2, .projectPanel h2 { color: var(--deep-navy); font-size: clamp(1.25rem, 2vw, 1.65rem); line-height: 1.25; letter-spacing: -.025em; }
+.specifications p { font-size: .875rem; color: var(--muted); line-height: 1.6; margin-top: 10px; }
+.specifications :global(.product-spec-table) { table-layout: fixed; overflow-wrap: anywhere; font-size: .9rem; }
+.specifications :global(.product-spec-table th) { width: 36%; font-weight: 600; color: var(--muted); }
+.specifications :global(.product-spec-table td) { color: var(--deep-navy); }
+.specifications :global(.product-spec-table th), .specifications :global(.product-spec-table td) { padding: 11px 8px; vertical-align: top; }
+.projectPanel { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; border: 1px solid var(--line); background: var(--cloud); border-radius: 10px; padding: clamp(16px, 2vw, 24px); }
+.projectPanel p, .projectPanel li { font-size: .875rem; color: var(--muted); line-height: 1.6; }
+.projectPanel h3 { color: var(--deep-navy); font-size: 1rem; line-height: 1.3; margin-top: 4px; letter-spacing: -.015em; }
+.projectPanel :global(.button) { width: 100%; max-width: 100%; min-height: 44px; white-space: normal; text-align: center; justify-content: center; }
+.projectPanel ul { list-style: disc; padding-left: 18px; }
+@media (max-width: 805px) {
+  .detail:global(.detail-grid), .specLayout { grid-template-columns: minmax(0,1fr); gap: 18px; }
+  .detail:global(.shell), .specLayout:global(.shell) { width: calc(100% - 32px); }
+  .detail:global(.detail-grid) { margin-block: 12px 20px; }
+  .detail :global(.product-gallery .product-gallery-image) { aspect-ratio: 4 / 3; }
+  .summary { gap: 10px; }
+  .summary h1 { font-size: clamp(1.65rem, 6.8vw, 2.25rem); }
+  .summary .lead, .summary > p:not(.eyebrow) { font-size: .875rem; }
+  .summary .highlights { gap: 8px; }
+  .highlights li { padding: 9px; }
+  .highlights strong { font-size: .85rem; }
+  .specifications :global(.product-spec-table) { font-size: .82rem; }
+  .specifications :global(.product-spec-table th) { width: 42%; }
+  .projectPanel { padding: 14px; }
+}
+@media (max-width: 360px) {
+  .cta :global(.product-detail-actions) { gap: 8px; }
+  .cta :global(.button) { font-size: .75rem; padding-inline: 6px; gap: 4px; }
+  .cta :global(.button svg) { width: 14px; height: 14px; }
+  .specifications :global(.product-spec-table th), .specifications :global(.product-spec-table td) { padding: 9px 5px; }
+}
+
+/* Independently stacked columns avoid empty grid rows when content heights differ. */
+.mediaColumn, .infoColumn {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 20px;
+}
+.mediaColumn > *, .infoColumn > * { min-width: 0; }
+/* Override the gallery's start alignment so thumbnails cannot shrink the main image. */
+.detail :global(.product-gallery) { width: 100%; max-width: 100%; min-width: 0; align-self: stretch; }
+.detail :global(.product-gallery .product-gallery-image) { width: 100%; }
+@media (min-width: 806px) {
+  .detail:global(.detail-grid) { column-gap: 20px; }
+}
+.editorial > div { margin-block: 0; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.editorial h2 { font-size: clamp(1.15rem, 1.7vw, 1.45rem); }
+.editorial p { font-size: .875rem; }
+.editorial section { padding-top: 12px; }
+.specifications { scroll-margin-top: 72px; }
+.projectPanel { gap: 9px; }
+.projectPanel .resourceLink { min-height: 36px; }
+@media (max-width: 805px) {
+  .mediaColumn, .infoColumn { display: contents; }
+  .detail :global(.product-gallery) { order: 0; }
+  .summary { order: 1; }
+  .specifications { order: 2; }
+  .projectPanel { order: 3; }
+  .editorial { order: 4; }
+  .detail:global(.detail-grid) { gap: 20px; }
+}
+
+/* Mobile product detail: image-first, readable specifications and compact enquiry. */
+@media (max-width: 805px) {
+  .detail:global(.detail-grid) {
+    margin-block: 10px 24px;
+    gap: 24px;
+  }
+  .detail :global(.product-gallery .product-gallery-image) {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+  }
+  .detail :global(.product-gallery .gallery-controls) { margin-top: 8px; }
+  .detail :global(.product-gallery .gallery-controls button) {
+    flex-basis: clamp(62px, 21vw, 92px);
+    border-radius: 6px;
+  }
+  .summary { gap: 10px; }
+  .summary .eyebrow { font-size: .7rem; line-height: 1.45; letter-spacing: .07em; }
+  .summary h1 {
+    font-size: clamp(1.65rem, 7vw, 2.3rem);
+    line-height: 1.14;
+    letter-spacing: -.035em;
+  }
+  .summary > p:not(.eyebrow) { font-size: .9rem; line-height: 1.6; }
+  .summary .highlights { gap: 8px; }
+  .cta { padding-top: 12px; gap: 10px; }
+  .cta :global(.product-detail-actions) { gap: 8px; }
+  .cta :global(.button) { min-height: 46px; }
+  .specifications h2, .projectPanel h2 {
+    font-size: clamp(1.2rem, 5vw, 1.55rem);
+    line-height: 1.25;
+  }
+  .specifications :global(.product-spec-table) {
+    margin-block: 12px;
+    font-size: .9rem;
+    line-height: 1.45;
+  }
+  .specifications :global(.product-spec-table th) {
+    width: 48%;
+    padding: 12px 8px 12px 0;
+    font-weight: 500;
+  }
+  .specifications :global(.product-spec-table td) {
+    padding: 12px 0 12px 8px;
+    overflow-wrap: anywhere;
+  }
+  .specifications p { font-size: .84rem; line-height: 1.55; }
+  .projectPanel {
+    padding: 16px;
+    border-radius: 12px;
+    gap: 10px;
+  }
+  .projectPanel p, .projectPanel li { font-size: .875rem; line-height: 1.6; }
+  .projectPanel :global(.button) { min-height: 46px; }
+  .editorial > div { gap: 16px; }
+}
+@media (max-width: 360px) {
+  .detail:global(.detail-grid) { gap: 20px; }
+  .summary h1 { font-size: 1.6rem; }
+  .specifications :global(.product-spec-table) { font-size: .84rem; }
+  .projectPanel { padding: 14px; }
+}
